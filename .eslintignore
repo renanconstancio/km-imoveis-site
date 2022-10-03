@@ -1,0 +1,8 @@
+node_modules
+dist
+build
+# outros
+android
+ios
+.expo
+.vscode
