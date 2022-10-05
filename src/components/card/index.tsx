@@ -4,15 +4,15 @@ import { Price } from "../price";
 import { H2 } from "../title";
 import { Link } from "react-router-dom";
 
-type Props = {
+type PropsCard = {
   title: string;
   address: string;
   price: string;
-  images: [];
-  tags: [];
+  tags: string[];
+  images: string[];
 } & React.HTMLAttributes<HTMLLIElement>;
 
-export function Card({ title, address, price, images, tags }: Props) {
+export function Card({ title, address, price, images, tags }: PropsCard) {
   return (
     <li className="relative bg-slate-100">
       <Link to="/" className="block">

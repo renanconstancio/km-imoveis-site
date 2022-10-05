@@ -3,7 +3,11 @@ import { apiListOfHouses } from "../../api/api";
 import { Card } from "../../components/card";
 import { price } from "../../utils/price";
 
-type PropsCardIndex = {
+type PropsListOfHouseImage = {
+  image: string;
+};
+
+type PropsListOfHouse = {
   title: string;
   address: string;
   district: string;
@@ -11,16 +15,14 @@ type PropsCardIndex = {
   city: string;
   state: string;
   zip_code: string;
-  price: string;
-  description: string;
-  tags: [];
-  images: {
-    image: string;
-  }[];
+  price: number;
+  description?: string;
+  tags: string[];
+  images: PropsListOfHouseImage[];
 };
 
 export function Home() {
-  const [listOfHouses, setListOfHouses] = useState<PropsCardIndex[]>([]);
+  const [listOfHouses, setListOfHouses] = useState<PropsListOfHouse[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -123,7 +125,7 @@ export function Home() {
               item.zip_code,
             ].join(", ")}
             tags={item.tags}
-            images={item.images.reduce((acc, { image }) => {
+            images={item.images.reduce((acc: string[], { image }) => {
               acc.push(image);
               return acc;
             }, [])}
