@@ -1,8 +1,13 @@
-export const api = [
+export const apiListOfHouses = [
   {
-    title: "Casa Aluguel",
-    bairro: "Centro",
-    price: "750.00",
+    title: "Casa Aluguel 1",
+    address: "Joaquim Nabuco",
+    district: "Centro",
+    number: "100",
+    city: "Itapolis",
+    state: "SP",
+    zip_code: "14900-000",
+    price: 750.0,
     description: "Teste",
     tags: [
       "1 dorm",
@@ -16,23 +21,28 @@ export const api = [
     ],
     images: [
       {
-        image: "",
+        image: "/imgs/banners/banner-b.jpg",
       },
       {
-        image: "",
+        image: "/imgs/banners/banner-a.jpg",
       },
       {
-        image: "",
+        image: "/imgs/banners/banner-b.jpg",
       },
       {
-        image: "",
+        image: "/imgs/banners/banner-a.jpg",
       },
     ],
   },
   {
-    title: "Casa Aluguel",
-    bairro: "Centro",
-    price: "750.00",
+    title: "Casa Aluguel 2",
+    address: "Joaquim Nabuco",
+    district: "Centro",
+    number: "100",
+    city: "Itapolis",
+    state: "SP",
+    zip_code: "14900-000",
+    price: 766.98,
     tags: [
       "1 dorm",
       "sala",
@@ -45,16 +55,84 @@ export const api = [
     ],
     images: [
       {
-        image: "",
+        image: "/imgs/banners/banner-a.jpg",
       },
       {
-        image: "",
+        image: "/imgs/banners/banner-b.jpg",
       },
       {
-        image: "",
+        image: "/imgs/banners/banner-b.jpg",
       },
       {
-        image: "",
+        image: "/imgs/banners/banner-a.jpg",
+      },
+    ],
+  },
+  {
+    title: "Casa Aluguel 2",
+    address: "Joaquim Nabuco",
+    district: "Centro",
+    number: "100",
+    city: "Itapolis",
+    state: "SP",
+    zip_code: "14900-000",
+    price: 766.98,
+    tags: [
+      "1 dorm",
+      "sala",
+      "despejo",
+      "cozinha",
+      "WC",
+      "lavanderia",
+      "garagem",
+      "forrada",
+    ],
+    images: [
+      {
+        image: "/imgs/banners/banner-a.jpg",
+      },
+      {
+        image: "/imgs/banners/banner-b.jpg",
+      },
+      {
+        image: "/imgs/banners/banner-b.jpg",
+      },
+      {
+        image: "/imgs/banners/banner-a.jpg",
+      },
+    ],
+  },
+  {
+    title: "Casa Aluguel 2",
+    address: "Joaquim Nabuco",
+    district: "Centro",
+    number: "100",
+    city: "Itapolis",
+    state: "SP",
+    zip_code: "14900-000",
+    price: 766.98,
+    tags: [
+      "1 dorm",
+      "sala",
+      "despejo",
+      "cozinha",
+      "WC",
+      "lavanderia",
+      "garagem",
+      "forrada",
+    ],
+    images: [
+      {
+        image: "/imgs/banners/banner-a.jpg",
+      },
+      {
+        image: "/imgs/banners/banner-b.jpg",
+      },
+      {
+        image: "/imgs/banners/banner-b.jpg",
+      },
+      {
+        image: "/imgs/banners/banner-a.jpg",
       },
     ],
   },
