@@ -137,3 +137,17 @@ export const apiListOfHouses = [
     ],
   },
 ];
+
+export const apiTypesOfProperty = [
+  {
+    type: "Residencial",
+    childrens: [
+      {
+        type: "Casa",
+      },
+      {
+        type: "Apartamento",
+      },
+    ],
+  },
+];

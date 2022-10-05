@@ -16,9 +16,9 @@ export function Card({ title, address, price, images, tags }: PropsCard) {
   return (
     <li className="relative bg-slate-100">
       <Link to="/" className="block">
-        <ul className="absolute left-0 top-3 h-[auto] w-auto z-[9999] font-play text-white flex gap-2">
+        <ul className="absolute left-0 top-3 h-[auto] w-auto z-[9999] font-play text-white text-sm flex gap-2">
           <li className="p-1 bg-sky-600">a venda</li>
-          <li className="p-1 bg-green-600">disponinvel</li>
+          <li className="p-1 bg-emerald-500">disponível</li>
         </ul>
 
         <CarouselIcons images={images} />
