@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export const apiListOfHouses = [
   {
     title: "Casa Aluguel 1",
@@ -151,3 +153,7 @@ export const apiTypesOfProperty = [
     ],
   },
 ];
+
+export const api = axios.create({
+  baseURL: "http://localhost:8001/v1/",
+});

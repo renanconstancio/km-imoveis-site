@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { apiListOfHouses } from "../../api/api";
+import { api, apiListOfHouses } from "../../api/api";
 import { Card } from "../../components/card";
 import { price } from "../../utils/price";
 
@@ -21,8 +21,22 @@ type PropsListOfHouse = {
   images: PropsListOfHouseImage[];
 };
 
+type PropsStates = {
+  id: string;
+  state: string;
+};
+
 export function Home() {
+  const [states, setStates] = useState<PropsStates[]>([]);
   const [listOfHouses, setListOfHouses] = useState<PropsListOfHouse[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      api.get("/states").then(async res => {
+        setStates(await res.data);
+      });
+    })();
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -44,12 +58,9 @@ export function Home() {
             />
           </label>
           <datalist id="browsers">
-            <option value="Chrome" />
-            <option value="Firefox" />
-            <option value="Internet Explorer" />
-            <option value="Opera" />
-            <option value="Safari" />
-            <option value="Microsoft Edge" />
+            {states.map(state => (
+              <option value={state.state} key={state.id} />
+            ))}
           </datalist>
         </li>
         <li>
