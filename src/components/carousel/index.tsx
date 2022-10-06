@@ -1,15 +1,18 @@
 import "react-responsive-carousel/lib/styles/carousel.css";
 import { Carousel } from "react-responsive-carousel";
 
+import importImage01 from "../../assets/banners/banner-a.jpg";
+import importImage02 from "../../assets/banners/banner-b.jpg";
+
 export function CarouselIndex() {
   return (
     <Carousel showArrows={true} dynamicHeight={false} showThumbs={false}>
       <div style={{ height: 430 }}>
-        <img src="/imgs/banners/banner-a.jpg" />
+        <img src={importImage01} />
         {/* <p className="legend">Legend 1</p> */}
       </div>
       <div style={{ height: 430 }}>
-        <img src="/imgs/banners/banner-b.jpg" />
+        <img src={importImage02} />
         {/* <p className="legend">Legend 2</p> */}
       </div>
     </Carousel>

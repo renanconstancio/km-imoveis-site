@@ -22,6 +22,7 @@ export function Card({ title, address, price, images, tags }: PropsCard) {
         </ul>
 
         <CarouselIcons images={images} />
+
         <div className="p-5">
           <H2 title={title} />
           <Address address={address} />
