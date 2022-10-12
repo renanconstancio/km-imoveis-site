@@ -156,5 +156,5 @@ export const apiTypesOfProperty = [
 ];
 
 export const api = axios.create({
-  baseURL: "http://localhost:8001/v1/",
+  baseURL: "http://localhost:8000/v1/",
 });
