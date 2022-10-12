@@ -20,6 +20,12 @@ type PropsStreets = {
   id: string;
   street: string;
   zip_code: string;
+  city: {
+    city: string;
+    state: {
+      state: string;
+    };
+  };
 };
 
 export default function FormImmobles() {
@@ -41,14 +47,15 @@ export default function FormImmobles() {
   if (immobles.length) return <Loading />;
 
   return (
-    <div>
-      <ul className="border-b mb-5">
-        <li>
-          <Link className="btn-warning" to="/adm/immobles">
-            Voltar
-          </Link>
-        </li>
-      </ul>
+    <>
+      <div className="border-b pb-3 mb-5 flex gap-3">
+        <Link className="btn btn-warning" to="/adm/immobles">
+          Voltar
+        </Link>
+        <Link className="btn btn-warning" to="/adm/immobles">
+          Voltar
+        </Link>
+      </div>
       <form className="w-full">
         <div className="flex flex-wrap -mx-3 mb-6">
           <div className="w-full md:w-10/12 px-3">
@@ -135,14 +142,19 @@ export default function FormImmobles() {
                 placeholder="Pesquisa nome da rua"
               />
               <datalist id="streets">
-                {streets.map(({ id, street, zip_code }) => (
-                  <option key={id} value={[street, zip_code].join(", ")} />
+                {streets.map(({ id, street, zip_code, city }) => (
+                  <option
+                    key={id}
+                    value={[street, zip_code, city.city, city.state.state].join(
+                      ", ",
+                    )}
+                  />
                 ))}
               </datalist>
             </div>
           </div>
         </div>
       </form>
-    </div>
+    </>
   );
 }
