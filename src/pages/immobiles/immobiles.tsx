@@ -16,22 +16,22 @@ type Props = {
   deleted_at: string;
 };
 
-export default function Immobles() {
+export default function Immobiles() {
   const [immobles, setImmobles] = useState<Props[]>([]);
 
   useEffect(() => {
     (async () => {
-      api.get("/immobles").then(async res => setImmobles(await res.data));
+      api.get("/immobiles").then(async res => setImmobles(await res.data));
     })();
   }, []);
 
-  if (immobles.length) return <Loading />;
+  if (!immobles.length) return <Loading />;
 
   return (
     <div>
       <ul>
         <li>
-          <Link className="btn-primary" to="/adm/immobles/new">
+          <Link className="btn-primary" to="/adm/immobiles/new">
             Criar
           </Link>
         </li>

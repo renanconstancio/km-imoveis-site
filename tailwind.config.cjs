@@ -21,5 +21,5 @@ module.exports = {
       body: ["Lato", "sans-serif"],
     },
   },
-  plugins: [require("@tailwindcss/forms")],
+  // plugins: [require("@tailwindcss/forms")],
 };

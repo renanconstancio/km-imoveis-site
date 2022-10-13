@@ -8,7 +8,7 @@ export default function Admin() {
     <div className="flex flex-1 h-screen bg-gray-100">
       <nav className="w-1/5 pl-5 py-5 h-screen bg-gray-800 text-white font-play flex flex-col">
         <NavLink
-          to="/adm/immobles"
+          to="/adm/immobiles"
           className={({ isActive }) =>
             isActive ? activeClassName : classDefaultName
           }
@@ -16,7 +16,7 @@ export default function Admin() {
           <i className="fa fa-home"></i> Imovéis
         </NavLink>
         <NavLink
-          to="/adm/immobiles"
+          to="/adm/streets"
           className={({ isActive }) =>
             isActive ? activeClassName : classDefaultName
           }
@@ -24,7 +24,7 @@ export default function Admin() {
           <i className="fas fa-street-view"></i> Ruas
         </NavLink>
         <NavLink
-          to="/adm/immobiles"
+          to="/adm/cities"
           className={({ isActive }) =>
             isActive ? activeClassName : classDefaultName
           }
@@ -32,7 +32,7 @@ export default function Admin() {
           <i className="fas fa-building"></i> Cidades
         </NavLink>
         <NavLink
-          to="/adm/immobiles"
+          to="/adm/states"
           className={({ isActive }) =>
             isActive ? activeClassName : classDefaultName
           }
