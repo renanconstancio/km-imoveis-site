@@ -40,7 +40,7 @@ export default function Admin() {
           <i className="far fa-star"></i> Estados
         </NavLink>
       </nav>
-      <main className="p-12 flex-1">
+      <main className="p-8 flex-1">
         <Outlet />
       </main>
     </div>

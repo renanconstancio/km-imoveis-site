@@ -25,8 +25,11 @@ export function Card({ title, address, price, images, tags }: PropsCard) {
 
         <div className="p-5">
           <H2 title={title} />
+
           <Address address={address} />
+
           <Price price={price} />
+
           <div
             className="font-[10] capitalize whitespace[-5] flex flex-row flex-wrap gap-1"
             dangerouslySetInnerHTML={{

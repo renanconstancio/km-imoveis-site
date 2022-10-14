@@ -2,9 +2,14 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { api } from "../../api/api";
+import { ModalCategory } from "../../components/modal";
+
 type PropsImmobles = {
   id: string;
+  cities_id: string;
+  neighborhoods_id: string;
   streets_id: string;
+  categories_id: string;
   number: string;
   description: string;
   sale_price: number;
@@ -16,21 +21,39 @@ type PropsImmobles = {
   deleted_at: string;
 };
 
+type PropsCategories = {
+  id: string;
+  category: string;
+  filter: string;
+};
+
 type PropsStreets = {
   id: string;
   street: string;
   zip_code: string;
-  city: {
-    city: string;
-    state: {
-      state: string;
-    };
+};
+
+type PropsNeighborhoods = {
+  id: string;
+  district: string;
+};
+
+type PropsCities = {
+  id: string;
+  city: string;
+  state: {
+    state: string;
   };
 };
 
 export default function FormImmobles() {
+  const [cities, setCities] = useState<PropsCities[]>([]);
+  const [neighborhoods, setNeighborhoods] = useState<PropsNeighborhoods[]>([]);
   const [streets, setStreets] = useState<PropsStreets[]>([]);
+  const [categories, setCategories] = useState<PropsCategories[]>([]);
+
   const navigate = useNavigate();
+
   const { immobleId } = useParams();
 
   const {
@@ -43,13 +66,7 @@ export default function FormImmobles() {
   async function onSubmit(data: PropsImmobles) {
     console.log(data);
     const streets_id = streets.find(
-      item =>
-        [
-          item.street,
-          item.zip_code,
-          item.city.city,
-          item.city.state.state,
-        ].join(", ") === data.streets_id,
+      item => [item.street, item.zip_code].join(", ") === data.streets_id,
     );
 
     if (data.id)
@@ -62,6 +79,24 @@ export default function FormImmobles() {
         navigate(`/adm/immobiles/${id}/edit`);
       });
   }
+
+  useEffect(() => {
+    (async () => {
+      api.get("/categories").then(async res => setCategories(await res.data));
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      api.get("/cities").then(async res => setCities(await res.data));
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      api.get("/districts").then(async res => setNeighborhoods(await res.data));
+    })();
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -81,7 +116,9 @@ export default function FormImmobles() {
   // if (immobiles.length) return <Loading />;
 
   return (
-    <>
+    <div className="overflow-x-auto rounded-sm bg-white p-6">
+      <ModalCategory isOpen={true} />
+
       <div className="border-b pb-3 mb-5 flex gap-3">
         <button className="btn-primary" type="submit" form="form">
           Salvar
@@ -94,7 +131,7 @@ export default function FormImmobles() {
         <div className="flex flex-wrap -mx-3 mb-6">
           <div className="w-full md:w-10/12 px-3">
             <label className="label-form" htmlFor="description">
-              Nome do Imovél
+              Descrição do Imovél
             </label>
             <input
               type="text"
@@ -117,6 +154,26 @@ export default function FormImmobles() {
           </div>
         </div>
         <div className="flex flex-wrap -mx-3">
+          <div className="w-full md:w-2/12 px-3">
+            <label className="label-form" htmlFor="sale_price">
+              Preço Venda
+            </label>
+            <input
+              type="text"
+              className="input-form"
+              {...register("sale_price", { required: false })}
+            />
+          </div>
+          <div className="w-full md:w-2/12 px-3">
+            <label className="label-form" htmlFor="rent_price">
+              Preço Aluguel
+            </label>
+            <input
+              type="text"
+              className="input-form"
+              {...register("rent_price", { required: false })}
+            />
+          </div>
           <div className="w-full md:w-2/12 px-3 mb-6">
             <label className="label-form" htmlFor="situation">
               Situação
@@ -147,58 +204,99 @@ export default function FormImmobles() {
               </select>
             </div>
           </div>
-
-          <div className="w-full md:w-3/12 px-3">
-            <label className="label-form" htmlFor="sale_price">
-              Preço Venda
+          <div className="w-full md:w-4/12 px-3 mb-6">
+            <label className="label-form" htmlFor="categories_id">
+              Categoria
             </label>
-            <input
-              type="text"
-              className="input-form"
-              {...register("sale_price", { required: false })}
-            />
-          </div>
-          <div className="w-full md:w-3/12 px-3">
-            <label className="label-form" htmlFor="rent_price">
-              Preço Venda/Aluguel
-            </label>
-            <input
-              type="text"
-              className="input-form"
-              {...register("rent_price", { required: false })}
-            />
+            <div className="relative">
+              <input
+                list="categories_id"
+                type="search"
+                className={`input-form ${errors.categories_id && "invalid"}`}
+                placeholder="Pesquisar..."
+                {...register("categories_id", { required: true })}
+              />
+              {errors.categories_id && (
+                <small className="input-text-invalid">Campo obrigatório</small>
+              )}
+              <datalist id="categories_id">
+                {categories.map(({ id, category }) => (
+                  <option key={id} value={[category].join(", ")} />
+                ))}
+              </datalist>
+            </div>
           </div>
         </div>
+
         <div className="flex flex-wrap -mx-3">
-          <div className="w-full md:w-7/12 px-3 mb-6">
+          <div className="w-full md:w-6/12 px-3 mb-6">
             <label className="label-form" htmlFor="streets_id">
-              Nome da Rua
+              Rua
             </label>
             <div className="relative">
               <input
                 list="streets_id"
                 type="search"
                 className={`input-form ${errors.streets_id && "invalid"}`}
-                placeholder="Pesquisa nome da rua"
+                placeholder="Pesquisar..."
                 {...register("streets_id", { required: true })}
               />
               {errors.streets_id && (
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
               <datalist id="streets_id">
-                {streets.map(({ id, street, zip_code, city }) => (
-                  <option
-                    key={id}
-                    value={[street, zip_code, city.city, city.state.state].join(
-                      ", ",
-                    )}
-                  />
+                {streets.map(({ id, street }) => (
+                  <option key={id} value={[street].join(", ")} />
+                ))}
+              </datalist>
+            </div>
+          </div>
+          <div className="w-full md:w-3/12 px-3 mb-6">
+            <label className="label-form" htmlFor="neighborhoods_id">
+              Bairro
+            </label>
+            <div className="relative">
+              <input
+                list="neighborhoods_id"
+                type="search"
+                className={`input-form ${errors.neighborhoods_id && "invalid"}`}
+                placeholder="Pesquisar..."
+                {...register("neighborhoods_id", { required: true })}
+              />
+              {errors.neighborhoods_id && (
+                <small className="input-text-invalid">Campo obrigatório</small>
+              )}
+              <datalist id="neighborhoods_id">
+                {neighborhoods.map(({ id, district }) => (
+                  <option key={id} value={[district].join(", ")} />
+                ))}
+              </datalist>
+            </div>
+          </div>
+          <div className="w-full md:w-3/12 px-3 mb-6">
+            <label className="label-form" htmlFor="cities_id">
+              Cidade
+            </label>
+            <div className="relative">
+              <input
+                list="cities_id"
+                type="search"
+                className={`input-form ${errors.cities_id && "invalid"}`}
+                placeholder="Pesquisar..."
+                {...register("cities_id", { required: true })}
+              />
+              {errors.cities_id && (
+                <small className="input-text-invalid">Campo obrigatório</small>
+              )}
+              <datalist id="cities_id">
+                {cities.map(({ id, city, state }) => (
+                  <option key={id} value={[city, state.state].join("/")} />
                 ))}
               </datalist>
             </div>
           </div>
         </div>
       </form>
-    </>
+    </div>
   );
 }

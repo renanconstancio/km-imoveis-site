@@ -17,30 +17,38 @@ type Props = {
 };
 
 export default function Immobiles() {
+  const [loading, setLoading] = useState(true);
   const [immobles, setImmobles] = useState<Props[]>([]);
 
   useEffect(() => {
     (async () => {
-      api.get("/immobiles").then(async res => setImmobles(await res.data));
+      api
+        .get("/immobiles")
+        .then(async res => setImmobles(await res.data))
+        .finally(() => setLoading(false));
     })();
   }, []);
 
-  if (!immobles.length) return <Loading />;
+  if (loading) return <Loading />;
 
   return (
-    <div>
-      <ul>
-        <li>
-          <Link className="btn-primary" to="/adm/immobiles/new">
-            Criar
-          </Link>
+    <ul className="overflow-x-auto rounded-sm bg-white">
+      <li className="flex border-b py-3 px-6">
+        <Link className="btn-primary" to="/adm/immobiles/new">
+          Criar
+        </Link>
+      </li>
+      {!immobles.length && (
+        <li className="py-3 px-6 text-center">Nenhum imovel encontado</li>
+      )}
+      {immobles.map(items => (
+        <li
+          key={items.id}
+          className="py-3 px-6 flex flex-row flex-nowrap border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+        >
+          <span>{items.description}</span>
         </li>
-        {immobles.map(items => (
-          <li key={items.id}>
-            <span>{items.description}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
+      ))}
+    </ul>
   );
 }
