@@ -32,28 +32,40 @@ export default function Immobiles() {
   if (loading) return <Loading />;
 
   return (
-    <ul className="overflow-x-auto rounded-sm bg-white">
-      <li className="flex border-b py-3 px-6">
+    <ul className="overflow-x-auto rounded-sm bg-white p-5">
+      <li className="flex border-b pb-3 justify-end">
         <Link className="btn-success" to="/adm/immobiles/new">
-          Criar
+          <i className="fas fa-edit"></i> Criar
         </Link>
       </li>
-      {!immobles.length && (
-        <li className="py-3 px-6 text-center">Nenhum imovel encontado</li>
-      )}
+      <li className="list-orders uppercase font-play font-bold bg-gray-200">
+        <span>ações</span>
+        <span>descrição do imóvel</span>
+      </li>
+
       {immobles.map(rws => (
-        <li
-          key={rws.id}
-          className="py-3 px-6 flex flex-row flex-nowrap border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-        >
-          <span>
-            <Link className="btn-primary" to={`/adm/immobiles/${rws.id}/edit`}>
-              Editar
+        <li key={rws.id} className="list-orders">
+          <span className="flex gap-1">
+            <Link
+              className="btn-primary btn-xs"
+              to={`/adm/immobiles/${rws.id}/edit`}
+            >
+              <i className="fas fa-edit"></i>
+            </Link>
+            <Link
+              className="btn-danger btn-xs"
+              to={`/adm/immobiles/${rws.id}/edit`}
+            >
+              <i className="fas fa-trash"></i>
             </Link>
           </span>
           <span>{rws.description}</span>
         </li>
       ))}
+
+      {!immobles.length && (
+        <li className="py-3 px-6 text-center">Nenhum imovel encontado</li>
+      )}
     </ul>
   );
 }

@@ -13,6 +13,26 @@ export type PropsImmobles = {
   created_at: string;
   updated_at: string;
   deleted_at: string;
+  city?: {
+    id: string;
+    city: string;
+    state: {
+      id: string;
+      state: string;
+    };
+  };
+  street?: {
+    id: string;
+    street: string;
+  };
+  district?: {
+    id: string;
+    district: string;
+  };
+  category?: {
+    id: string;
+    category: string;
+  };
 };
 
 export type PropsCategories = {

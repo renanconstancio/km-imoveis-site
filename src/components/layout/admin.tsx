@@ -1,8 +1,12 @@
 import { NavLink, Outlet } from "react-router-dom";
+import { useAlert } from "../../hooks/use-alert";
+import { Alert } from "../alert";
 
 export default function Admin() {
   const classDefaultName = "p-5 hover:bg-gray-700";
   const activeClassName = "p-5 bg-gray-700";
+
+  const { alert } = useAlert();
 
   return (
     <div className="flex flex-1 h-screen bg-gray-100">
@@ -41,6 +45,7 @@ export default function Admin() {
         </NavLink>
       </nav>
       <main className="p-8 flex-1">
+        {alert.message && <Alert message={alert.message} title={alert.title} />}
         <Outlet />
       </main>
     </div>

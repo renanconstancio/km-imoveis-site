@@ -16,6 +16,8 @@ import {
   ModalCity,
 } from "../../components/modal";
 import { find } from "../../utils/fun";
+import { useAlert } from "../../hooks/use-alert";
+import { useModal } from "../../hooks/use-modal";
 
 export default function FormImmobles() {
   const [cities, setCities] = useState<PropsCities[]>([]);
@@ -23,10 +25,21 @@ export default function FormImmobles() {
   const [streets, setStreets] = useState<PropsStreets[]>([]);
   const [categories, setCategories] = useState<PropsCategories[]>([]);
 
-  const [categoryOpen, setCategoryOpen] = useState(false);
-  const [streetOpen, setStreetOpen] = useState(false);
-  const [districtOpen, setDistrictOpen] = useState(false);
-  const [cityOpen, setCityOpen] = useState(false);
+  const {
+    openCategory,
+    closeCategory,
+
+    openStreet,
+    closeStreet,
+
+    openNeighborhoods,
+    closeNeighborhoods,
+
+    openCity,
+    closeCity,
+  } = useModal();
+
+  const { changeAlert } = useAlert();
 
   const navigate = useNavigate();
 
@@ -40,12 +53,11 @@ export default function FormImmobles() {
   } = useForm<PropsImmobles>();
 
   async function onSubmit(data: PropsImmobles) {
-    const rwsStreet = find(streets, data.streets_id, "street"); //streets.find(item => item.street === data.streets_id);
-
-    const rwsCity = find(cities, data.cities_id, "cities_id");
-
+    const rwsCity = cities.find(
+      item => [item.city, item.state.state].join("/") === data.cities_id,
+    );
+    const rwsStreet = find(streets, data.streets_id, "street"); //;
     const rwsDistrict = find(neighborhoods, data.neighborhoods_id, "district");
-
     const rwsCategory = find(categories, data.categories_id, "category");
 
     const newPostData = {
@@ -57,14 +69,19 @@ export default function FormImmobles() {
       neighborhoods_id: rwsDistrict?.id,
       streets_id: rwsStreet?.id,
     };
-    console.log(newPostData);
 
     if (data.id)
       await api
         .put(`/immobiles/${immobleId}`, newPostData)
-        .then(async res => reset(await res.data))
+        .then(() =>
+          changeAlert({
+            message: "Dados salvos com sucesso.",
+          }),
+        )
         .catch(() =>
-          alert("Não foi possivel fazer um novo cadastro para o imovél."),
+          changeAlert({
+            message: "Não foi possivel fazer um novo cadastro para o imovél.",
+          }),
         );
     else
       await api
@@ -73,7 +90,9 @@ export default function FormImmobles() {
           navigate(-1);
         })
         .catch(() =>
-          alert("Não foi possivel fazer um novo cadastro para o imovél."),
+          changeAlert({
+            message: "Não foi possivel fazer um novo cadastro para o imovél.",
+          }),
         );
   }
 
@@ -105,44 +124,42 @@ export default function FormImmobles() {
     (async () => {
       if (!immobleId) return;
 
-      api.get(`/immobiles/${immobleId}`).then(async res => {
-        const immoble = await res.data;
+      api
+        .get(`/immobiles/${immobleId}`)
+        .then(async res => {
+          const immoble = (await res.data) as PropsImmobles;
 
-        const rwsStreet = find(streets, immoble.streets_id, "street");
-
-        const rwsCity = find(cities, immoble.cities_id, "cities_id");
-
-        const rwsDistrict = find(
-          neighborhoods,
-          immoble.neighborhoods_id,
-          "district",
+          reset({
+            ...immoble,
+            sale_price: 0,
+            rent_price: 0,
+            cities_id: [immoble.city?.city, immoble.city?.state.state].join(
+              "/",
+            ),
+            categories_id: immoble.category?.category,
+            neighborhoods_id: immoble?.district?.district,
+            streets_id: immoble.street?.street,
+          });
+        })
+        .catch(() =>
+          changeAlert({
+            message: "Não foi possivel conectar ao servidor.",
+          }),
         );
-
-        const rwsCategory = find(categories, immoble.categories_id, "category");
-
-        const newDataImmoble = {
-          ...immoble,
-          sale_price: 0,
-          rent_price: 0,
-          cities_id: rwsCity?.id,
-          categories_id: rwsCategory?.id,
-          neighborhoods_id: rwsDistrict?.id,
-          streets_id: rwsStreet?.id,
-        };
-        reset(newDataImmoble);
-      });
     })();
-  }, [immobleId, reset]);
+  }, [immobleId]);
 
   return (
     <>
       <div className="overflow-x-auto rounded-sm bg-white p-6">
         <div className="border-b pb-3 mb-5 flex gap-3">
-          <button className="btn-primary" type="submit" form="form">
-            Salvar
+          <button className="btn-primary btn-ico" type="submit" form="form">
+            <i className="fas fa-save"></i>
+            <span>Salvar</span>
           </button>
-          <Link className="btn-warning" to="/adm/immobiles">
-            Voltar
+          <Link className="btn-warning btn-ico" to="/adm/immobiles">
+            <i className="fas fa-undo"></i>
+            <span>Voltar</span>
           </Link>
         </div>
         <form className="w-full" id="form" onSubmit={handleSubmit(onSubmit)}>
@@ -236,7 +253,7 @@ export default function FormImmobles() {
                 />
                 <span
                   className="ml-3 btn-primary self-center text-lg cursor-pointer"
-                  onClick={() => setCategoryOpen(!categoryOpen)}
+                  onClick={() => closeCategory(!openCategory)}
                 >
                   <i className="fas fa-folder-open"></i>
                 </span>
@@ -251,7 +268,6 @@ export default function FormImmobles() {
               </datalist>
             </div>
           </div>
-
           <div className="flex flex-wrap -mx-3">
             <div className="w-full md:w-6/12 px-3 mb-6">
               <label className="label-form" htmlFor="streets_id">
@@ -267,7 +283,7 @@ export default function FormImmobles() {
                 />
                 <span
                   className="ml-3 btn-primary self-center text-lg cursor-pointer"
-                  onClick={() => setStreetOpen(!streetOpen)}
+                  onClick={() => closeStreet(!openStreet)}
                 >
                   <i className="fas fa-folder-open"></i>
                 </span>
@@ -298,7 +314,7 @@ export default function FormImmobles() {
                 />
                 <span
                   className="ml-3 btn-primary self-center text-lg cursor-pointer"
-                  onClick={() => setDistrictOpen(!districtOpen)}
+                  onClick={() => closeNeighborhoods(!openNeighborhoods)}
                 >
                   <i className="fas fa-folder-open"></i>
                 </span>
@@ -326,7 +342,7 @@ export default function FormImmobles() {
                 />
                 <span
                   className="ml-3 btn-primary self-center text-lg cursor-pointer"
-                  onClick={() => setCityOpen(!cityOpen)}
+                  onClick={() => closeCity(!openCity)}
                 >
                   <i className="fas fa-folder-open"></i>
                 </span>
@@ -343,10 +359,10 @@ export default function FormImmobles() {
           </div>
         </form>
       </div>
-      <ModalCategory isOpen={categoryOpen} addCategories={setCategories} />
-      <ModalStreet isOpen={streetOpen} addStreets={setStreets} />
-      <ModalDistrict isOpen={districtOpen} addDistricts={setNeighborhoods} />
-      <ModalCity isOpen={cityOpen} addCities={setCities} />
+      <ModalCategory addCategories={setCategories} />
+      <ModalStreet addStreets={setStreets} />
+      <ModalDistrict addDistricts={setNeighborhoods} />
+      <ModalCity addCities={setCities} />
     </>
   );
 }

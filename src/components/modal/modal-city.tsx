@@ -1,17 +1,17 @@
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
+import { useModal } from "../../hooks/use-modal";
 import { PropsCities } from "../../global/types/types";
 import { api } from "../../api/api";
 
 type PropsModal = {
-  isOpen: boolean;
-  addCities(data: any): void;
+  addCities: (data: any) => void;
 };
 
-export default function ModalCity({ isOpen, addCities }: PropsModal) {
+export default function ModalCity({ addCities }: PropsModal) {
   const [states, setSates] = useState([]);
   const [statesId, setSatesId] = useState();
-  const [modalIsOpen, setIsOpen] = useState(false);
+  const { openCity, closeCity } = useModal();
 
   const {
     register,
@@ -33,7 +33,7 @@ export default function ModalCity({ isOpen, addCities }: PropsModal) {
       .then(async res => {
         const cities = await res.data;
         addCities((old: any) => [...old, cities]);
-        setIsOpen(!modalIsOpen);
+        closeCity(!openCity);
       });
   }
 
@@ -44,20 +44,20 @@ export default function ModalCity({ isOpen, addCities }: PropsModal) {
   }, []);
 
   return (
-    <div className={`${modalIsOpen !== isOpen ? "" : "hidden"} modal`}>
+    <div className={`${openCity ? "" : "hidden"} modal`}>
       <div className="modal-content">
         <div className="modal-body">
           <button
             type="button"
             className="modal-close"
-            onClick={() => setIsOpen(!modalIsOpen)}
+            onClick={() => closeCity(!openCity)}
           >
             <i className="fas fa-times text-lg"></i>
             <span className="sr-only">Close modal</span>
           </button>
           <div className="py-6 px-6 lg:px-8">
             <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-white">
-              Cadatrar Bairros
+              Cadastrar Bairros
             </h3>
             <form
               className="flex flex-wrap -mx-3"

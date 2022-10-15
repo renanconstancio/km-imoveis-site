@@ -8,15 +8,13 @@ import ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 
 import { router } from "./routes";
+import { AlertProvider } from "./context/alert";
+import { ModalProvider } from "./context/modal";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <RouterProvider router={router} />,
+  <AlertProvider>
+    <ModalProvider>
+      <RouterProvider router={router} />
+    </ModalProvider>
+  </AlertProvider>,
 );
-
-// ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-//   <BrowserRouter>
-//     <Routes>
-//       <Route path="/" element={<App />} />
-//     </Routes>
-//   </BrowserRouter>,
-// );

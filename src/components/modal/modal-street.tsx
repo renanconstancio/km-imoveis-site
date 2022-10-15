@@ -1,15 +1,14 @@
 import { useForm } from "react-hook-form";
-import { useState } from "react";
 import { PropsStreet } from "../../global/types/types";
+import { useModal } from "../../hooks/use-modal";
 import { api } from "../../api/api";
 
 type PropsModal = {
-  isOpen: boolean;
-  addStreets(data: any): void;
+  addStreets: (data: any) => void;
 };
 
-export default function ModalStreet({ isOpen, addStreets }: PropsModal) {
-  const [modalIsOpen, setIsOpen] = useState(false);
+export default function ModalStreet({ addStreets }: PropsModal) {
+  const { openStreet, closeStreet } = useModal();
 
   const {
     register,
@@ -21,18 +20,18 @@ export default function ModalStreet({ isOpen, addStreets }: PropsModal) {
     await api.post(`/streets`, data).then(async res => {
       const category = await res.data;
       addStreets((old: any) => [...old, category]);
-      setIsOpen(!modalIsOpen);
+      closeStreet(!openStreet);
     });
   }
 
   return (
-    <div className={`${modalIsOpen !== isOpen ? "" : "hidden"} modal`}>
+    <div className={`${openStreet ? "" : "hidden"} modal`}>
       <div className="modal-content">
         <div className="modal-body">
           <button
             type="button"
             className="modal-close"
-            onClick={() => setIsOpen(!modalIsOpen)}
+            onClick={() => closeStreet(!openStreet)}
           >
             <i className="fas fa-times text-lg"></i>
             <span className="sr-only">Close modal</span>

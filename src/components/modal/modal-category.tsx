@@ -1,15 +1,14 @@
 import { useForm } from "react-hook-form";
-import { useState } from "react";
 import { PropsCategory } from "../../global/types/types";
+import { useModal } from "../../hooks/use-modal";
 import { api } from "../../api/api";
 
 type PropsModal = {
-  isOpen: boolean;
-  addCategories(data: any): void;
+  addCategories: (data: any) => void;
 };
 
-export default function ModalCategory({ isOpen, addCategories }: PropsModal) {
-  const [modalIsOpen, setIsOpen] = useState(false);
+export default function ModalCategory({ addCategories }: PropsModal) {
+  const { openCategory, closeCategory } = useModal();
 
   const {
     register,
@@ -21,18 +20,18 @@ export default function ModalCategory({ isOpen, addCategories }: PropsModal) {
     await api.post(`/categories`, data).then(async res => {
       const category = await res.data;
       addCategories((old: any) => [...old, category]);
-      setIsOpen(!modalIsOpen);
+      closeCategory(!openCategory);
     });
   }
 
   return (
-    <div className={`${modalIsOpen !== isOpen ? "" : "hidden"} modal`}>
+    <div className={`${openCategory ? "" : "hidden"} modal`}>
       <div className="modal-content">
         <div className="modal-body">
           <button
             type="button"
             className="modal-close"
-            onClick={() => setIsOpen(!modalIsOpen)}
+            onClick={() => closeCategory(!openCategory)}
           >
             <i className="fas fa-times text-lg"></i>
             <span className="sr-only">Close modal</span>
