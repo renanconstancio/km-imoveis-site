@@ -10,6 +10,7 @@ on:
     
 jobs:
   build:
+    name: Build Project local
     runs-on: ubuntu-latest
 
     strategy:
@@ -34,7 +35,7 @@ jobs:
           path: dist
 
   deploy:
-    name: Deploy
+    name: Deploy Project to Hosting
     needs: build
     runs-on: ubuntu-latest
     steps:
