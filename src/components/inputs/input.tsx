@@ -1,8 +1,8 @@
-type InputProps = {
+type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   label: string;
   labelName?: string;
   invalid?: boolean;
-} & React.InputHTMLAttributes<HTMLInputElement>;
+};
 
 export default function Input({
   label,

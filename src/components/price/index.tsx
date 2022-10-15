@@ -1,6 +1,6 @@
-type Props = {
+type Props = React.HTMLAttributes<HTMLSpanElement> & {
   price: string;
-} & React.HTMLAttributes<HTMLSpanElement>;
+};
 
 export function Price({ price, ...rest }: Props) {
   return (

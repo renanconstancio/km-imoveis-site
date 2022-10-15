@@ -1,6 +1,6 @@
-type Props = {
+type Props = React.HTMLAttributes<HTMLHeadElement> & {
   title: string;
-} & React.HTMLAttributes<HTMLHeadElement>;
+};
 
 export function H2({ title, ...rest }: Props) {
   return (

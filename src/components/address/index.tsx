@@ -1,6 +1,6 @@
-type Props = {
+type Props = React.HTMLAttributes<HTMLHeadElement> & {
   address: string;
-} & React.HTMLAttributes<HTMLHeadElement>;
+};
 
 export function Address({ address }: Props) {
   return (

@@ -4,13 +4,13 @@ import { Price } from "../price";
 import { H2 } from "../title";
 import { Link } from "react-router-dom";
 
-type PropsCard = {
+type PropsCard = React.HTMLAttributes<HTMLLIElement> & {
   title: string;
   address: string;
   price: string;
   tags: string[];
   images: string[];
-} & React.HTMLAttributes<HTMLLIElement>;
+};
 
 export function Card({ title, address, price, images, tags }: PropsCard) {
   return (
