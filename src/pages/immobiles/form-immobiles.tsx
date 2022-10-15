@@ -1,56 +1,31 @@
+import {
+  PropsCategories,
+  PropsCities,
+  PropsImmobles,
+  PropsNeighborhoods,
+  PropsStreets,
+} from "../../global/types/types";
+import { api } from "../../api/api";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { api } from "../../api/api";
-import { ModalCategory } from "../../components/modal";
-
-type PropsImmobles = {
-  id: string;
-  cities_id: string;
-  neighborhoods_id: string;
-  streets_id: string;
-  categories_id: string;
-  number: string;
-  description: string;
-  sale_price: number;
-  rent_price: number;
-  published: "yes" | "no";
-  situation: "leased" | "sold" | "available";
-  created_at: string;
-  updated_at: string;
-  deleted_at: string;
-};
-
-type PropsCategories = {
-  id: string;
-  category: string;
-  filter: string;
-};
-
-type PropsStreets = {
-  id: string;
-  street: string;
-  zip_code: string;
-};
-
-type PropsNeighborhoods = {
-  id: string;
-  district: string;
-};
-
-type PropsCities = {
-  id: string;
-  city: string;
-  state: {
-    state: string;
-  };
-};
+import {
+  ModalCategory,
+  ModalStreet,
+  ModalDistrict,
+  ModalCity,
+} from "../../components/modal";
 
 export default function FormImmobles() {
   const [cities, setCities] = useState<PropsCities[]>([]);
   const [neighborhoods, setNeighborhoods] = useState<PropsNeighborhoods[]>([]);
   const [streets, setStreets] = useState<PropsStreets[]>([]);
   const [categories, setCategories] = useState<PropsCategories[]>([]);
+
+  const [categoryOpen, setCategoryOpen] = useState(false);
+  const [streetOpen, setStreetOpen] = useState(false);
+  const [districtOpen, setDistrictOpen] = useState(false);
+  const [cityOpen, setCityOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -113,109 +88,113 @@ export default function FormImmobles() {
     })();
   }, [immobleId, reset]);
 
-  // if (immobiles.length) return <Loading />;
-
   return (
-    <div className="overflow-x-auto rounded-sm bg-white p-6">
-      <ModalCategory isOpen={true} />
-
-      <div className="border-b pb-3 mb-5 flex gap-3">
-        <button className="btn-primary" type="submit" form="form">
-          Salvar
-        </button>
-        <Link className="btn-warning" to="/adm/immobiles">
-          Voltar
-        </Link>
-      </div>
-      <form className="w-full" id="form" onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex flex-wrap -mx-3 mb-6">
-          <div className="w-full md:w-10/12 px-3">
-            <label className="label-form" htmlFor="description">
-              Descrição do Imovél
-            </label>
-            <input
-              type="text"
-              className={`input-form ${errors.description && "invalid"}`}
-              {...register("description", { required: true })}
-            />
-            {errors.description && (
-              <small className="input-text-invalid">Campo obrigatório</small>
-            )}
-          </div>
-          <div className="w-full md:w-2/12 px-3">
-            <label className="label-form" htmlFor="number">
-              Número
-            </label>
-            <input
-              type="text"
-              className="input-form"
-              {...register("number", { required: false })}
-            />
-          </div>
+    <>
+      <div className="overflow-x-auto rounded-sm bg-white p-6">
+        <div className="border-b pb-3 mb-5 flex gap-3">
+          <button className="btn-primary" type="submit" form="form">
+            Salvar
+          </button>
+          <Link className="btn-warning" to="/adm/immobiles">
+            Voltar
+          </Link>
         </div>
-        <div className="flex flex-wrap -mx-3">
-          <div className="w-full md:w-2/12 px-3">
-            <label className="label-form" htmlFor="sale_price">
-              Preço Venda
-            </label>
-            <input
-              type="text"
-              className="input-form"
-              {...register("sale_price", { required: false })}
-            />
-          </div>
-          <div className="w-full md:w-2/12 px-3">
-            <label className="label-form" htmlFor="rent_price">
-              Preço Aluguel
-            </label>
-            <input
-              type="text"
-              className="input-form"
-              {...register("rent_price", { required: false })}
-            />
-          </div>
-          <div className="w-full md:w-2/12 px-3 mb-6">
-            <label className="label-form" htmlFor="situation">
-              Situação
-            </label>
-            <div className="relative">
-              <select
-                className="input-form"
-                {...register("situation", { required: false })}
-              >
-                <option value="leased">Alugado</option>
-                <option value="sold">Vendido</option>
-                <option value="available">Disponível</option>
-              </select>
-            </div>
-          </div>
-          <div className="w-full md:w-2/12 px-3 mb-6">
-            <label className="label-form" htmlFor="published">
-              Web
-            </label>
-            <div className="relative">
-              <select
-                className="input-form"
-                defaultValue={"no"}
-                {...register("published", { required: false })}
-              >
-                <option value={"yes"}>Publicar</option>
-                <option value={"no"}>Congelar</option>
-              </select>
-            </div>
-          </div>
-          <div className="w-full md:w-4/12 px-3 mb-6">
-            <label className="label-form" htmlFor="categories_id">
-              Categoria
-            </label>
-            <div className="relative">
+        <form className="w-full" id="form" onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex flex-wrap -mx-3 mb-6">
+            <div className="w-full md:w-10/12 px-3">
+              <label className="label-form" htmlFor="description">
+                Descrição do Imóvel
+              </label>
               <input
-                list="categories_id"
-                type="search"
-                className={`input-form ${errors.categories_id && "invalid"}`}
-                placeholder="Pesquisar..."
-                {...register("categories_id", { required: true })}
+                type="text"
+                className={`input-form ${errors.description && "invalid"}`}
+                {...register("description", { required: true })}
               />
+              {errors.description && (
+                <small className="input-text-invalid">Campo obrigatório</small>
+              )}
+            </div>
+            <div className="w-full md:w-2/12 px-3">
+              <label className="label-form" htmlFor="number">
+                Número
+              </label>
+              <input
+                type="text"
+                className="input-form"
+                {...register("number", { required: false })}
+              />
+            </div>
+          </div>
+          <div className="flex flex-wrap -mx-3">
+            <div className="w-full md:w-2/12 px-3">
+              <label className="label-form" htmlFor="sale_price">
+                Preço Venda
+              </label>
+              <input
+                type="text"
+                className="input-form"
+                {...register("sale_price", { required: false })}
+              />
+            </div>
+            <div className="w-full md:w-2/12 px-3">
+              <label className="label-form" htmlFor="rent_price">
+                Preço Aluguel
+              </label>
+              <input
+                type="text"
+                className="input-form"
+                {...register("rent_price", { required: false })}
+              />
+            </div>
+            <div className="w-full md:w-2/12 px-3 mb-6">
+              <label className="label-form" htmlFor="situation">
+                Situação
+              </label>
+              <div className="relative">
+                <select
+                  className="input-form"
+                  {...register("situation", { required: false })}
+                >
+                  <option value="leased">Alugado</option>
+                  <option value="sold">Vendido</option>
+                  <option value="available">Disponível</option>
+                </select>
+              </div>
+            </div>
+            <div className="w-full md:w-2/12 px-3 mb-6">
+              <label className="label-form" htmlFor="published">
+                Web
+              </label>
+              <div className="relative">
+                <select
+                  className="input-form"
+                  defaultValue={"no"}
+                  {...register("published", { required: false })}
+                >
+                  <option value={"yes"}>Publicar</option>
+                  <option value={"no"}>Congelar</option>
+                </select>
+              </div>
+            </div>
+            <div className="w-full md:w-4/12 px-3 mb-6">
+              <label className="label-form" htmlFor="categories_id">
+                Categoria
+              </label>
+              <div className="flex">
+                <input
+                  list="categories_id"
+                  type="search"
+                  className={`input-form ${errors.categories_id && "invalid"}`}
+                  placeholder="Pesquisar..."
+                  {...register("categories_id", { required: true })}
+                />
+                <span
+                  className="ml-3 btn-primary self-center text-lg cursor-pointer"
+                  onClick={() => setCategoryOpen(!categoryOpen)}
+                >
+                  <i className="fas fa-folder-open"></i>
+                </span>
+              </div>
               {errors.categories_id && (
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
@@ -226,21 +205,27 @@ export default function FormImmobles() {
               </datalist>
             </div>
           </div>
-        </div>
 
-        <div className="flex flex-wrap -mx-3">
-          <div className="w-full md:w-6/12 px-3 mb-6">
-            <label className="label-form" htmlFor="streets_id">
-              Rua
-            </label>
-            <div className="relative">
-              <input
-                list="streets_id"
-                type="search"
-                className={`input-form ${errors.streets_id && "invalid"}`}
-                placeholder="Pesquisar..."
-                {...register("streets_id", { required: true })}
-              />
+          <div className="flex flex-wrap -mx-3">
+            <div className="w-full md:w-6/12 px-3 mb-6">
+              <label className="label-form" htmlFor="streets_id">
+                Rua
+              </label>
+              <div className="flex">
+                <input
+                  list="streets_id"
+                  type="search"
+                  className={`input-form ${errors.streets_id && "invalid"}`}
+                  placeholder="Pesquisar..."
+                  {...register("streets_id", { required: true })}
+                />
+                <span
+                  className="ml-3 btn-primary self-center text-lg cursor-pointer"
+                  onClick={() => setStreetOpen(!streetOpen)}
+                >
+                  <i className="fas fa-folder-open"></i>
+                </span>
+              </div>
               {errors.streets_id && (
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
@@ -250,19 +235,28 @@ export default function FormImmobles() {
                 ))}
               </datalist>
             </div>
-          </div>
-          <div className="w-full md:w-3/12 px-3 mb-6">
-            <label className="label-form" htmlFor="neighborhoods_id">
-              Bairro
-            </label>
-            <div className="relative">
-              <input
-                list="neighborhoods_id"
-                type="search"
-                className={`input-form ${errors.neighborhoods_id && "invalid"}`}
-                placeholder="Pesquisar..."
-                {...register("neighborhoods_id", { required: true })}
-              />
+
+            <div className="w-full md:w-4/12 px-3 mb-6">
+              <label className="label-form" htmlFor="neighborhoods_id">
+                Bairro
+              </label>
+              <div className="flex">
+                <input
+                  list="neighborhoods_id"
+                  type="search"
+                  className={`input-form ${
+                    errors.neighborhoods_id && "invalid"
+                  }`}
+                  placeholder="Pesquisar..."
+                  {...register("neighborhoods_id", { required: true })}
+                />
+                <span
+                  className="ml-3 btn-primary self-center text-lg cursor-pointer"
+                  onClick={() => setDistrictOpen(!districtOpen)}
+                >
+                  <i className="fas fa-folder-open"></i>
+                </span>
+              </div>
               {errors.neighborhoods_id && (
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
@@ -272,19 +266,25 @@ export default function FormImmobles() {
                 ))}
               </datalist>
             </div>
-          </div>
-          <div className="w-full md:w-3/12 px-3 mb-6">
-            <label className="label-form" htmlFor="cities_id">
-              Cidade
-            </label>
-            <div className="relative">
-              <input
-                list="cities_id"
-                type="search"
-                className={`input-form ${errors.cities_id && "invalid"}`}
-                placeholder="Pesquisar..."
-                {...register("cities_id", { required: true })}
-              />
+            <div className="w-full md:w-4/12 px-3 mb-6">
+              <label className="label-form" htmlFor="cities_id">
+                Cidade
+              </label>
+              <div className="flex">
+                <input
+                  list="cities_id"
+                  type="search"
+                  className={`input-form ${errors.cities_id && "invalid"}`}
+                  placeholder="Pesquisar..."
+                  {...register("cities_id", { required: true })}
+                />
+                <span
+                  className="ml-3 btn-primary self-center text-lg cursor-pointer"
+                  onClick={() => setCityOpen(!cityOpen)}
+                >
+                  <i className="fas fa-folder-open"></i>
+                </span>
+              </div>
               {errors.cities_id && (
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
@@ -295,8 +295,12 @@ export default function FormImmobles() {
               </datalist>
             </div>
           </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
+      <ModalCategory isOpen={categoryOpen} addCategories={setCategories} />
+      <ModalStreet isOpen={streetOpen} addStreets={setStreets} />
+      <ModalDistrict isOpen={districtOpen} addDistricts={setNeighborhoods} />
+      <ModalCity isOpen={cityOpen} addCities={setCities} />
+    </>
   );
 }
