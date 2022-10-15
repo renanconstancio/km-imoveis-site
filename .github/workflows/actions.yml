@@ -33,6 +33,8 @@ jobs:
         with: 
           name: build
           path: dist
+        env:
+          VITE_REACT_TITLE: ${{ secrets.VITE_REACT_TITLE }}
 
   deploy:
     name: Deploy Project to Hosting
