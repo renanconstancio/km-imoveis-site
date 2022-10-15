@@ -29,6 +29,7 @@ jobs:
           yarn
           yarn build
         env:
+          VITE_API_HOST: ${{ secrets.VITE_API_HOST }}
           VITE_REACT_TITLE: ${{ secrets.VITE_REACT_TITLE }}
       - name: Archive Build
         uses: actions/upload-artifact@v2
