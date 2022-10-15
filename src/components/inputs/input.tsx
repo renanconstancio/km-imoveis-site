@@ -2,7 +2,7 @@ type InputProps = {
   label: string;
   labelName?: string;
   invalid?: boolean;
-};
+} & React.InputHTMLAttributes<HTMLInputElement>;
 
 export default function Input({
   label,
