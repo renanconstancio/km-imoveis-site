@@ -20,7 +20,7 @@ export default function ModalDistrict({ isOpen, addDistricts }: PropsModal) {
   async function onSubmit(data: PropsDistrict) {
     await api.post(`/districts`, data).then(async res => {
       const category = await res.data;
-      addDistricts((oldState: any) => [...oldState, category]);
+      addDistricts((old: any) => [...old, category]);
       setIsOpen(!modalIsOpen);
     });
   }

@@ -32,7 +32,7 @@ export default function ModalCity({ isOpen, addCities }: PropsModal) {
       .post(`/cities`, { city: data.city, states_id: statesId })
       .then(async res => {
         const cities = await res.data;
-        // addCities((oldState: any) => [...oldState, cities]);
+        addCities((old: any) => [...old, cities]);
         setIsOpen(!modalIsOpen);
       });
   }

@@ -20,7 +20,7 @@ export default function ModalStreet({ isOpen, addStreets }: PropsModal) {
   async function onSubmit(data: PropsStreet) {
     await api.post(`/streets`, data).then(async res => {
       const category = await res.data;
-      addStreets((oldState: any) => [...oldState, category]);
+      addStreets((old: any) => [...old, category]);
       setIsOpen(!modalIsOpen);
     });
   }

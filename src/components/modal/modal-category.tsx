@@ -20,7 +20,7 @@ export default function ModalCategory({ isOpen, addCategories }: PropsModal) {
   async function onSubmit(data: PropsCategory) {
     await api.post(`/categories`, data).then(async res => {
       const category = await res.data;
-      addCategories((oldState: any) => [...oldState, category]);
+      addCategories((old: any) => [...old, category]);
       setIsOpen(!modalIsOpen);
     });
   }
