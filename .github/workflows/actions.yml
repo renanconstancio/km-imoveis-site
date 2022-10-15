@@ -28,13 +28,13 @@ jobs:
         run: |
           yarn
           yarn build
+        env:
+          VITE_REACT_TITLE: ${{ secrets.VITE_REACT_TITLE }}
       - name: Archive Build
         uses: actions/upload-artifact@v2
         with: 
           name: build
           path: dist
-        env:
-          VITE_REACT_TITLE: ${{ secrets.VITE_REACT_TITLE }}
 
   deploy:
     name: Deploy Project to Hosting
