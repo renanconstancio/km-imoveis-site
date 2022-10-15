@@ -15,6 +15,7 @@ import {
   ModalDistrict,
   ModalCity,
 } from "../../components/modal";
+import { find } from "../../utils/fun";
 
 export default function FormImmobles() {
   const [cities, setCities] = useState<PropsCities[]>([]);
@@ -29,7 +30,7 @@ export default function FormImmobles() {
 
   const navigate = useNavigate();
 
-  const { immobleId } = useParams();
+  const { immobleId } = useParams<{ immobleId: string | undefined }>();
 
   const {
     reset,
@@ -39,20 +40,41 @@ export default function FormImmobles() {
   } = useForm<PropsImmobles>();
 
   async function onSubmit(data: PropsImmobles) {
-    console.log(data);
-    const streets_id = streets.find(
-      item => [item.street, item.zip_code].join(", ") === data.streets_id,
-    );
+    const rwsStreet = find(streets, data.streets_id, "street"); //streets.find(item => item.street === data.streets_id);
+
+    const rwsCity = find(cities, data.cities_id, "cities_id");
+
+    const rwsDistrict = find(neighborhoods, data.neighborhoods_id, "district");
+
+    const rwsCategory = find(categories, data.categories_id, "category");
+
+    const newPostData = {
+      ...data,
+      sale_price: 0,
+      rent_price: 0,
+      cities_id: rwsCity?.id,
+      categories_id: rwsCategory?.id,
+      neighborhoods_id: rwsDistrict?.id,
+      streets_id: rwsStreet?.id,
+    };
+    console.log(newPostData);
 
     if (data.id)
       await api
-        .put(`/immobiles/${immobleId}`, { data, ...streets_id })
-        .then(async res => reset(await res.data));
+        .put(`/immobiles/${immobleId}`, newPostData)
+        .then(async res => reset(await res.data))
+        .catch(() =>
+          alert("Não foi possivel fazer um novo cadastro para o imovél."),
+        );
     else
-      await api.post(`/immobiles`, { data, ...streets_id }).then(async res => {
-        const { id } = await res.data;
-        navigate(`/adm/immobiles/${id}/edit`);
-      });
+      await api
+        .post(`/immobiles`, newPostData)
+        .then(async res => {
+          navigate(-1);
+        })
+        .catch(() =>
+          alert("Não foi possivel fazer um novo cadastro para o imovél."),
+        );
   }
 
   useEffect(() => {
@@ -81,10 +103,34 @@ export default function FormImmobles() {
 
   useEffect(() => {
     (async () => {
-      if (immobleId)
-        api
-          .get(`/immobiles/${immobleId}`)
-          .then(async res => reset(await res.data));
+      if (!immobleId) return;
+
+      api.get(`/immobiles/${immobleId}`).then(async res => {
+        const immoble = await res.data;
+
+        const rwsStreet = find(streets, immoble.streets_id, "street");
+
+        const rwsCity = find(cities, immoble.cities_id, "cities_id");
+
+        const rwsDistrict = find(
+          neighborhoods,
+          immoble.neighborhoods_id,
+          "district",
+        );
+
+        const rwsCategory = find(categories, immoble.categories_id, "category");
+
+        const newDataImmoble = {
+          ...immoble,
+          sale_price: 0,
+          rent_price: 0,
+          cities_id: rwsCity?.id,
+          categories_id: rwsCategory?.id,
+          neighborhoods_id: rwsDistrict?.id,
+          streets_id: rwsStreet?.id,
+        };
+        reset(newDataImmoble);
+      });
     })();
   }, [immobleId, reset]);
 
@@ -231,7 +277,7 @@ export default function FormImmobles() {
               )}
               <datalist id="streets_id">
                 {streets.map(({ id, street }) => (
-                  <option key={id} value={[street].join(", ")} />
+                  <option key={id} value={street} />
                 ))}
               </datalist>
             </div>

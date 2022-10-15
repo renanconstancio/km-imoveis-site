@@ -34,19 +34,24 @@ export default function Immobiles() {
   return (
     <ul className="overflow-x-auto rounded-sm bg-white">
       <li className="flex border-b py-3 px-6">
-        <Link className="btn-primary" to="/adm/immobiles/new">
+        <Link className="btn-success" to="/adm/immobiles/new">
           Criar
         </Link>
       </li>
       {!immobles.length && (
         <li className="py-3 px-6 text-center">Nenhum imovel encontado</li>
       )}
-      {immobles.map(items => (
+      {immobles.map(rws => (
         <li
-          key={items.id}
+          key={rws.id}
           className="py-3 px-6 flex flex-row flex-nowrap border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
         >
-          <span>{items.description}</span>
+          <span>
+            <Link className="btn-primary" to={`/adm/immobiles/${rws.id}/edit`}>
+              Editar
+            </Link>
+          </span>
+          <span>{rws.description}</span>
         </li>
       ))}
     </ul>

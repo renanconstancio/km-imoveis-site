@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
 import { api, apiListOfHouses } from "../../api/api";
-import { Card } from "../../components/card";
+import { useEffect, useState } from "react";
 import { CarouselIndex } from "../../components/carousel";
-import { price } from "../../utils/price";
+import { Card } from "../../components/card";
+import { price } from "../../utils/fun";
 
 type PropsListOfHouseImage = {
   image: string;
