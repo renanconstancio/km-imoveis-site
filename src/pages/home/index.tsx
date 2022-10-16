@@ -126,11 +126,11 @@ export function Home() {
         </ul>
 
         <div className="container text-2xl uppercase font-play font-bold mb-7">
-          {listOfHouses.length} encotrado(s)
+          {listOfHouses?.length} encotrado(s)
         </div>
 
         <ul className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
-          {listOfHouses.map((item, k) => (
+          {listOfHouses?.map((item, k) => (
             <Card
               key={k}
               title={item.title}
