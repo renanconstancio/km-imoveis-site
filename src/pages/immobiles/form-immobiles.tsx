@@ -5,19 +5,41 @@ import {
   PropsNeighborhoods,
   PropsStreets,
 } from "../../global/types/types";
-import { api } from "../../api/api";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
 import {
   ModalCategory,
   ModalStreet,
   ModalDistrict,
   ModalCity,
 } from "../../components/modal";
-import { find } from "../../utils/fun";
+import { api } from "../../api/api";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
 import { useAlert } from "../../hooks/use-alert";
 import { useModal } from "../../hooks/use-modal";
+import { find } from "../../utils/fun";
+import ModalPhoto from "../../components/modal/modal-photos";
+
+const tags = [
+  "banheiro",
+  "2 banheiro",
+  "3 banheiro",
+  "quarto",
+  "2 quarto",
+  "3 quarto",
+  "4 quarto",
+  "sala",
+  "copa",
+  "cozinha",
+  "sala de star",
+  "1 suite",
+  "ventilador",
+  "ar condicionado",
+  "caragem",
+  "caragem 2 carros",
+  "caragem 3 carros",
+  "caragem 4 carros",
+];
 
 export default function FormImmobles() {
   const [cities, setCities] = useState<PropsCities[]>([]);
@@ -28,15 +50,14 @@ export default function FormImmobles() {
   const {
     openCategory,
     closeCategory,
-
     openStreet,
     closeStreet,
-
     openNeighborhoods,
     closeNeighborhoods,
-
     openCity,
     closeCity,
+    openPhoto,
+    closePhoto,
   } = useModal();
 
   const { changeAlert } = useAlert();
@@ -153,10 +174,19 @@ export default function FormImmobles() {
     <>
       <div className="overflow-x-auto rounded-sm bg-white p-6">
         <div className="border-b pb-3 mb-5 flex gap-3">
-          <button className="btn-primary btn-ico" type="submit" form="form">
+          <button className="btn-success btn-ico" type="submit" form="form">
             <i className="fas fa-save"></i>
             <span>Salvar</span>
           </button>
+          <button
+            className="btn-primary btn-ico"
+            type="button"
+            onClick={() => closePhoto(!openPhoto)}
+          >
+            <i className="fas fa-image"></i>
+            <span>Fotos</span>
+          </button>
+
           <Link className="btn-warning btn-ico" to="/adm/immobiles">
             <i className="fas fa-undo"></i>
             <span>Voltar</span>
@@ -164,7 +194,20 @@ export default function FormImmobles() {
         </div>
         <form className="w-full" id="form" onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full md:w-10/12 px-3">
+            <div className="w-full md:w-3/12 px-3">
+              <label className="label-form" htmlFor="reference">
+                CÓD.
+              </label>
+              <input
+                type="text"
+                className={`input-form ${errors.reference && "invalid"}`}
+                {...register("reference", { required: true })}
+              />
+              {errors.reference && (
+                <small className="input-text-invalid">Campo obrigatório</small>
+              )}
+            </div>
+            <div className="w-full md:w-9/12 px-3">
               <label className="label-form" htmlFor="description">
                 Descrição do Imóvel
               </label>
@@ -177,18 +220,34 @@ export default function FormImmobles() {
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
             </div>
-            <div className="w-full md:w-2/12 px-3">
-              <label className="label-form" htmlFor="number">
-                Número
+          </div>
+          <div className="flex flex-wrap -mx-3">
+            <div className="w-full md:w-3/12 px-3">
+              <label className="label-form" htmlFor="building_area">
+                Área de Construção (m²)
               </label>
               <input
                 type="text"
-                className="input-form"
-                {...register("number", { required: false })}
+                className={`input-form ${errors.building_area && "invalid"}`}
+                {...register("building_area", { required: false })}
               />
+              {errors.building_area && (
+                <small className="input-text-invalid">Campo obrigatório</small>
+              )}
             </div>
-          </div>
-          <div className="flex flex-wrap -mx-3">
+            <div className="w-full md:w-3/12 px-3">
+              <label className="label-form" htmlFor="terrain_area">
+                Área Terrea (m²)
+              </label>
+              <input
+                type="text"
+                className={`input-form ${errors.terrain_area && "invalid"}`}
+                {...register("terrain_area", { required: false })}
+              />
+              {errors.terrain_area && (
+                <small className="input-text-invalid">Campo obrigatório</small>
+              )}
+            </div>
             <div className="w-full md:w-2/12 px-3">
               <label className="label-form" htmlFor="sale_price">
                 Preço Venda
@@ -199,6 +258,7 @@ export default function FormImmobles() {
                 {...register("sale_price", { required: false })}
               />
             </div>
+
             <div className="w-full md:w-2/12 px-3">
               <label className="label-form" htmlFor="rent_price">
                 Preço Aluguel
@@ -267,8 +327,8 @@ export default function FormImmobles() {
                 ))}
               </datalist>
             </div>
-          </div>
-          <div className="flex flex-wrap -mx-3">
+            {/* </div>
+          <div className="flex flex-wrap -mx-3"> */}
             <div className="w-full md:w-6/12 px-3 mb-6">
               <label className="label-form" htmlFor="streets_id">
                 Rua
@@ -296,6 +356,19 @@ export default function FormImmobles() {
                   <option key={id} value={street} />
                 ))}
               </datalist>
+            </div>
+            <div className="w-full md:w-2/12 px-3">
+              <label className="label-form" htmlFor="number">
+                Número Casa
+              </label>
+              <input
+                type="text"
+                className={`input-form ${errors.number && "invalid"}`}
+                {...register("number", { required: false })}
+              />
+              {errors.number && (
+                <small className="input-text-invalid">Campo obrigatório</small>
+              )}
             </div>
 
             <div className="w-full md:w-4/12 px-3 mb-6">
@@ -356,6 +429,17 @@ export default function FormImmobles() {
                 ))}
               </datalist>
             </div>
+            {/* <div className="w-full md:w-8/12 px-3 mb-6">
+              <label className="label-form" htmlFor="tags">
+                Tags
+              </label>
+              <input list="tags" type="text" className="input-form" multiple />
+              <datalist id="tags">
+                {tags.map((tag, i) => (
+                  <option key={i} value={tag} />
+                ))}
+              </datalist>
+            </div> */}
           </div>
         </form>
       </div>
@@ -363,6 +447,7 @@ export default function FormImmobles() {
       <ModalStreet addStreets={setStreets} />
       <ModalDistrict addDistricts={setNeighborhoods} />
       <ModalCity addCities={setCities} />
+      <ModalPhoto immobleId={immobleId} />
     </>
   );
 }
