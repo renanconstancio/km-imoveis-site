@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import { Helmet, HelmetProvider } from "react-helmet-async";
+import { Helmet } from "react-helmet-async";
 
 import { Admin, Site } from "../components/layout";
 import { FormImmobiles, Immobiles } from "../pages/immobiles";
@@ -21,11 +21,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "adm",
-    element: (
-      <HelmetProvider>
-        <Admin />
-      </HelmetProvider>
-    ),
+    element: <Admin />,
     errorElement: <Error />,
     children: [
       {

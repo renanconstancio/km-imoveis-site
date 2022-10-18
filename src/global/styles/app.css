@@ -8,19 +8,19 @@
   }
 
   .btn-default {
-    @apply bg-gray-200 hover:bg-gray-400 text-white font-semibold py-2 px-4 rounded uppercase font-play;
+    @apply bg-gray-200 hover:bg-gray-400 text-white font-semibold py-3 px-4 rounded-none uppercase font-play;
   }
   .btn-primary {
-    @apply bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded uppercase font-play;
+    @apply bg-blue-500 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-none uppercase font-play;
   }
   .btn-success {
-    @apply bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded uppercase font-play;
+    @apply bg-green-500 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-none uppercase font-play;
   }
   .btn-warning {
-    @apply bg-yellow-500 hover:bg-yellow-700 text-white font-semibold py-2 px-4 rounded uppercase font-play;
+    @apply bg-yellow-500 hover:bg-yellow-700 text-white font-semibold py-3 px-4 rounded-none uppercase font-play;
   }
   .btn-danger {
-    @apply bg-red-500 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded uppercase font-play;
+    @apply bg-red-500 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-none uppercase font-play;
   }
   .btn-xs {
     @apply py-1.5 px-2.5 text-sm
@@ -36,14 +36,14 @@
   .input-file {
     @apply block w-full text-sm text-slate-500
     file:mr-4 file:py-2 file:px-4
-    file:rounded-full file:border-0
+    file:rounded-none file:border-0
     file:text-sm file:font-semibold
     file:bg-orange-50 file:text-orange-700
     hover:file:bg-orange-100
   }
 
   .input-form {
-    @apply appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500;
+    @apply appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded-none py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500;
   }
 
   .input-form.invalid {
@@ -67,7 +67,7 @@
   }
 
   .modal-close {
-    @apply absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg p-1.5 ml-auto dark:hover:bg-gray-800 dark:hover:text-white w-9 text-center;
+    @apply absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-none p-1.5 ml-auto dark:hover:bg-gray-800 dark:hover:text-white w-9 text-center;
   }
 
   .list-orders {

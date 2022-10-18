@@ -1,5 +1,7 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { useAlert } from "../../hooks/use-alert";
+import { useAuth } from "../../hooks/use-auth";
+import { Login } from "../../pages/login";
 import { Alert } from "../alert";
 
 export default function Admin() {
@@ -7,8 +9,17 @@ export default function Admin() {
   const activeClassName = "p-5 bg-gray-700";
 
   const { alert } = useAlert();
+  const { auth } = useAuth();
 
-  return (
+  // useEffect(() => {
+
+  // }, [user]);
+
+  console.log(auth);
+
+  return !auth?.id ? (
+    <Login />
+  ) : (
     <div className="flex flex-1 h-screen bg-gray-100">
       <nav className="w-1/5 pl-5 py-5 h-screen bg-gray-800 text-white font-play flex flex-col">
         <NavLink

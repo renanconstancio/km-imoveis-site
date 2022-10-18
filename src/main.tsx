@@ -6,15 +6,21 @@ import "./global/styles/app.css";
 
 import ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 
 import { router } from "./routes";
 import { AlertProvider } from "./context/alert";
 import { ModalProvider } from "./context/modal";
+import { AuthProvider } from "./context/auth";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <AlertProvider>
-    <ModalProvider>
-      <RouterProvider router={router} />
-    </ModalProvider>
-  </AlertProvider>,
+  <AuthProvider>
+    <AlertProvider>
+      <ModalProvider>
+        <HelmetProvider>
+          <RouterProvider router={router} />
+        </HelmetProvider>
+      </ModalProvider>
+    </AlertProvider>
+  </AuthProvider>,
 );
