@@ -9,7 +9,7 @@ export default function Admin() {
   const activeClassName = "p-5 bg-gray-700";
 
   const { alert } = useAlert();
-  const { auth } = useAuth();
+  const { auth, logout } = useAuth();
 
   // useEffect(() => {
 
@@ -54,6 +54,9 @@ export default function Admin() {
         >
           <i className="far fa-star"></i> Estados
         </NavLink>
+        <span className="cursor-pointer" onClick={logout}>
+          <i className="fas fa-sign-out-alt"></i> Sair
+        </span>
       </nav>
       <main className="p-8 flex-1">
         {alert.message && <Alert message={alert.message} title={alert.title} />}
