@@ -1,7 +1,7 @@
 import { useAuth } from "../../hooks/use-auth";
 
 import bgLogin from "../../assets/0cuf0u.jpg";
-import bgLogo from "../../assets/logo.jpg";
+import bgLogo from "../../assets/logo.svg";
 
 export function Login() {
   const { login } = useAuth();
@@ -22,7 +22,7 @@ export function Login() {
       style={{ backgroundImage: `url(${bgLogin})` }}
     >
       <div className="container px-6 py-12 h-full">
-        <div className="flex justify-center items-center flex-wrap h-full g-6 text-gray-800 bg-white/70">
+        <div className="flex justify-center items-center flex-wrap h-full g-6 p-10 text-gray-800 bg-white/70">
           <div className="md:w-8/12 lg:w-6/12 mb-12 md:mb-0">
             <img src={bgLogo} className="w-full" alt="Phone image" />
           </div>

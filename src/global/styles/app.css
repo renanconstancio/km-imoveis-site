@@ -8,19 +8,19 @@
   }
 
   .btn-default {
-    @apply bg-gray-200 hover:bg-gray-400 text-white font-semibold py-3 px-4 rounded-none border border-gray-200 uppercase font-play;
+    @apply bg-gray-200 hover:bg-gray-400 text-white font-semibold py-2 px-4 rounded-none border border-gray-200 uppercase font-play;
   }
   .btn-primary {
-    @apply bg-blue-500 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-none border border-blue-500 uppercase font-play;
+    @apply bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-none border border-blue-500 uppercase font-play;
   }
   .btn-success {
-    @apply bg-green-500 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-none border border-green-500 uppercase font-play;
+    @apply bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-none border border-green-500 uppercase font-play;
   }
   .btn-warning {
-    @apply bg-yellow-500 hover:bg-yellow-700 text-white font-semibold py-3 px-4 rounded-none border border-yellow-500 uppercase font-play;
+    @apply bg-yellow-500 hover:bg-yellow-700 text-white font-semibold py-2 px-4 rounded-none border border-yellow-500 uppercase font-play;
   }
   .btn-danger {
-    @apply bg-red-500 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-none border border-red-500 uppercase font-play;
+    @apply bg-red-500 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-none border border-red-500 uppercase font-play;
   }
   .btn-xs {
     @apply py-1.5 px-2.5 text-sm
