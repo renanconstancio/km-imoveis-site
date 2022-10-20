@@ -73,10 +73,8 @@ export default function ModalPhoto({ immobleId }: PropsModal) {
                   <div key={item.id} className="w-full md:w-4/12 p-4">
                     <img
                       className="object-cover"
-                      src={`${import.meta.env.VITE_API_HOST_IMAGE}/${
-                        item.image
-                      }`}
-                      alt={item.image}
+                      src={item.image_xs}
+                      alt={item.image_xs}
                     />
                   </div>
                 ))}

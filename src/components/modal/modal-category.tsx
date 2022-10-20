@@ -17,11 +17,16 @@ export default function ModalCategory({ addCategories }: PropsModal) {
   } = useForm<PropsCategory>();
 
   async function onSubmit(data: PropsCategory) {
-    await api.post(`/categories`, data).then(async res => {
-      const category = await res.data;
-      addCategories((old: any) => [...old, category]);
-      closeCategory(!openCategory);
-    });
+    await api
+      .post(`/categories`, {
+        ...data,
+        filter: data.filter === "yes" ? true : false,
+      })
+      .then(async res => {
+        const category = await res.data;
+        addCategories((old: PropsCategory[]) => [...old, category]);
+        closeCategory(!openCategory);
+      });
   }
 
   return (

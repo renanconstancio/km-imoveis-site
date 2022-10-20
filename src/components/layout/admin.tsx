@@ -20,8 +20,8 @@ export default function Admin() {
   return !auth?.id ? (
     <Login />
   ) : (
-    <div className="flex flex-1 h-screen bg-gray-100">
-      <nav className="w-1/5 pl-5 py-5 h-screen bg-gray-800 text-white font-play flex flex-col">
+    <div className="flex flex-1 h-screen bg-gray-100 overflow-hidden">
+      <nav className="w-1/5 pl-5 py-5 h-screen bg-gray-800 text-white font-play flex flex-col fixed inset-0">
         <NavLink
           to="/adm/immobiles"
           className={({ isActive }) =>
@@ -58,7 +58,7 @@ export default function Admin() {
           <i className="fas fa-sign-out-alt"></i> Sair
         </span>
       </nav>
-      <main className="p-8 flex-1">
+      <main className="p-8 w-4/5 overflow-y-auto ml-[20%]">
         {alert.message && <Alert message={alert.message} title={alert.title} />}
         <Outlet />
       </main>

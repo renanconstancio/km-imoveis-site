@@ -1,6 +1,7 @@
 export type PropsPhoto = {
   updated_at: string;
-  image: string;
+  image_xs: string;
+  image_lg: string;
   id: string;
 };
 
@@ -44,6 +45,13 @@ export type PropsImmobles = {
     category: string;
   };
   photos?: PropsPhoto[];
+};
+
+export type PropsImmobilePagination = {
+  limit: number;
+  page: number;
+  total: number;
+  data: PropsImmobles[];
 };
 
 export type PropsCategories = {
@@ -91,7 +99,7 @@ export type PropsCities = {
 export type PropsCategory = {
   id: string;
   category: string;
-  filter: string;
+  filter: "yes" | "no";
   created_at: string;
   updated_at: string;
   deleted_at: string;

@@ -5,20 +5,25 @@ module.exports = {
     container: {
       center: true,
       screens: {
-        tablet: "640px",
         // => @media (min-width: 640px) { ... }
-
-        laptop: "1024px",
+        tablet: "640px",
         // => @media (min-width: 1024px) { ... }
-
-        desktop: "1140px",
+        laptop: "1024px",
         // => @media (min-width: 1140px) { ... }
+        desktop: "1140px",
       },
     },
     fontFamily: {
       lato: ["Lato", "sans-serif"],
       play: ["Play", "sans-serif"],
       body: ["Lato", "sans-serif"],
+    },
+    extend: {
+      colors: {
+        "km-red": "#d31931",
+        "km-blue": "#3c92d3",
+        "km-orange": "#fa9906",
+      },
     },
   },
   // plugins: [require("@tailwindcss/forms")],

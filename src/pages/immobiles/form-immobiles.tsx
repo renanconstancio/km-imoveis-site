@@ -77,12 +77,13 @@ export default function FormImmobles() {
     const rwsCity = cities.find(
       item => [item.city, item.state.state].join("/") === data.cities_id,
     );
-    const rwsStreet = find(streets, data.streets_id, "street"); //;
+    const rwsStreet = find(streets, data.streets_id, "street");
     const rwsDistrict = find(neighborhoods, data.neighborhoods_id, "district");
     const rwsCategory = find(categories, data.categories_id, "category");
 
     const newPostData = {
       ...data,
+      published: data.published === "yes" ? true : false,
       sale_price: 0,
       rent_price: 0,
       cities_id: rwsCity?.id,
@@ -178,15 +179,16 @@ export default function FormImmobles() {
             <i className="fas fa-save"></i>
             <span>Salvar</span>
           </button>
-          <button
-            className="btn-primary btn-ico"
-            type="button"
-            onClick={() => closePhoto(!openPhoto)}
-          >
-            <i className="fas fa-image"></i>
-            <span>Fotos</span>
-          </button>
-
+          {immobleId && (
+            <button
+              className="btn-primary btn-ico"
+              type="button"
+              onClick={() => closePhoto(!openPhoto)}
+            >
+              <i className="fas fa-image"></i>
+              <span>Fotos</span>
+            </button>
+          )}
           <Link className="btn-warning btn-ico" to="/adm/immobiles">
             <i className="fas fa-undo"></i>
             <span>Voltar</span>
@@ -194,7 +196,7 @@ export default function FormImmobles() {
         </div>
         <form className="w-full" id="form" onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full md:w-3/12 px-3">
+            <div className="w-full md:w-2/12 px-3">
               <label className="label-form" htmlFor="reference">
                 CÓD.
               </label>
@@ -207,7 +209,7 @@ export default function FormImmobles() {
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
             </div>
-            <div className="w-full md:w-9/12 px-3">
+            <div className="w-full md:w-6/12 px-3">
               <label className="label-form" htmlFor="description">
                 Descrição do Imóvel
               </label>
@@ -217,6 +219,19 @@ export default function FormImmobles() {
                 {...register("description", { required: true })}
               />
               {errors.description && (
+                <small className="input-text-invalid">Campo obrigatório</small>
+              )}
+            </div>
+            <div className="w-full md:w-4/12 px-3">
+              <label className="label-form" htmlFor="pickup">
+                Captador
+              </label>
+              <input
+                type="text"
+                className={`input-form ${errors.pickup && "invalid"}`}
+                {...register("pickup", { required: false })}
+              />
+              {errors.pickup && (
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
             </div>
@@ -304,15 +319,19 @@ export default function FormImmobles() {
                 Categoria
               </label>
               <div className="flex">
-                <input
-                  list="categories_id"
-                  type="search"
-                  className={`input-form ${errors.categories_id && "invalid"}`}
-                  placeholder="Pesquisar..."
-                  {...register("categories_id", { required: true })}
-                />
+                <span className="flex-1">
+                  <input
+                    list="categories_id"
+                    type="search"
+                    className={`input-form ${
+                      errors.categories_id && "invalid"
+                    }`}
+                    placeholder="Pesquisar..."
+                    {...register("categories_id", { required: true })}
+                  />
+                </span>
                 <span
-                  className="ml-3 btn-primary self-center text-lg cursor-pointer"
+                  className="ml-3 btn-primary self-center cursor-pointer flex text-xl"
                   onClick={() => closeCategory(!openCategory)}
                 >
                   <i className="fas fa-folder-open"></i>
@@ -334,15 +353,17 @@ export default function FormImmobles() {
                 Rua
               </label>
               <div className="flex">
-                <input
-                  list="streets_id"
-                  type="search"
-                  className={`input-form ${errors.streets_id && "invalid"}`}
-                  placeholder="Pesquisar..."
-                  {...register("streets_id", { required: true })}
-                />
+                <span className="flex-1">
+                  <input
+                    list="streets_id"
+                    type="search"
+                    className={`input-form ${errors.streets_id && "invalid"}`}
+                    placeholder="Pesquisar..."
+                    {...register("streets_id", { required: true })}
+                  />
+                </span>
                 <span
-                  className="ml-3 btn-primary self-center text-lg cursor-pointer"
+                  className="ml-3 btn-primary self-center cursor-pointer flex text-xl"
                   onClick={() => closeStreet(!openStreet)}
                 >
                   <i className="fas fa-folder-open"></i>
@@ -375,18 +396,20 @@ export default function FormImmobles() {
               <label className="label-form" htmlFor="neighborhoods_id">
                 Bairro
               </label>
-              <div className="flex">
-                <input
-                  list="neighborhoods_id"
-                  type="search"
-                  className={`input-form ${
-                    errors.neighborhoods_id && "invalid"
-                  }`}
-                  placeholder="Pesquisar..."
-                  {...register("neighborhoods_id", { required: true })}
-                />
+              <div className="flex ">
+                <span className="flex-1">
+                  <input
+                    list="neighborhoods_id"
+                    type="search"
+                    className={`input-form ${
+                      errors.neighborhoods_id && "invalid"
+                    }`}
+                    placeholder="Pesquisar..."
+                    {...register("neighborhoods_id", { required: true })}
+                  />
+                </span>
                 <span
-                  className="ml-3 btn-primary self-center text-lg cursor-pointer"
+                  className="ml-3 btn-primary self-center cursor-pointer flex text-xl"
                   onClick={() => closeNeighborhoods(!openNeighborhoods)}
                 >
                   <i className="fas fa-folder-open"></i>
@@ -406,15 +429,17 @@ export default function FormImmobles() {
                 Cidade
               </label>
               <div className="flex">
-                <input
-                  list="cities_id"
-                  type="search"
-                  className={`input-form ${errors.cities_id && "invalid"}`}
-                  placeholder="Pesquisar..."
-                  {...register("cities_id", { required: true })}
-                />
+                <span className="flex-1">
+                  <input
+                    list="cities_id"
+                    type="search"
+                    className={`input-form ${errors.cities_id && "invalid"}`}
+                    placeholder="Pesquisar..."
+                    {...register("cities_id", { required: true })}
+                  />
+                </span>
                 <span
-                  className="ml-3 btn-primary self-center text-lg cursor-pointer"
+                  className="ml-3 btn-primary self-center cursor-pointer flex text-xl"
                   onClick={() => closeCity(!openCity)}
                 >
                   <i className="fas fa-folder-open"></i>
@@ -424,8 +449,11 @@ export default function FormImmobles() {
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
               <datalist id="cities_id">
-                {cities.map(({ id, city, state }) => (
-                  <option key={id} value={[city, state.state].join("/")} />
+                {cities.map(city => (
+                  <option
+                    key={city.id}
+                    value={[city.city, city?.state?.state].join("/")}
+                  />
                 ))}
               </datalist>
             </div>
