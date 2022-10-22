@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import { parse, stringify } from "query-string";
 
 type Props = {
   total: number;
@@ -18,14 +19,14 @@ export function Pagination({ total, currentPage, perPage }: Props) {
   return (
     <ul className="flex flex-1 justify-end gap-1 mb-5 items-center">
       {pageNumbers.map((number, index) => {
+        const parsed = parse(location.search);
+
         return number >= currentPage - 3 && number <= currentPage + 3 ? (
           <li className="flex" key={index}>
             <Link
               to={{
                 pathname: location.pathname,
-                search: `?${new URLSearchParams({
-                  page: `${number}`,
-                }).toString()}`,
+                search: stringify({ ...parsed, page: number }),
               }}
               className={`${
                 number === currentPage && "bg-gray-700 text-white font-bold"

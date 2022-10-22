@@ -1,37 +1,44 @@
-import { SetStateAction, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { parse, stringify, stringifyUrl } from "query-string";
+import { KeyboardEvent, useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Loading } from "../../components/loading";
-import { api } from "../../api/api";
 import { PropsImmobilePagination } from "../../global/types/types";
-import { useQuery } from "../../hooks/use-query";
 import { Pagination } from "../../components/pagination";
+import { api } from "../../api/api";
 
 export default function Immobiles() {
   const [loading, setLoading] = useState(true);
   const [immobile, setImmobile] = useState<PropsImmobilePagination>();
-  const [search, setHandleEnterSearch] = useState();
 
-  const query = useQuery();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const limit = query.get("limit") || "25";
-  const page = query.get("page") || "1";
-  const q = query.get("q") || "";
+  const query = parse(location.search);
 
-  async function loadImmobiles(params: { [k: string]: string }) {
-    setLoading(true);
-    api
-      .get(`/immobiles?${new URLSearchParams(params).toString()}`)
-      .then(async res => setImmobile(await res.data))
-      .finally(() => setLoading(false));
+  const q = (query.q || "") as unknown as string;
+  const limit = (query.limit || "25") as string;
+  const page = (query.page || "1") as string;
+
+  function handleClickChange(
+    event: KeyboardEvent<EventTarget & HTMLInputElement>,
+  ) {
+    if (event.currentTarget.value) {
+      if (event.code === "Enter" || event.keyCode === 13) {
+        navigate({
+          search: `?q=${event.currentTarget.value}`,
+        });
+      }
+    }
   }
 
-  function handleClickChange(e: {
-    keyCode: number;
-    key: string;
-    target: { value: string };
-  }) {
-    if (e.keyCode === 13 || e.key === "enter")
-      setHandleEnterSearch(e.target.value);
+  async function loadImmobiles({ limit, page, q }: { [k: string]: string }) {
+    setLoading(true);
+    api
+      .get(
+        `immobiles?page=${page}&limit=${limit}&search[reference]=${q}&search[description]=${q}&search[city]=${q}&search[street]=${q}&search[district]=${q}`,
+      )
+      .then(async res => setImmobile(await res.data))
+      .finally(() => setLoading(false));
   }
 
   useEffect(() => {
@@ -39,10 +46,10 @@ export default function Immobiles() {
       loadImmobiles({
         limit,
         page,
-        qS: search,
+        q,
       });
     })();
-  }, [limit, page, search]);
+  }, [limit, page, q]);
 
   if (loading) return <Loading />;
 
@@ -52,17 +59,22 @@ export default function Immobiles() {
         <span className="flex items-center">
           <Pagination
             total={immobile?.total || 0}
-            currentPage={Number(`${query.get("page") || "1"}`)}
-            perPage={Number(`${query.get("page") || "25"}`)}
+            currentPage={Number(`${query.page || "1"}`)}
+            perPage={Number(`${query.page || "25"}`)}
           />
         </span>
         <span className="flex gap-3 justify-end items-center">
-          <span>
+          <span className="flex">
             <input
               type="search"
               className="input-form"
               onKeyDown={handleClickChange}
             />
+            {q && (
+              <Link className="btn-default text-black" to="/adm/immobiles">
+                <i className="fas fa-times"></i>
+              </Link>
+            )}
           </span>
           <span>
             <Link className="btn-success" to="/adm/immobiles/new">

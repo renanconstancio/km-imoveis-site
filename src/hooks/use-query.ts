@@ -4,4 +4,8 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-export { useQuery };
+function useQueryObj() {
+  return Object.fromEntries([...new URLSearchParams(useLocation().search)]);
+}
+
+export { useQuery, useQueryObj };
