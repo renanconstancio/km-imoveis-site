@@ -68,6 +68,7 @@ export default function FormImmobles() {
 
   const {
     reset,
+    watch,
     register,
     handleSubmit,
     formState: { errors },
@@ -108,8 +109,8 @@ export default function FormImmobles() {
     else
       await api
         .post(`/immobiles`, newPostData)
-        .then(async res => {
-          navigate(-1);
+        .then(async resp => {
+          navigate({ pathname: `/adm/immobiles/${(await resp.data).id}/edit` });
         })
         .catch(() =>
           changeAlert({
@@ -169,7 +170,7 @@ export default function FormImmobles() {
           }),
         );
     })();
-  }, [immobleId]);
+  }, [changeAlert, immobleId, reset]);
 
   return (
     <>
@@ -186,7 +187,7 @@ export default function FormImmobles() {
               onClick={() => closePhoto(!openPhoto)}
             >
               <i className="fas fa-image"></i>
-              <span>Fotos</span>
+              <span>{watch("photos")?.length} Fotos</span>
             </button>
           )}
           <Link className="btn-warning btn-ico" to="/adm/immobiles">
@@ -475,7 +476,11 @@ export default function FormImmobles() {
       <ModalStreet addStreets={setStreets} />
       <ModalDistrict addDistricts={setNeighborhoods} />
       <ModalCity addCities={setCities} />
-      <ModalPhoto immobleId={immobleId} />
+      <ModalPhoto
+        immobleId={immobleId}
+        addPhotos={() => {}}
+        photos={watch("photos")}
+      />
     </>
   );
 }

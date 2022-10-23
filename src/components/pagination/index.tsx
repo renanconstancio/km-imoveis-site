@@ -17,7 +17,7 @@ export function Pagination({ total, currentPage, perPage }: Props) {
   const location = useLocation();
 
   return (
-    <ul className="flex flex-1 justify-end gap-1 mb-5 items-center">
+    <ul className="flex flex-1 gap-0.5">
       {pageNumbers.map((number, index) => {
         const parsed = parse(location.search);
 
@@ -29,8 +29,8 @@ export function Pagination({ total, currentPage, perPage }: Props) {
                 search: stringify({ ...parsed, page: number }),
               }}
               className={`${
-                number === currentPage && "bg-gray-700 text-white font-bold"
-              } hover:bg-gray-700 hover:text-white hover:font-bold px-2 rounded-sm flex-1`}
+                number === currentPage && "bg-gray-300 text-gray-700 font-bold"
+              } hover:bg-gray-300 hover:font-bold px-3 py-1 rounded-sm`}
             >
               {number}
             </Link>

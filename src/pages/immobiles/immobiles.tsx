@@ -1,14 +1,17 @@
-import { parse, stringify, stringifyUrl } from "query-string";
+import { parse } from "query-string";
 import { KeyboardEvent, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Loading } from "../../components/loading";
-import { PropsImmobilePagination } from "../../global/types/types";
+import {
+  PropsImmobilePagination,
+  PropsImmobles,
+} from "../../global/types/types";
 import { Pagination } from "../../components/pagination";
 import { api } from "../../api/api";
 
 export default function Immobiles() {
   const [loading, setLoading] = useState(true);
-  const [immobile, setImmobile] = useState<PropsImmobilePagination>();
+  const [immobiles, setImmobiles] = useState<PropsImmobilePagination>();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -19,7 +22,7 @@ export default function Immobiles() {
   const limit = (query.limit || "25") as string;
   const page = (query.page || "1") as string;
 
-  function handleClickChange(
+  function handleKeyPressSearch(
     event: KeyboardEvent<EventTarget & HTMLInputElement>,
   ) {
     if (event.currentTarget.value) {
@@ -31,13 +34,27 @@ export default function Immobiles() {
     }
   }
 
+  async function handleOnClickDelete(data: PropsImmobles) {
+    if (!confirm(`Você deseja excluir ${data.description}?`)) return;
+    setLoading(true);
+    await api
+      .delete(`/immobiles/${data.id}`)
+      .then(() =>
+        setImmobiles({
+          ...immobiles,
+          data: immobiles?.data.filter((f: { id: string }) => f.id !== data.id),
+        } as PropsImmobilePagination),
+      )
+      .finally(() => setLoading(false));
+  }
+
   async function loadImmobiles({ limit, page, q }: { [k: string]: string }) {
     setLoading(true);
-    api
+    await api
       .get(
-        `immobiles?page=${page}&limit=${limit}&search[reference]=${q}&search[description]=${q}&search[city]=${q}&search[street]=${q}&search[district]=${q}`,
+        `/immobiles?page=${page}&limit=${limit}&search[reference]=${q}&search[description]=${q}&search[city]=${q}&search[street]=${q}&search[district]=${q}`,
       )
-      .then(async res => setImmobile(await res.data))
+      .then(async resp => setImmobiles(await resp.data))
       .finally(() => setLoading(false));
   }
 
@@ -55,33 +72,34 @@ export default function Immobiles() {
 
   return (
     <ul className="overflow-x-auto rounded-sm bg-white p-5">
-      <li className="flex border-b mb-3 pb-3 gap-3 justify-between items-center self-center">
-        <span className="flex items-center">
-          <Pagination
-            total={immobile?.total || 0}
-            currentPage={Number(`${query.page || "1"}`)}
-            perPage={Number(`${query.page || "25"}`)}
-          />
-        </span>
-        <span className="flex gap-3 justify-end items-center">
-          <span className="flex">
+      <li className="flex border-b mb-3 pb-3 gap-3 justify-between">
+        <section className="w-6/12 flex gap-3 justify-end items-center">
+          <aside className="flex flex-1">
             <input
-              type="search"
+              type="text"
               className="input-form"
-              onKeyDown={handleClickChange}
+              defaultValue={`${query.q || ""}`}
+              onKeyDown={handleKeyPressSearch}
             />
             {q && (
-              <Link className="btn-default text-black" to="/adm/immobiles">
+              <Link className="btn-default text-black" to="/adm/immobiless">
                 <i className="fas fa-times"></i>
               </Link>
             )}
-          </span>
-          <span>
-            <Link className="btn-success" to="/adm/immobiles/new">
+          </aside>
+          <nav>
+            <Link className="btn-success" to="/adm/immobiless/new">
               <i className="fas fa-edit"></i> Criar
             </Link>
-          </span>
-        </span>
+          </nav>
+        </section>
+        <nav>
+          <Pagination
+            total={immobiles?.total || 0}
+            currentPage={Number(`${query.page || "1"}`)}
+            perPage={Number(`${query.page || "25"}`)}
+          />
+        </nav>
       </li>
 
       <li className="list-orders uppercase font-play font-bold bg-gray-200">
@@ -91,7 +109,7 @@ export default function Immobiles() {
         <span className="w-3/12">Rua, Avenida, Apto.</span>
       </li>
 
-      {immobile?.data.map(rws => (
+      {immobiles?.data.map(rws => (
         <li key={rws.id} className="list-orders">
           <span className="flex gap-1 w-1/12">
             <Link
@@ -100,25 +118,32 @@ export default function Immobiles() {
             >
               <i className="fas fa-edit"></i>
             </Link>
-            <Link
+            <span
               className="btn-danger btn-xs"
-              to={`/adm/immobiles/${rws.id}/edit`}
+              onClick={() => handleOnClickDelete(rws)}
             >
               <i className="fas fa-trash"></i>
-            </Link>
+            </span>
           </span>
           <span className="w-1/12">{rws.reference}</span>
-          <span className="w-3/12">
-            {rws.description} <br />
-            {rws.id}
-          </span>
+          <span className="w-3/12">{rws.description}</span>
           <span className="w-3/12">{rws.street?.street}</span>
         </li>
       ))}
 
-      {!immobile?.data.length && (
+      {!immobiles?.data.length && (
         <li className="py-3 px-6 text-center">Nenhum imovel encontado</li>
       )}
+
+      <li className="flex justify-end mt-5">
+        <nav>
+          <Pagination
+            total={immobiles?.total || 0}
+            currentPage={Number(`${query.page || "1"}`)}
+            perPage={Number(`${query.page || "25"}`)}
+          />
+        </nav>
+      </li>
     </ul>
   );
 }
