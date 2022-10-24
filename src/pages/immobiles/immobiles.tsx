@@ -90,7 +90,7 @@ export default function Immobiles() {
             )}
           </aside>
           <nav>
-            <Link className="btn-success" to="/adm/immobiless/new">
+            <Link className="btn-success" to="/adm/immobiles/new">
               <FontAwesomeIcon icon={faEdit} /> Criar
             </Link>
           </nav>
