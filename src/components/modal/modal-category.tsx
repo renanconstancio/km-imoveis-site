@@ -2,6 +2,8 @@ import { useForm } from "react-hook-form";
 import { PropsCategory } from "../../global/types/types";
 import { useModal } from "../../hooks/use-modal";
 import { api } from "../../api/api";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 type PropsModal = {
   addCategories: (data: any) => void;
@@ -38,7 +40,7 @@ export default function ModalCategory({ addCategories }: PropsModal) {
             className="modal-close"
             onClick={() => closeCategory(!openCategory)}
           >
-            <i className="fas fa-times text-lg"></i>
+            <FontAwesomeIcon icon={faTimes} className="text-lg" />
             <span className="sr-only">Close modal</span>
           </button>
           <div className="py-6 px-6 lg:px-8">

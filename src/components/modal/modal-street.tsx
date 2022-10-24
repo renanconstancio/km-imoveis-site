@@ -2,6 +2,8 @@ import { useForm } from "react-hook-form";
 import { PropsStreet } from "../../global/types/types";
 import { useModal } from "../../hooks/use-modal";
 import { api } from "../../api/api";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 type PropsModal = {
   addStreets: (data: any) => void;
@@ -33,7 +35,7 @@ export default function ModalStreet({ addStreets }: PropsModal) {
             className="modal-close"
             onClick={() => closeStreet(!openStreet)}
           >
-            <i className="fas fa-times text-lg"></i>
+            <FontAwesomeIcon icon={faTimes} className="text-lg" />
             <span className="sr-only">Close modal</span>
           </button>
           <div className="py-6 px-6 lg:px-8">

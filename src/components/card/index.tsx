@@ -5,17 +5,18 @@ import { H2 } from "../title";
 import { Link } from "react-router-dom";
 
 type PropsCard = React.HTMLAttributes<HTMLLIElement> & {
+  id: string;
   title: string;
   address: string;
   price: string;
   tags: string[];
-  images: string[];
+  images: [];
 };
 
-export function Card({ title, address, price, images, tags }: PropsCard) {
+export function Card({ id, title, address, price, images, tags }: PropsCard) {
   return (
     <li className="relative bg-slate-100">
-      <Link to="/" className="block">
+      <Link to={`/immoble/${title}/${id}`} className="block">
         <ul className="absolute left-0 top-3 h-[auto] w-auto z-[9999] font-play text-white text-sm flex gap-2">
           <li className="p-1 bg-sky-600">a venda</li>
           <li className="p-1 bg-emerald-500">disponível</li>

@@ -1,3 +1,11 @@
+import {
+  faBuilding,
+  faHome,
+  faSignOut,
+  faStar,
+  faStreetView,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NavLink, Outlet } from "react-router-dom";
 import { useAlert } from "../../hooks/use-alert";
 import { useAuth } from "../../hooks/use-auth";
@@ -11,12 +19,6 @@ export default function Admin() {
   const { alert } = useAlert();
   const { auth, logout } = useAuth();
 
-  // useEffect(() => {
-
-  // }, [user]);
-
-  console.log(auth);
-
   return !auth?.id ? (
     <Login />
   ) : (
@@ -28,7 +30,7 @@ export default function Admin() {
             isActive ? activeClassName : classDefaultName
           }
         >
-          <i className="fa fa-home"></i> Imovéis
+          <FontAwesomeIcon icon={faHome} /> Imovéis
         </NavLink>
         <NavLink
           to="/adm/streets"
@@ -36,7 +38,7 @@ export default function Admin() {
             isActive ? activeClassName : classDefaultName
           }
         >
-          <i className="fas fa-street-view"></i> Ruas
+          <FontAwesomeIcon icon={faStreetView} /> Ruas
         </NavLink>
         <NavLink
           to="/adm/cities"
@@ -44,7 +46,7 @@ export default function Admin() {
             isActive ? activeClassName : classDefaultName
           }
         >
-          <i className="fas fa-building"></i> Cidades
+          <FontAwesomeIcon icon={faBuilding} /> Cidades
         </NavLink>
         <NavLink
           to="/adm/states"
@@ -52,10 +54,10 @@ export default function Admin() {
             isActive ? activeClassName : classDefaultName
           }
         >
-          <i className="far fa-star"></i> Estados
+          <FontAwesomeIcon icon={faStar} /> Estados
         </NavLink>
         <span className="cursor-pointer" onClick={logout}>
-          <i className="fas fa-sign-out-alt"></i> Sair
+          <FontAwesomeIcon icon={faSignOut} /> Sair
         </span>
       </nav>
       <main className="p-8 w-4/5 overflow-y-auto ml-[20%]">

@@ -1,3 +1,6 @@
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect } from "react";
 import { useAlert } from "../../hooks/use-alert";
 
 type Props = {
@@ -8,6 +11,12 @@ type Props = {
 export function Alert({ title, message }: Props) {
   const { changeAlert } = useAlert();
 
+  useEffect(() => {
+    setTimeout(() => {
+      changeAlert({} as Props);
+    }, 2800);
+  }, []);
+
   return (
     <div
       className="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 mb-3"
@@ -16,10 +25,11 @@ export function Alert({ title, message }: Props) {
       {title && <p className="font-bold">{title}</p>}
       <p className="flex justify-between">
         <span>{message}</span>
-        <i
-          className="fas fa-times text-lg"
+        <FontAwesomeIcon
+          icon={faTimes}
+          className="text-lg"
           onClick={() => changeAlert({ title: "", message: "" })}
-        ></i>
+        />
       </p>
     </div>
   );

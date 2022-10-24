@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useModal } from "../../hooks/use-modal";
 import { PropsCities } from "../../global/types/types";
 import { api } from "../../api/api";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 type PropsModal = {
   addCities: (data: any) => void;
@@ -52,7 +54,7 @@ export default function ModalCity({ addCities }: PropsModal) {
             className="modal-close"
             onClick={() => closeCity(!openCity)}
           >
-            <i className="fas fa-times text-lg"></i>
+            <FontAwesomeIcon icon={faTimes} className="text-lg" />
             <span className="sr-only">Close modal</span>
           </button>
           <div className="py-6 px-6 lg:px-8">

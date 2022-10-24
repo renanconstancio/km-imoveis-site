@@ -5,7 +5,8 @@ import { Admin, Site } from "../components/layout";
 import { FormImmobiles, Immobiles } from "../pages/immobiles";
 
 import { Error } from "../pages/error";
-import { Home } from "../pages/home";
+import { SiteHome } from "../pages/site-home";
+import { SiteImmoble } from "../pages/site-immoble";
 
 export const router = createBrowserRouter([
   {
@@ -15,7 +16,18 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <Home />,
+        element: (
+          <>
+            <Helmet>
+              <title>{import.meta.env.VITE_REACT_TITLE}</title>
+            </Helmet>
+            <SiteHome />
+          </>
+        ),
+      },
+      {
+        path: "immoble/:title/:immobleId",
+        element: <SiteImmoble />,
       },
     ],
   },

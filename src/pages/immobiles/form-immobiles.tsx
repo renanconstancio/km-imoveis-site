@@ -19,6 +19,13 @@ import { useAlert } from "../../hooks/use-alert";
 import { useModal } from "../../hooks/use-modal";
 import { find } from "../../utils/fun";
 import ModalPhoto from "../../components/modal/modal-photos";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faFolderOpen,
+  faImage,
+  faSave,
+  faUndo,
+} from "@fortawesome/free-solid-svg-icons";
 
 const tags = [
   "banheiro",
@@ -151,7 +158,6 @@ export default function FormImmobles() {
         .get(`/immobiles/${immobleId}`)
         .then(async res => {
           const immoble = (await res.data) as PropsImmobles;
-
           reset({
             ...immoble,
             sale_price: 0,
@@ -177,7 +183,7 @@ export default function FormImmobles() {
       <div className="overflow-x-auto rounded-sm bg-white p-6">
         <div className="border-b pb-3 mb-5 flex gap-3">
           <button className="btn-success btn-ico" type="submit" form="form">
-            <i className="fas fa-save"></i>
+            <FontAwesomeIcon icon={faSave} />
             <span>Salvar</span>
           </button>
           {immobleId && (
@@ -186,12 +192,12 @@ export default function FormImmobles() {
               type="button"
               onClick={() => closePhoto(!openPhoto)}
             >
-              <i className="fas fa-image"></i>
+              <FontAwesomeIcon icon={faImage} />
               <span>{watch("photos")?.length} Fotos</span>
             </button>
           )}
           <Link className="btn-warning btn-ico" to="/adm/immobiles">
-            <i className="fas fa-undo"></i>
+            <FontAwesomeIcon icon={faUndo} />
             <span>Voltar</span>
           </Link>
         </div>
@@ -335,7 +341,7 @@ export default function FormImmobles() {
                   className="ml-3 btn-primary self-center cursor-pointer flex text-xl"
                   onClick={() => closeCategory(!openCategory)}
                 >
-                  <i className="fas fa-folder-open"></i>
+                  <FontAwesomeIcon icon={faFolderOpen} />
                 </span>
               </div>
               {errors.categories_id && (
@@ -367,7 +373,7 @@ export default function FormImmobles() {
                   className="ml-3 btn-primary self-center cursor-pointer flex text-xl"
                   onClick={() => closeStreet(!openStreet)}
                 >
-                  <i className="fas fa-folder-open"></i>
+                  <FontAwesomeIcon icon={faFolderOpen} />
                 </span>
               </div>
               {errors.streets_id && (
@@ -413,7 +419,7 @@ export default function FormImmobles() {
                   className="ml-3 btn-primary self-center cursor-pointer flex text-xl"
                   onClick={() => closeNeighborhoods(!openNeighborhoods)}
                 >
-                  <i className="fas fa-folder-open"></i>
+                  <FontAwesomeIcon icon={faFolderOpen} />
                 </span>
               </div>
               {errors.neighborhoods_id && (
@@ -443,7 +449,7 @@ export default function FormImmobles() {
                   className="ml-3 btn-primary self-center cursor-pointer flex text-xl"
                   onClick={() => closeCity(!openCity)}
                 >
-                  <i className="fas fa-folder-open"></i>
+                  <FontAwesomeIcon icon={faFolderOpen} />{" "}
                 </span>
               </div>
               {errors.cities_id && (
@@ -458,17 +464,6 @@ export default function FormImmobles() {
                 ))}
               </datalist>
             </div>
-            {/* <div className="w-full md:w-8/12 px-3 mb-6">
-              <label className="label-form" htmlFor="tags">
-                Tags
-              </label>
-              <input list="tags" type="text" className="input-form" multiple />
-              <datalist id="tags">
-                {tags.map((tag, i) => (
-                  <option key={i} value={tag} />
-                ))}
-              </datalist>
-            </div> */}
           </div>
         </form>
       </div>
@@ -478,8 +473,10 @@ export default function FormImmobles() {
       <ModalCity addCities={setCities} />
       <ModalPhoto
         immobleId={immobleId}
-        addPhotos={() => {}}
-        photos={watch("photos")}
+        photos={watch("photos") || []}
+        addPhotos={() => {
+          return;
+        }}
       />
     </>
   );

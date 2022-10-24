@@ -8,6 +8,8 @@ import {
 } from "../../global/types/types";
 import { Pagination } from "../../components/pagination";
 import { api } from "../../api/api";
+import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Immobiles() {
   const [loading, setLoading] = useState(true);
@@ -34,7 +36,7 @@ export default function Immobiles() {
     }
   }
 
-  async function handleOnClickDelete(data: PropsImmobles) {
+  async function handleDelete(data: PropsImmobles) {
     if (!confirm(`Você deseja excluir ${data.description}?`)) return;
     setLoading(true);
     await api
@@ -82,14 +84,14 @@ export default function Immobiles() {
               onKeyDown={handleKeyPressSearch}
             />
             {q && (
-              <Link className="btn-default text-black" to="/adm/immobiless">
-                <i className="fas fa-times"></i>
+              <Link className="btn-default text-black" to="/adm/immobiles">
+                <FontAwesomeIcon icon={faTimes} />
               </Link>
             )}
           </aside>
           <nav>
             <Link className="btn-success" to="/adm/immobiless/new">
-              <i className="fas fa-edit"></i> Criar
+              <FontAwesomeIcon icon={faEdit} /> Criar
             </Link>
           </nav>
         </section>
@@ -116,13 +118,13 @@ export default function Immobiles() {
               className="btn-primary btn-xs"
               to={`/adm/immobiles/${rws.id}/edit`}
             >
-              <i className="fas fa-edit"></i>
+              <FontAwesomeIcon icon={faEdit} />
             </Link>
             <span
               className="btn-danger btn-xs"
-              onClick={() => handleOnClickDelete(rws)}
+              onClick={() => handleDelete(rws)}
             >
-              <i className="fas fa-trash"></i>
+              <FontAwesomeIcon icon={faTrash} />
             </span>
           </span>
           <span className="w-1/12">{rws.reference}</span>

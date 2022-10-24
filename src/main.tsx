@@ -1,7 +1,3 @@
-// import "./styles/fontawesome/css/solid.css";
-// import "./styles/fontawesome/css/brands.css";
-// import "./styles/fontawesome/css/regular.css";
-import "./global/styles/fontawesome/css/all.min.css";
 import "./global/styles/app.css";
 
 import ReactDOM from "react-dom/client";
