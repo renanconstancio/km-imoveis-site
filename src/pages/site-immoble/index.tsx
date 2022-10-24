@@ -8,7 +8,6 @@ import { Helmet } from "react-helmet-async";
 import { H2 } from "../../components/title";
 import { Address } from "../../components/address";
 import { Price } from "../../components/price";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import faWhatsApp from "../../assets/whatsapp.svg";
 
 export function SiteImmoble() {
@@ -27,7 +26,7 @@ export function SiteImmoble() {
 
   useEffect(() => {
     (async () => {
-      loadImmoble(immobleId);
+      if (immobleId) loadImmoble(immobleId);
     })();
   }, [immobleId]);
 
@@ -52,7 +51,7 @@ export function SiteImmoble() {
             <H2 title={`${immoble?.description}`} />
             <Address address={[immoble?.district?.district].join(", ")} />
 
-            <Price price={immoble?.rent_price} />
+            <Price price={`${immoble?.rent_price}`} />
             <hr />
 
             <section className="flex gap-5 items-center mt-4">

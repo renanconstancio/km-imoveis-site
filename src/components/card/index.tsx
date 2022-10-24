@@ -10,7 +10,7 @@ type PropsCard = React.HTMLAttributes<HTMLLIElement> & {
   address: string;
   price: string;
   tags: string[];
-  images: [];
+  images: string[];
 };
 
 export function Card({ id, title, address, price, images, tags }: PropsCard) {

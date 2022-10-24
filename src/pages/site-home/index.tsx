@@ -84,7 +84,7 @@ export function SiteHome() {
                 `${item.city?.city}/${item.city?.state.state}`,
               ].join(", ")}
               tags={[]}
-              images={item?.photos?.map(f => f.image_lg)}
+              images={item?.photos?.map(f => f.image_lg) || []}
             />
           ))}
         </ul>

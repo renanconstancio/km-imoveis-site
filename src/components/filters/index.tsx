@@ -16,7 +16,7 @@ export function Filters({ states }: PropsFilters) {
           />
         </label>
         <datalist id="browsers">
-          {states.map(state => (
+          {states.map((state: any) => (
             <option value={state.state} key={state.id} />
           ))}
         </datalist>
