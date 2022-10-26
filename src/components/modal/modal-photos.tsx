@@ -8,25 +8,21 @@ import { faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { api } from "../../api/api";
 
 type PropsModal = {
-  photos: PropsPhoto[] | [];
-  immobleId: string | undefined;
-  addPhotos?: (data: PropsPhoto[]) => void;
+  immobleId: string | null;
+  addPhotos: PropsPhoto[];
 };
 
-export default function ModalPhoto({
-  photos,
-  immobleId,
-  addPhotos,
-}: PropsModal) {
-  const [photoModal, setPhotoModal] = useState<PropsPhoto[]>([]);
-
+export default function ModalPhoto({ immobleId, addPhotos }: PropsModal) {
   const { changeAlert } = useAlert();
   const { openPhoto, closePhoto } = useModal();
+  const [photos, setPhotoModal] = useState<PropsPhoto[]>([]);
+  const [endEvent, setEndEvent] = useState<boolean>(false);
 
-  async function handleSortImage(list: PropsPhoto[]) {
-    await api
-      .put(`/immobiles/photos/sort`, list)
-      .then(() => setPhotoModal(list));
+  async function handleSortImage(listSort: PropsPhoto[]) {
+    console.log("before", listSort);
+    setPhotoModal(listSort);
+    if (endEvent) await api.put(`/immobiles/photos/sort`, listSort);
+    console.log("after", listSort);
   }
 
   async function handleDeleteImage(item: PropsPhoto) {
@@ -41,7 +37,6 @@ export default function ModalPhoto({
 
   async function handleUploadFile(event: ChangeEvent) {
     const formData = new FormData();
-
     const target = event.target as HTMLInputElement;
     const files = target.files as FileList;
 
@@ -49,18 +44,11 @@ export default function ModalPhoto({
       formData.append("photo", file);
     }
 
-    await api.patch(`/immobiles/${immobleId}/photos`, formData).catch(() =>
-      changeAlert({
-        message: "Não foi possivel conectar ao servidor.",
-      }),
-    );
-
     await api
-      .get(`/immobiles/${immobleId}`)
-      .then(async resp => {
-        const respImmoble: PropsImmobles = await resp.data;
-        const photoData = respImmoble?.photos || [];
-        setPhotoModal(photoData);
+      .patch(`/immobiles/${immobleId}/photos`, formData)
+      .then(async ({ data, status }) => {
+        console.log(data);
+        if (immobleId && status === 200) setPhotoModal(data.photos);
       })
       .catch(() =>
         changeAlert({
@@ -70,10 +58,10 @@ export default function ModalPhoto({
   }
 
   useEffect(() => {
-    setPhotoModal(photos);
-  }, [photos]);
+    setPhotoModal(addPhotos);
+  }, [addPhotos]);
 
-  console.log("start", photoModal);
+  console.log("start", photos);
 
   return (
     <div className={`${openPhoto ? "" : "hidden"} modal`}>
@@ -89,7 +77,7 @@ export default function ModalPhoto({
           </button>
           <div className="py-6 px-6 lg:px-8">
             <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-white">
-              Photos{" "}
+              Fotos{" "}
               <input
                 type="file"
                 className="input-file"
@@ -98,12 +86,13 @@ export default function ModalPhoto({
               />
             </h3>
             <ReactSortable
-              list={photoModal}
-              setList={setPhotoModal}
+              list={photos}
+              setList={handleSortImage}
+              onEnd={() => setEndEvent(!endEvent)}
               className="flex flex-wrap mb-6 "
               tag="ul"
             >
-              {photoModal.map((item, index) => (
+              {photos.map((item, index) => (
                 <li id={item.id} key={index} className="w-full md:w-4/12 p-2">
                   <section className="relative border p-3">
                     <img

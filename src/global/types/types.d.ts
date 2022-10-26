@@ -1,5 +1,5 @@
 export type PropsPhoto = {
-  updated_at: string;
+  position: number;
   image_xs: string;
   image_lg: string;
   id: string;

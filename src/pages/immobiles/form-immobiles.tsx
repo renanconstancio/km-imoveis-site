@@ -472,11 +472,8 @@ export default function FormImmobles() {
       <ModalDistrict addDistricts={setNeighborhoods} />
       <ModalCity addCities={setCities} />
       <ModalPhoto
-        immobleId={immobleId}
-        photos={watch("photos") || []}
-        addPhotos={() => {
-          return;
-        }}
+        immobleId={immobleId || ""}
+        addPhotos={watch("photos") || []}
       />
     </>
   );
