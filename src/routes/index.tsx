@@ -7,6 +7,8 @@ import { FormImmobiles, Immobiles } from "../pages/immobiles";
 import { Error } from "../pages/error";
 import { SiteHome } from "../pages/site-home";
 import { SiteImmoble } from "../pages/site-immoble";
+import { Streets } from "../pages/streets";
+import FormStreets from "../pages/streets/form-streets";
 
 export const router = createBrowserRouter([
   {
@@ -75,6 +77,50 @@ export const router = createBrowserRouter([
                   </title>
                 </Helmet>
                 <FormImmobiles />
+              </>
+            ),
+          },
+        ],
+      },
+      {
+        path: "streets",
+        children: [
+          {
+            path: "",
+            element: (
+              <>
+                <Helmet>
+                  <title>
+                    Lista de Ruas - {import.meta.env.VITE_REACT_TITLE}
+                  </title>
+                </Helmet>
+                <Streets />
+              </>
+            ),
+          },
+          {
+            path: "new",
+            element: (
+              <>
+                <Helmet>
+                  <title>
+                    Cadastrar Ruas - {import.meta.env.VITE_REACT_TITLE}
+                  </title>
+                </Helmet>
+                <FormStreets />
+              </>
+            ),
+          },
+          {
+            path: ":streetId/edit",
+            element: (
+              <>
+                <Helmet>
+                  <title>
+                    Editar Ruas - {import.meta.env.VITE_REACT_TITLE}
+                  </title>
+                </Helmet>
+                <FormStreets />
               </>
             ),
           },
