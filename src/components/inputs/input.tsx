@@ -1,21 +1,30 @@
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
-  label: string;
-  labelName?: string;
-  invalid?: boolean;
+  label?: string;
+  mask?: (value: string) => string;
+  register?: any;
+  error?: any;
 };
 
 export default function Input({
   label,
-  labelName,
-  invalid,
+  mask = (value: string) => value,
+  error,
+  register,
   ...rest
 }: InputProps) {
   return (
     <>
-      <label className="label-form" htmlFor={labelName}>
-        {label}
-      </label>
-      <input className={`input-form ${invalid ? "invalid" : ""}`} {...rest} />
+      {label && (
+        <label className="label-form">
+          {(typeof label === "string" && label) || "Preencha este campo"}
+        </label>
+      )}
+      <input
+        {...register}
+        onChange={e => (e.target.value = `${mask(e.target.value)}`)}
+        {...rest}
+      />
+      {error && <small className="input-text-invalid">{error.message}</small>}
     </>
   );
 }

@@ -1,28 +1,10 @@
-import { api, apiListOfHouses } from "../../api/api";
+import { api } from "../../api/api";
 import { useEffect, useState } from "react";
 import { CarouselIndex } from "../../components/carousel";
 import { Card } from "../../components/card";
 import { price } from "../../utils/fun";
 import { PropsImmobilePagination } from "../../global/types/types";
 import { Filters } from "../../components/filters";
-
-type PropsListOfHouseImage = {
-  image: string;
-};
-
-type PropsListOfHouse = {
-  title: string;
-  address: string;
-  district: string;
-  number: string;
-  city: string;
-  state: string;
-  zip_code: string;
-  price: number;
-  description?: string;
-  tags: string[];
-  images: PropsListOfHouseImage[];
-};
 
 type PropsStates = {
   id: string;

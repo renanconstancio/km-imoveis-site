@@ -1,16 +1,16 @@
-import { PropsStreets } from "../../global/types/types";
+import { PropsCities } from "../../global/types/types";
 
-import { api } from "../../api/api";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
+import { api } from "../../api/api";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
 
-export default function FormStreets() {
-  const [streets, setStreets] = useState<PropsStreets>({} as PropsStreets);
+export default function FormCities() {
+  const [states, setSates] = useState([]);
 
   const { changeAlert } = useAlert();
 
@@ -20,19 +20,23 @@ export default function FormStreets() {
 
   const {
     reset,
+    watch,
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsStreets>();
+  } = useForm<PropsCities>();
 
-  async function onSubmit(data: PropsStreets) {
+  async function onSubmit(data: PropsCities) {
     const newPostData = {
       ...data,
+      states_id: states.find(
+        (e: { state: string }) => e.state === data.state.state,
+      ),
     };
 
     if (data.id)
       await api
-        .put(`/streets/${streetId}`, newPostData)
+        .put(`/cities/${streetId}`, newPostData)
         .then(() =>
           changeAlert({
             message: "Dados salvos com sucesso.",
@@ -45,9 +49,9 @@ export default function FormStreets() {
         );
     else
       await api
-        .post(`/streets`, newPostData)
+        .post(`/cities`, newPostData)
         .then(async resp => {
-          navigate({ pathname: `/adm/streets/${(await resp.data).id}/edit` });
+          navigate({ pathname: `/adm/cities/${(await resp.data).id}/edit` });
         })
         .catch(() =>
           changeAlert({
@@ -58,14 +62,21 @@ export default function FormStreets() {
 
   useEffect(() => {
     (async () => {
+      api.get("/states").then(async res => setSates(await res.data));
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
       if (!streetId) return;
 
       api
-        .get(`/streets/${streetId}`)
+        .get(`/cities/${streetId}`)
         .then(async res => {
-          const resp = (await res.data) as PropsStreets;
+          const resp: PropsCities = (await res.data) as PropsCities;
           reset({
             ...resp,
+            states_id: resp.state.state,
           });
         })
         .catch(() =>
@@ -85,7 +96,7 @@ export default function FormStreets() {
             <span>Salvar</span>
           </button>
 
-          <Link className="btn-warning btn-ico" to="/adm/streets">
+          <Link className="btn-warning btn-ico" to="/adm/cities">
             <FontAwesomeIcon icon={faUndo} />
             <span>Voltar</span>
           </Link>
@@ -98,25 +109,34 @@ export default function FormStreets() {
               </label>
               <input
                 type="text"
-                className={`input-form ${errors.street && "invalid"}`}
-                {...register("street", { required: true })}
+                className={`input-form ${errors.city && "invalid"}`}
+                {...register("city", { required: true })}
               />
-              {errors.street && (
+              {errors.city && (
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
             </div>
-            <div className="w-full md:w-2/12 px-3">
-              <label className="label-form" htmlFor="zip_code">
-                CEP.
+            <div className="w-full md:w-2/12 px-3 mb-5">
+              <label className="label-form" htmlFor="situation">
+                Estado
               </label>
-              <input
-                type="text"
-                className={`input-form ${errors.zip_code && "invalid"}`}
-                {...register("zip_code", { required: false })}
-              />
-              {errors.zip_code && (
+              <div className="flex">
+                <input
+                  list="states"
+                  type="search"
+                  placeholder="Pesquisar..."
+                  className={`input-form ${errors.states_id && "invalid"}`}
+                  {...register("states_id", { required: true })}
+                />
+              </div>
+              {errors.states_id && (
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
+              <datalist id="states">
+                {states.map(({ id, state }) => (
+                  <option key={id} value={state} />
+                ))}
+              </datalist>
             </div>
           </div>
         </form>

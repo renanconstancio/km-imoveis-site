@@ -2,15 +2,15 @@ import { parse } from "query-string";
 import { KeyboardEvent, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Loading } from "../../components/loading";
-import { PropsStreets } from "../../global/types/types";
+import { PropsCities } from "../../global/types/types";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { api } from "../../api/api";
 
-export default function Streets() {
+export default function Cities() {
   const [clear, setClear] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [streets, setStreets] = useState<PropsStreets[]>([]);
+  const [cities, setCities] = useState<PropsCities[]>([]);
 
   const location = useLocation();
 
@@ -24,40 +24,39 @@ export default function Streets() {
     if (event.currentTarget.value) {
       if (event.code === "Enter" || event.keyCode === 13) {
         setClear(!clear);
-        setStreets(
-          streets?.filter(
-            (f: { street: string }) =>
-              f.street
-                .toLowerCase()
-                .includes(event.currentTarget.value.toLowerCase()), //f.street === event.currentTarget.value,
+        setCities(
+          cities?.filter((f: { city: string }) =>
+            f.city
+              .toLowerCase()
+              .includes(event.currentTarget.value.toLowerCase()),
           ),
         );
       }
     }
   }
 
-  async function handleDelete(data: PropsStreets) {
-    if (!confirm(`Você deseja excluir ${data.street}?`)) return;
+  async function handleDelete(data: PropsCities) {
+    if (!confirm(`Você deseja excluir ${data.city}?`)) return;
     setLoading(true);
     await api
-      .delete(`/streets/${data.id}`)
+      .delete(`/cities/${data.id}`)
       .then(() =>
-        setStreets(streets?.filter((f: { id: string }) => f.id !== data.id)),
+        setCities(cities?.filter((f: { id: string }) => f.id !== data.id)),
       )
       .finally(() => setLoading(false));
   }
 
-  async function loadStreets() {
+  async function loadCities() {
     setLoading(true);
     await api
-      .get(`/streets`)
-      .then(async resp => setStreets(await resp.data))
+      .get(`/cities`)
+      .then(async resp => setCities(await resp.data))
       .finally(() => setLoading(false));
   }
 
   useEffect(() => {
     (async () => {
-      loadStreets();
+      loadCities();
     })();
   }, []);
 
@@ -79,7 +78,7 @@ export default function Streets() {
                 className="btn-default text-black"
                 type="button"
                 onClick={() => {
-                  loadStreets();
+                  loadCities();
                   setClear(!clear);
                 }}
               >
@@ -88,7 +87,7 @@ export default function Streets() {
             )}
           </aside>
           <nav>
-            <Link className="btn-success" to="/adm/streets/new">
+            <Link className="btn-success" to="/adm/cities/new">
               <FontAwesomeIcon icon={faEdit} /> Criar
             </Link>
           </nav>
@@ -97,15 +96,15 @@ export default function Streets() {
 
       <li className="list-orders uppercase font-play font-bold bg-gray-200">
         <span className="w-1/12">ações</span>
-        <span className="w-11/12">Rua, Avenida, Apto.</span>
+        <span className="w-11/12">Cidade</span>
       </li>
 
-      {streets?.map(rws => (
+      {cities?.map(rws => (
         <li key={rws.id} className="list-orders">
           <span className="flex gap-1 w-1/12">
             <Link
               className="btn-primary btn-xs"
-              to={`/adm/streets/${rws.id}/edit`}
+              to={`/adm/cities/${rws.id}/edit`}
             >
               <FontAwesomeIcon icon={faEdit} />
             </Link>
@@ -116,11 +115,13 @@ export default function Streets() {
               <FontAwesomeIcon icon={faTrash} />
             </span>
           </span>
-          <span className="w-11/12">{rws.street}</span>
+          <span className="w-11/12">
+            {[rws.city, rws.state.state].join("/")}
+          </span>
         </li>
       ))}
 
-      {!streets.length && (
+      {!cities.length && (
         <li className="py-3 px-6 text-center">Nenhum imovel encontado</li>
       )}
     </ul>

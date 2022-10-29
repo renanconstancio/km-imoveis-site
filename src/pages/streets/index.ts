@@ -1,4 +1,4 @@
 import Streets from "./streets";
-import FormImmobiles from "./form-streets";
+import FormStreets from "./form-streets";
 
-export { Streets, FormImmobiles };
+export { Streets, FormStreets };

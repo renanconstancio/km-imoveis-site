@@ -9,6 +9,7 @@ import { SiteHome } from "../pages/site-home";
 import { SiteImmoble } from "../pages/site-immoble";
 import { Streets } from "../pages/streets";
 import FormStreets from "../pages/streets/form-streets";
+import { Cities, FormCities } from "../pages/cities";
 
 export const router = createBrowserRouter([
   {
@@ -121,6 +122,50 @@ export const router = createBrowserRouter([
                   </title>
                 </Helmet>
                 <FormStreets />
+              </>
+            ),
+          },
+        ],
+      },
+      {
+        path: "cities",
+        children: [
+          {
+            path: "",
+            element: (
+              <>
+                <Helmet>
+                  <title>
+                    Lista de Ruas - {import.meta.env.VITE_REACT_TITLE}
+                  </title>
+                </Helmet>
+                <Cities />
+              </>
+            ),
+          },
+          {
+            path: "new",
+            element: (
+              <>
+                <Helmet>
+                  <title>
+                    Cadastrar Cidades - {import.meta.env.VITE_REACT_TITLE}
+                  </title>
+                </Helmet>
+                <FormCities />
+              </>
+            ),
+          },
+          {
+            path: ":streetId/edit",
+            element: (
+              <>
+                <Helmet>
+                  <title>
+                    Editar Cidades - {import.meta.env.VITE_REACT_TITLE}
+                  </title>
+                </Helmet>
+                <FormCities />
               </>
             ),
           },

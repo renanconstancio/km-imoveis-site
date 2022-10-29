@@ -19,10 +19,10 @@ export default function ModalPhoto({ immobleId, addPhotos }: PropsModal) {
   const [endEvent, setEndEvent] = useState<boolean>(false);
 
   async function handleSortImage(listSort: PropsPhoto[]) {
-    console.log("before", listSort);
     setPhotoModal(listSort);
-    if (endEvent) await api.put(`/immobiles/photos/sort`, listSort);
-    console.log("after", listSort);
+    if (endEvent) {
+      await api.put(`/immobiles/photos/sort`, listSort);
+    }
   }
 
   async function handleDeleteImage(item: PropsPhoto) {
@@ -60,8 +60,6 @@ export default function ModalPhoto({ immobleId, addPhotos }: PropsModal) {
   useEffect(() => {
     setPhotoModal(addPhotos);
   }, [addPhotos]);
-
-  console.log("start", photos);
 
   return (
     <div className={`${openPhoto ? "" : "hidden"} modal`}>

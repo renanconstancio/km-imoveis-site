@@ -14,8 +14,8 @@ export type PropsImmobles = {
   number: string;
   description: string;
   reference: string;
-  sale_price: number;
-  rent_price: number;
+  sale_price: string;
+  rent_price: string;
   published: "yes" | "no";
   situation: "leased" | "sold" | "available";
   pickup: string;

@@ -17,7 +17,7 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useAlert } from "../../hooks/use-alert";
 import { useModal } from "../../hooks/use-modal";
-import { find } from "../../utils/fun";
+import { find, priceBR, priceUS } from "../../utils/fun";
 import ModalPhoto from "../../components/modal/modal-photos";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -26,6 +26,7 @@ import {
   faSave,
   faUndo,
 } from "@fortawesome/free-solid-svg-icons";
+import { Input } from "../../components/inputs";
 
 const tags = [
   "banheiro",
@@ -92,8 +93,8 @@ export default function FormImmobles() {
     const newPostData = {
       ...data,
       published: data.published === "yes" ? true : false,
-      sale_price: 0,
-      rent_price: 0,
+      sale_price: priceUS(data.sale_price),
+      rent_price: priceUS(data.rent_price),
       cities_id: rwsCity?.id,
       categories_id: rwsCategory?.id,
       neighborhoods_id: rwsDistrict?.id,
@@ -160,8 +161,8 @@ export default function FormImmobles() {
           const immoble = (await res.data) as PropsImmobles;
           reset({
             ...immoble,
-            sale_price: 0,
-            rent_price: 0,
+            rent_price: priceBR(immoble.rent_price),
+            sale_price: priceBR(immoble.sale_price),
             cities_id: [immoble.city?.city, immoble.city?.state.state].join(
               "/",
             ),
@@ -178,6 +179,7 @@ export default function FormImmobles() {
     })();
   }, [changeAlert, immobleId, reset]);
 
+  console.log(priceUS("1.200,00"));
   return (
     <>
       <div className="overflow-x-auto rounded-sm bg-white p-6">
@@ -204,7 +206,21 @@ export default function FormImmobles() {
         <form className="w-full" id="form" onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full md:w-2/12 px-3">
-              <label className="label-form" htmlFor="reference">
+              <Input
+                // mask={CPFMask}
+                type="text"
+                label="CÓD."
+                className={`input-form ${errors.reference && "invalid"}`}
+                error={errors.reference}
+                register={register("reference", {
+                  required: {
+                    value: true,
+                    message: "Campo é obrigatório",
+                  },
+                })}
+              />
+
+              {/* <label className="label-form" htmlFor="reference">
                 CÓD.
               </label>
               <input
@@ -214,7 +230,7 @@ export default function FormImmobles() {
               />
               {errors.reference && (
                 <small className="input-text-invalid">Campo obrigatório</small>
-              )}
+              )} */}
             </div>
             <div className="w-full md:w-6/12 px-3">
               <label className="label-form" htmlFor="description">
@@ -271,25 +287,51 @@ export default function FormImmobles() {
               )}
             </div>
             <div className="w-full md:w-2/12 px-3">
-              <label className="label-form" htmlFor="sale_price">
+              <Input
+                // mask={priceBR}
+                type="tel"
+                label="Pr.Venda."
+                className={`input-form ${errors.sale_price && "invalid"}`}
+                error={errors.sale_price}
+                register={register("sale_price", {
+                  required: {
+                    value: false,
+                    message: "Campo é obrigatório",
+                  },
+                })}
+              />
+              {/* <label className="label-form" htmlFor="sale_price">
                 Preço Venda
               </label>
               <input
                 type="text"
                 className="input-form"
                 {...register("sale_price", { required: false })}
-              />
+              /> */}
             </div>
 
             <div className="w-full md:w-2/12 px-3">
-              <label className="label-form" htmlFor="rent_price">
+              <Input
+                mask={priceBR}
+                type="tel"
+                label="Pr.Aluguel."
+                className={`input-form ${errors.rent_price && "invalid"}`}
+                error={errors.rent_price}
+                register={register("rent_price", {
+                  required: {
+                    value: false,
+                    message: "Campo é obrigatório",
+                  },
+                })}
+              />
+              {/* <label className="label-form" htmlFor="rent_price">
                 Preço Aluguel
               </label>
               <input
                 type="text"
                 className="input-form"
                 {...register("rent_price", { required: false })}
-              />
+              /> */}
             </div>
             <div className="w-full md:w-2/12 px-3 mb-6">
               <label className="label-form" htmlFor="situation">
