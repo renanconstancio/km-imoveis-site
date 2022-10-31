@@ -4,6 +4,8 @@ import { useModal } from "../../hooks/use-modal";
 import { api } from "../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { Input } from "../inputs";
+import { maskCep } from "../../utils/mask";
 
 type PropsModal = {
   addStreets: (data: any) => void;
@@ -44,28 +46,32 @@ export default function ModalStreet({ addStreets }: PropsModal) {
             </h3>
             <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
               <div className="w-full">
-                <label className="label-form" htmlFor="street">
-                  Rua, Avenida, Apto.
-                </label>
-                <input
+                <Input
                   type="text"
+                  label="Rua, Avenida, Apto. *"
                   className={`input-form ${errors.street && "invalid"}`}
-                  {...register("street", { required: true })}
+                  error={errors.street}
+                  register={register("street", {
+                    required: {
+                      value: true,
+                      message: "Campo é obrigatório",
+                    },
+                  })}
                 />
-                {errors.street && (
-                  <small className="input-text-invalid">
-                    Campo obrigatório
-                  </small>
-                )}
               </div>
               <div className="w-full">
-                <label className="label-form" htmlFor="zip_code">
-                  CEP
-                </label>
-                <input
+                <Input
+                  mask={maskCep}
                   type="text"
+                  label="CEP *"
                   className={`input-form ${errors.zip_code && "invalid"}`}
-                  {...register("zip_code", { required: false })}
+                  error={errors.zip_code}
+                  register={register("zip_code", {
+                    required: {
+                      value: false,
+                      message: "Campo é obrigatório",
+                    },
+                  })}
                 />
               </div>
               <button className="btn-primary" type="submit">

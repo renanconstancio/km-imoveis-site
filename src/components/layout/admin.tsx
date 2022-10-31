@@ -1,6 +1,8 @@
 import {
   faBuilding,
   faHome,
+  faList,
+  faNetworkWired,
   faSignOut,
   faStar,
   faStreetView,
@@ -33,12 +35,29 @@ export default function Admin() {
           <FontAwesomeIcon icon={faHome} /> Imovéis
         </NavLink>
         <NavLink
+          to="/adm/categories"
+          className={({ isActive }) =>
+            isActive ? activeClassName : classDefaultName
+          }
+        >
+          <FontAwesomeIcon icon={faList} /> Categorias
+        </NavLink>
+
+        <NavLink
           to="/adm/streets"
           className={({ isActive }) =>
             isActive ? activeClassName : classDefaultName
           }
         >
           <FontAwesomeIcon icon={faStreetView} /> Ruas
+        </NavLink>
+        <NavLink
+          to="/adm/neighborhoods"
+          className={({ isActive }) =>
+            isActive ? activeClassName : classDefaultName
+          }
+        >
+          <FontAwesomeIcon icon={faNetworkWired} /> Bairros
         </NavLink>
         <NavLink
           to="/adm/cities"

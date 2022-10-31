@@ -1,83 +1,129 @@
+import { parse, stringify } from "query-string";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  PropsCategories,
+  PropsCities,
+  PropsNeighborhoods,
+} from "../../global/types/types";
+import { Input } from "../inputs";
+import { api } from "../../api/api";
+import { useForm } from "react-hook-form";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+
 type PropsFilters = {
-  states: any;
+  category: string;
+  district: string;
+  city: string;
+  reference: string;
 };
 
-export function Filters({ states }: PropsFilters) {
+export function Filters() {
+  const [cities, setCities] = useState<PropsCities[]>([]);
+  const [neighborhoods, setNeighborhoods] = useState<PropsNeighborhoods[]>([]);
+  const [categories, setCategories] = useState<PropsCategories[]>([]);
+
+  const { handleSubmit, register } = useForm<PropsFilters>();
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const parsed = parse(location.search);
+
+  function onSubmit(data: PropsFilters) {
+    navigate({
+      pathname: location.pathname,
+      search: stringify({ ...parsed, ...data }),
+    });
+  }
+
+  useEffect(() => {
+    (async () => {
+      api.get("/categories").then(async res => setCategories(await res.data));
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      api.get("/cities").then(async res => setCities(await res.data));
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      api.get("/districts").then(async res => setNeighborhoods(await res.data));
+    })();
+  }, []);
+
   return (
-    <ul className="container border-cyan-400 border-t-8 bg-slate-100 mb-7 p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-7">
-      <li>
-        <label className="block">
-          <span className="text-gray-700">Tipo</span>
-          <input
-            list="browsers"
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="container border-cyan-400 border-t-8 bg-slate-100 mb-7 p-5"
+    >
+      <ul className="flex flex-row flex-wrap items-end gap-5">
+        <li>
+          <Input
+            list="category"
             type="search"
-            className="block w-full"
-            placeholder="Tipos de Imoveis"
+            label="Tipo"
+            className={`input-form`}
+            placeholder={"Tipo de Imoveis"}
+            register={register("category")}
           />
-        </label>
-        <datalist id="browsers">
-          {states.map((state: any) => (
-            <option value={state.state} key={state.id} />
-          ))}
-        </datalist>
-      </li>
-      <li>
-        <label className="block">
-          <span className="text-gray-700">Cidade</span>
-          <input
-            list="browsers"
+          <datalist id="category">
+            {categories.map(({ id, category }) => (
+              <option value={category} key={id} />
+            ))}
+          </datalist>
+        </li>
+        <li>
+          <Input
+            list="district"
             type="search"
-            className="block w-full"
-            placeholder="Tipos de Imoveis"
+            label="Bairro"
+            className={`input-form`}
+            placeholder={"Busca por Bairros"}
+            register={register("district")}
           />
-        </label>
-        <datalist id="browsers">
-          <option value="Chrome" />
-          <option value="Firefox" />
-          <option value="Internet Explorer" />
-          <option value="Opera" />
-          <option value="Safari" />
-          <option value="Microsoft Edge" />
-        </datalist>
-      </li>
-      <li>
-        <label className="block">
-          <span className="text-gray-700">Bairro</span>
-          <input
-            list="browsers"
+          <datalist id="district">
+            {neighborhoods.map(({ id, district }) => (
+              <option value={district} key={id} />
+            ))}
+          </datalist>
+        </li>
+        <li>
+          <Input
+            list="cities"
             type="search"
-            className="block w-full"
-            placeholder="Tipos de Imoveis"
+            label="Cidade"
+            className={`input-form`}
+            placeholder={"Busca por código"}
+            register={register("city")}
           />
-        </label>
-        <datalist id="browsers">
-          <option value="Chrome" />
-          <option value="Firefox" />
-          <option value="Internet Explorer" />
-          <option value="Opera" />
-          <option value="Safari" />
-          <option value="Microsoft Edge" />
-        </datalist>
-      </li>
-      <li>
-        <label className="block">
-          <span className="text-gray-700">Rua</span>
-          <input
-            list="browsers"
-            type="search"
-            className="block w-full"
-            placeholder="Tipos de Imoveis"
+          <datalist id="cities">
+            {cities.map(({ id, city, state }) => (
+              <option value={[city, state.state].join("/")} key={id} />
+            ))}
+          </datalist>
+        </li>
+        <li>
+          <Input
+            type="text"
+            label="Código do Imovél"
+            className={`input-form`}
+            placeholder={"C0011"}
+            register={register("reference")}
           />
-        </label>
-        <datalist id="browsers">
-          <option value="Chrome" />
-          <option value="Firefox" />
-          <option value="Internet Explorer" />
-          <option value="Opera" />
-          <option value="Safari" />
-          <option value="Microsoft Edge" />
-        </datalist>
-      </li>
-    </ul>
+        </li>
+        <li>
+          <button className="btn-primary flex gap-2" type="submit">
+            <span>
+              <FontAwesomeIcon icon={faSearch} />
+            </span>
+            <span>PESQUISAR</span>
+          </button>
+        </li>
+      </ul>
+    </form>
   );
 }

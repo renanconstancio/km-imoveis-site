@@ -19,7 +19,7 @@ export default function ModalDistrict({ addDistricts }: PropsModal) {
   } = useForm<PropsDistrict>();
 
   async function onSubmit(data: PropsDistrict) {
-    await api.post(`/districts`, data).then(async res => {
+    await api.post(`/neighborhoods`, data).then(async res => {
       const category = await res.data;
       addDistricts((old: any) => [...old, category]);
       closeNeighborhoods(!openNeighborhoods);

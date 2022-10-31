@@ -2,15 +2,15 @@ import { parse } from "query-string";
 import { KeyboardEvent, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Loading } from "../../components/loading";
-import { PropsCities } from "../../global/types/types";
+import { PropsStates } from "../../global/types/types";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { api } from "../../api/api";
 
-export default function Cities() {
+export default function States() {
   const [clear, setClear] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [cities, setCities] = useState<PropsCities[]>([]);
+  const [states, setStates] = useState<PropsStates[]>([]);
 
   const location = useLocation();
 
@@ -24,39 +24,40 @@ export default function Cities() {
     if (event.currentTarget.value) {
       if (event.code === "Enter" || event.keyCode === 13) {
         setClear(!clear);
-        setCities(
-          cities?.filter((f: { city: string }) =>
-            f.city
-              .toLowerCase()
-              .includes(event.currentTarget.value.toLowerCase()),
+        setStates(
+          states?.filter(
+            (f: { street: string }) =>
+              f.street
+                .toLowerCase()
+                .includes(event.currentTarget.value.toLowerCase()), //f.street === event.currentTarget.value,
           ),
         );
       }
     }
   }
 
-  async function handleDelete(data: PropsCities) {
-    if (!confirm(`Você deseja excluir ${data.city}?`)) return;
+  async function handleDelete(data: PropsStates) {
+    if (!confirm(`Você deseja excluir ${data.street}?`)) return;
     setLoading(true);
     await api
-      .delete(`/cities/${data.id}`)
+      .delete(`/states/${data.id}`)
       .then(() =>
-        setCities(cities?.filter((f: { id: string }) => f.id !== data.id)),
+        setStates(states?.filter((f: { id: string }) => f.id !== data.id)),
       )
       .finally(() => setLoading(false));
   }
 
-  async function loadCities() {
+  async function loadStates() {
     setLoading(true);
     await api
-      .get(`/cities`)
-      .then(async resp => setCities(await resp.data))
+      .get(`/states`)
+      .then(async resp => setStates(await resp.data))
       .finally(() => setLoading(false));
   }
 
   useEffect(() => {
     (async () => {
-      loadCities();
+      loadStates();
     })();
   }, []);
 
@@ -78,7 +79,7 @@ export default function Cities() {
                 className="btn-default text-black"
                 type="button"
                 onClick={() => {
-                  loadCities();
+                  loadStates();
                   setClear(!clear);
                 }}
               >
@@ -87,7 +88,7 @@ export default function Cities() {
             )}
           </aside>
           <nav>
-            <Link className="btn-success" to="/adm/cities/new">
+            <Link className="btn-success" to="/adm/states/new">
               <FontAwesomeIcon icon={faEdit} /> Criar
             </Link>
           </nav>
@@ -96,15 +97,15 @@ export default function Cities() {
 
       <li className="list-orders uppercase font-play font-bold bg-gray-200">
         <span className="w-1/12">ações</span>
-        <span className="w-11/12">Cidade</span>
+        <span className="w-11/12">Estados</span>
       </li>
 
-      {cities?.map(rws => (
+      {states?.map(rws => (
         <li key={rws.id} className="list-orders">
           <span className="flex gap-1 w-1/12">
             <Link
               className="btn-primary btn-xs"
-              to={`/adm/cities/${rws.id}/edit`}
+              to={`/adm/states/${rws.id}/edit`}
             >
               <FontAwesomeIcon icon={faEdit} />
             </Link>
@@ -115,13 +116,11 @@ export default function Cities() {
               <FontAwesomeIcon icon={faTrash} />
             </span>
           </span>
-          <span className="w-11/12">
-            {[rws.city, rws.state.state].join("/")}
-          </span>
+          <span className="w-11/12">{rws.state}</span>
         </li>
       ))}
 
-      {!cities.length && (
+      {!states.length && (
         <li className="py-3 px-6 text-center">Nenhum imovel encontado</li>
       )}
     </ul>

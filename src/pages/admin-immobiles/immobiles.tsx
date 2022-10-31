@@ -2,17 +2,15 @@ import { parse } from "query-string";
 import { KeyboardEvent, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Loading } from "../../components/loading";
-import {
-  PropsImmobilePagination,
-  PropsImmobles,
-} from "../../global/types/types";
+import { PropsImmobilePagination } from "../../global/types/types";
 import { Pagination } from "../../components/pagination";
-import { api } from "../../api/api";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { situationText } from "../../utils/functions";
+import { api } from "../../api/api";
 
 export default function Immobiles() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [immobiles, setImmobiles] = useState<PropsImmobilePagination>();
 
   const navigate = useNavigate();
@@ -36,15 +34,21 @@ export default function Immobiles() {
     }
   }
 
-  async function handleDelete(data: PropsImmobles) {
-    if (!confirm(`Você deseja excluir ${data.description}?`)) return;
+  async function handleDelete({
+    id,
+    description,
+  }: {
+    id: string;
+    description: string;
+  }) {
+    if (!confirm(`Você deseja excluir ${description}?`)) return;
     setLoading(true);
     await api
-      .delete(`/immobiles/${data.id}`)
+      .delete(`/immobiles/${id}`)
       .then(() =>
         setImmobiles({
           ...immobiles,
-          data: immobiles?.data.filter((f: { id: string }) => f.id !== data.id),
+          data: immobiles?.data.filter((f: { id: string }) => f.id !== id),
         } as PropsImmobilePagination),
       )
       .finally(() => setLoading(false));
@@ -99,7 +103,7 @@ export default function Immobiles() {
           <Pagination
             total={immobiles?.total || 0}
             currentPage={Number(`${query.page || "1"}`)}
-            perPage={Number(`${query.page || "25"}`)}
+            perPage={Number(`${query.limit || "25"}`)}
           />
         </nav>
       </li>
@@ -107,31 +111,45 @@ export default function Immobiles() {
       <li className="list-orders uppercase font-play font-bold bg-gray-200">
         <span className="w-1/12">ações</span>
         <span className="w-1/12">CÓD</span>
-        <span className="w-3/12">descrição do imóvel</span>
-        <span className="w-3/12">Rua, Avenida, Apto.</span>
+        <span className="w-4/12">descrição do imóvel</span>
+        <span className="w-4/12">Rua, Avenida, Apto.</span>
+        <span className="text-center w-1/12">Site</span>
+        <span className="text-center w-1/12">Situação</span>
       </li>
 
-      {immobiles?.data.map(rws => (
-        <li key={rws.id} className="list-orders">
-          <span className="flex gap-1 w-1/12">
-            <Link
-              className="btn-primary btn-xs"
-              to={`/adm/immobiles/${rws.id}/edit`}
-            >
-              <FontAwesomeIcon icon={faEdit} />
-            </Link>
-            <span
-              className="btn-danger btn-xs"
-              onClick={() => handleDelete(rws)}
-            >
-              <FontAwesomeIcon icon={faTrash} />
+      {immobiles?.data.map(
+        ({ id, reference, description, street, published, situation }) => (
+          <li key={id} className="list-orders">
+            <span className="flex gap-1 w-1/12">
+              <Link
+                className="btn-primary btn-xs"
+                to={`/adm/immobiles/${id}/edit`}
+              >
+                <FontAwesomeIcon icon={faEdit} />
+              </Link>
+              <span
+                className="btn-danger btn-xs"
+                onClick={() => handleDelete({ id, description })}
+              >
+                <FontAwesomeIcon icon={faTrash} />
+              </span>
             </span>
-          </span>
-          <span className="w-1/12">{rws.reference}</span>
-          <span className="w-3/12">{rws.description}</span>
-          <span className="w-3/12">{rws.street?.street}</span>
-        </li>
-      ))}
+            <span className="w-1/12">{reference}</span>
+            <span className="w-4/12">{description}</span>
+            <span className="w-4/12">{street?.street}</span>
+            <span
+              className={`text-center w-1/12 ${
+                published ? "bg-green-300" : "bg-red-300"
+              }`}
+            >
+              {published ? "ON" : "OFF"}
+            </span>
+            <span className="w-1/12 text-center">
+              {situationText(situation)}
+            </span>
+          </li>
+        ),
+      )}
 
       {!immobiles?.data.length && (
         <li className="py-3 px-6 text-center">Nenhum imovel encontado</li>
@@ -142,7 +160,7 @@ export default function Immobiles() {
           <Pagination
             total={immobiles?.total || 0}
             currentPage={Number(`${query.page || "1"}`)}
-            perPage={Number(`${query.page || "25"}`)}
+            perPage={Number(`${query.limit || "25"}`)}
           />
         </nav>
       </li>
