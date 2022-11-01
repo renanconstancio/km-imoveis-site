@@ -6,6 +6,8 @@ import {
   faSignOut,
   faStar,
   faStreetView,
+  faUser,
+  faUserTie,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NavLink, Outlet } from "react-router-dom";
@@ -33,6 +35,22 @@ export default function Admin() {
           }
         >
           <FontAwesomeIcon icon={faHome} /> Imovéis
+        </NavLink>
+        <NavLink
+          to="/adm/owners"
+          className={({ isActive }) =>
+            isActive ? activeClassName : classDefaultName
+          }
+        >
+          <FontAwesomeIcon icon={faUserTie} /> Proprietários
+        </NavLink>
+        <NavLink
+          to="/adm/customers"
+          className={({ isActive }) =>
+            isActive ? activeClassName : classDefaultName
+          }
+        >
+          <FontAwesomeIcon icon={faUser} /> Inquilinos
         </NavLink>
         <NavLink
           to="/adm/categories"

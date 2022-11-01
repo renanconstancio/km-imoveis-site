@@ -1,110 +1,74 @@
 import {
-  PropsCategories,
   PropsCities,
-  PropsImmobles,
+  PropsCustomers,
   PropsNeighborhoods,
   PropsStreets,
 } from "../../global/types/types";
-import {
-  ModalCategory,
-  ModalStreet,
-  ModalDistrict,
-  ModalCity,
-} from "../../components/modal";
-import { api } from "../../api/api";
+
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useAlert } from "../../hooks/use-alert";
-import { useModal } from "../../hooks/use-modal";
-import { find } from "../../utils/functions";
-import ModalPhoto from "../../components/modal/modal-photos";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFolderOpen,
-  faImage,
   faSave,
   faUndo,
 } from "@fortawesome/free-solid-svg-icons";
 import { Input } from "../../components/inputs";
-import { maskCurrency, maskCurrencyUs } from "../../utils/mask";
+import { maskPhone } from "../../utils/mask";
+import { useModal } from "../../hooks/use-modal";
+import { ModalCity, ModalDistrict, ModalStreet } from "../../components/modal";
+import { find } from "../../utils/functions";
+import { api } from "../../api/api";
 
-const tags = [
-  "banheiro",
-  "2 banheiro",
-  "3 banheiro",
-  "quarto",
-  "2 quarto",
-  "3 quarto",
-  "4 quarto",
-  "sala",
-  "copa",
-  "cozinha",
-  "sala de star",
-  "1 suite",
-  "ventilador",
-  "ar condicionado",
-  "caragem",
-  "caragem 2 carros",
-  "caragem 3 carros",
-  "caragem 4 carros",
-];
-
-export default function FormImmobles() {
+export default function FormCustomers() {
   const [cities, setCities] = useState<PropsCities[]>([]);
   const [neighborhoods, setNeighborhoods] = useState<PropsNeighborhoods[]>([]);
   const [streets, setStreets] = useState<PropsStreets[]>([]);
-  const [categories, setCategories] = useState<PropsCategories[]>([]);
 
   const {
-    openCategory,
-    closeCategory,
     openStreet,
     closeStreet,
     openNeighborhoods,
     closeNeighborhoods,
     openCity,
     closeCity,
-    openPhoto,
-    closePhoto,
   } = useModal();
 
   const { changeAlert } = useAlert();
 
   const navigate = useNavigate();
 
-  const { immobleId } = useParams<{ immobleId: string | undefined }>();
+  const { ownerId } = useParams<{ ownerId: string | undefined }>();
 
   const {
     reset,
-    watch,
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsImmobles>();
+  } = useForm<PropsCustomers>();
 
-  async function onSubmit(data: PropsImmobles) {
+  async function onSubmit(data: PropsCustomers) {
+    const rwsStreet = find(streets, data.streets_id, "street");
+    const rwsDistrict = find(neighborhoods, data.neighborhoods_id, "district");
     const rwsCity = cities.find(
       item => [item.city, item.state.state].join("/") === data.cities_id,
     );
-    const rwsStreet = find(streets, data.streets_id, "street");
-    const rwsDistrict = find(neighborhoods, data.neighborhoods_id, "district");
-    const rwsCategory = find(categories, data.categories_id, "category");
 
     const newPostData = {
       ...data,
-      published: data.published === "true" ? true : false,
-      sale_price: maskCurrencyUs(`${data.sale_price || 0}`),
-      rent_price: maskCurrencyUs(`${data.rent_price || 0}`),
+      type: "owner",
       cities_id: rwsCity?.id,
-      categories_id: rwsCategory?.id,
       neighborhoods_id: rwsDistrict?.id,
       streets_id: rwsStreet?.id,
+      rent_value: "0",
+      rental_value: "0",
     };
 
     if (data.id)
       await api
-        .put(`/immobiles/${immobleId}`, newPostData)
+        .put(`/customers/${ownerId}`, newPostData)
         .then(() =>
           changeAlert({
             message: "Dados salvos com sucesso.",
@@ -117,12 +81,12 @@ export default function FormImmobles() {
         );
     else
       await api
-        .post(`/immobiles`, newPostData)
+        .post(`/customers`, newPostData)
         .then(async resp => {
           changeAlert({
             message: "Dados salvos com sucesso.",
           });
-          navigate({ pathname: `/adm/immobiles/${(await resp.data).id}/edit` });
+          navigate({ pathname: `/adm/owners/${(await resp.data).id}/edit` });
         })
         .catch(() =>
           changeAlert({
@@ -131,19 +95,18 @@ export default function FormImmobles() {
         );
   }
 
-  async function loadImmoble() {
+  async function loadCustomers() {
     await api
-      .get(`/immobiles/${immobleId}`)
+      .get(`/customers/${ownerId}`)
       .then(async res => {
-        const immoble = (await res.data) as PropsImmobles;
+        const customer = (await res.data) as PropsCustomers;
         reset({
-          ...immoble,
-          sale_price: `${maskCurrency(immoble.sale_price)}`,
-          rent_price: `${maskCurrency(immoble.rent_price)}`,
-          cities_id: [immoble.city?.city, immoble.city?.state.state].join("/"),
-          categories_id: immoble.category?.category,
-          neighborhoods_id: immoble?.district?.district,
-          streets_id: immoble.street?.street,
+          ...customer,
+          cities_id: [customer.city?.city, customer.city?.state.state].join(
+            "/",
+          ),
+          neighborhoods_id: customer?.district?.district,
+          streets_id: customer.street?.street,
         });
       })
       .catch(e => {
@@ -153,12 +116,6 @@ export default function FormImmobles() {
         });
       });
   }
-
-  useEffect(() => {
-    (async () => {
-      api.get("/categories").then(async res => setCategories(await res.data));
-    })();
-  }, []);
 
   useEffect(() => {
     (async () => {
@@ -182,11 +139,10 @@ export default function FormImmobles() {
 
   useEffect(() => {
     (async () => {
-      if (immobleId) loadImmoble;
+      if (ownerId) loadCustomers();
     })();
-  }, [immobleId]);
+  }, [ownerId]);
 
-  console.log(maskCurrency("120000"));
   return (
     <>
       <div className="overflow-x-auto rounded-sm bg-white p-6">
@@ -195,30 +151,20 @@ export default function FormImmobles() {
             <FontAwesomeIcon icon={faSave} />
             <span>Salvar</span>
           </button>
-          {immobleId && (
-            <button
-              className="btn-primary btn-ico"
-              type="button"
-              onClick={() => closePhoto(!openPhoto)}
-            >
-              <FontAwesomeIcon icon={faImage} />
-              <span>{watch("photos")?.length} Fotos</span>
-            </button>
-          )}
-          <Link className="btn-warning btn-ico" to="/adm/immobiles">
+          <Link className="btn-warning btn-ico" to="/adm/owners">
             <FontAwesomeIcon icon={faUndo} />
             <span>Voltar</span>
           </Link>
         </div>
         <form className="w-full" id="form" onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full md:w-2/12 px-3">
+            <div className="w-full md:w-5/12 px-3">
               <Input
                 type="text"
-                label="CÓD. *"
-                className={`input-form ${errors.reference && "invalid"}`}
-                error={errors.reference}
-                register={register("reference", {
+                label="Nome. *"
+                className={`input-form ${errors.first_name && "invalid"}`}
+                error={errors.first_name}
+                register={register("first_name", {
                   required: {
                     value: true,
                     message: "Campo é obrigatório",
@@ -226,29 +172,15 @@ export default function FormImmobles() {
                 })}
               />
             </div>
-            <div className="w-full md:w-6/12 px-3">
+            <div className="w-full md:w-5/12 px-3">
               <Input
                 type="text"
-                label="Descrição do Imóvel * "
-                className={`input-form ${errors.description && "invalid"}`}
-                error={errors.description}
-                register={register("description", {
+                label="Sobrenome * "
+                className={`input-form ${errors.last_name && "invalid"}`}
+                error={errors.last_name}
+                register={register("last_name", {
                   required: {
                     value: true,
-                    message: "Campo é obrigatório",
-                  },
-                })}
-              />
-            </div>
-            <div className="w-full md:w-4/12 px-3">
-              <Input
-                type="text"
-                label="Captador"
-                className={`input-form ${errors.pickup && "invalid"}`}
-                error={errors.pickup}
-                register={register("pickup", {
-                  required: {
-                    value: false,
                     message: "Campo é obrigatório",
                   },
                 })}
@@ -256,13 +188,13 @@ export default function FormImmobles() {
             </div>
           </div>
           <div className="flex flex-wrap -mx-3">
-            <div className="w-full md:w-3/12 px-3">
+            <div className="w-full md:w-3/12 px-3 mb-6">
               <Input
                 type="text"
-                label="Área de Construção (m²)"
-                className={`input-form ${errors.building_area && "invalid"}`}
-                error={errors.building_area}
-                register={register("building_area", {
+                label="CNPJ"
+                className={`input-form ${errors.cnpj && "invalid"}`}
+                error={errors.cnpj}
+                register={register("cnpj", {
                   required: {
                     value: false,
                     message: "Campo é obrigatório",
@@ -270,13 +202,13 @@ export default function FormImmobles() {
                 })}
               />
             </div>
-            <div className="w-full md:w-3/12 px-3">
+            <div className="w-full md:w-3/12 px-3 mb-6">
               <Input
                 type="text"
-                label="Área Terrea (m²)"
-                className={`input-form ${errors.terrain_area && "invalid"}`}
-                error={errors.terrain_area}
-                register={register("terrain_area", {
+                label="IE "
+                className={`input-form ${errors.ie && "invalid"}`}
+                error={errors.ie}
+                register={register("ie", {
                   required: {
                     value: false,
                     message: "Campo é obrigatório",
@@ -284,14 +216,42 @@ export default function FormImmobles() {
                 })}
               />
             </div>
-            <div className="w-full md:w-2/12 px-3">
+            <div className="w-full md:w-3/12 px-3 mb-6">
               <Input
-                type="tel"
-                mask={maskCurrency}
-                label="Pr.Venda."
-                className={`input-form ${errors.sale_price && "invalid"}`}
-                error={errors.sale_price}
-                register={register("sale_price", {
+                type="text"
+                label="RG "
+                className={`input-form ${errors.rg && "invalid"}`}
+                error={errors.rg}
+                register={register("rg", {
+                  required: {
+                    value: false,
+                    message: "Campo é obrigatório",
+                  },
+                })}
+              />
+            </div>
+            <div className="w-full md:w-3/12 px-3 mb-6">
+              <Input
+                type="text"
+                label="CPF *"
+                className={`input-form ${errors.cpf && "invalid"}`}
+                error={errors.cpf}
+                register={register("cpf", {
+                  required: {
+                    value: true,
+                    message: "Campo é obrigatório",
+                  },
+                })}
+              />
+            </div>
+            <div className="w-full md:w-3/12 px-3 mb-6">
+              <Input
+                mask={maskPhone}
+                type="text"
+                label="Telefone"
+                className={`input-form ${errors.phone && "invalid"}`}
+                error={errors.phone}
+                register={register("phone", {
                   required: {
                     value: false,
                     message: "Campo é obrigatório",
@@ -300,85 +260,6 @@ export default function FormImmobles() {
               />
             </div>
 
-            <div className="w-full md:w-2/12 px-3">
-              <Input
-                type="tel"
-                mask={maskCurrency}
-                label="Pr.Aluguel."
-                className={`input-form ${errors.rent_price && "invalid"}`}
-                error={errors.rent_price}
-                register={register("rent_price", {
-                  required: {
-                    value: false,
-                    message: "Campo é obrigatório",
-                  },
-                })}
-              />
-            </div>
-            <div className="w-full md:w-2/12 px-3 mb-6">
-              <label className="label-form" htmlFor="situation">
-                Situação
-              </label>
-              <div className="relative">
-                <select
-                  className="input-form"
-                  {...register("situation", { required: false })}
-                >
-                  <option value="location">Locação</option>
-                  <option value="purchase">Compra</option>
-                  <option value="sale">Venda</option>
-                </select>
-              </div>
-            </div>
-            <div className="w-full md:w-2/12 px-3 mb-6">
-              <label className="label-form" htmlFor="published">
-                Web
-              </label>
-              <div className="relative">
-                <select
-                  className="input-form"
-                  defaultValue={"false"}
-                  {...register("published", { required: false })}
-                >
-                  <option value={"true"}>Publicar</option>
-                  <option value={"false"}>Congelar</option>
-                </select>
-              </div>
-            </div>
-            <div className="w-full md:w-4/12 px-3 mb-6">
-              <label className="label-form" htmlFor="categories_id">
-                Categoria
-              </label>
-              <div className="flex">
-                <span className="flex-1">
-                  <input
-                    list="categories_id"
-                    type="search"
-                    className={`input-form ${
-                      errors.categories_id && "invalid"
-                    }`}
-                    placeholder="Pesquisar..."
-                    {...register("categories_id", { required: true })}
-                  />
-                </span>
-                <span
-                  className="ml-3 btn-primary self-center cursor-pointer flex text-xl"
-                  onClick={() => closeCategory(!openCategory)}
-                >
-                  <FontAwesomeIcon icon={faFolderOpen} />
-                </span>
-              </div>
-              {errors.categories_id && (
-                <small className="input-text-invalid">Campo obrigatório</small>
-              )}
-              <datalist id="categories_id">
-                {categories.map(({ id, category }) => (
-                  <option key={id} value={[category].join(", ")} />
-                ))}
-              </datalist>
-            </div>
-            {/* </div>
-          <div className="flex flex-wrap -mx-3"> */}
             <div className="w-full md:w-6/12 px-3 mb-6">
               <label className="label-form" htmlFor="streets_id">
                 Rua
@@ -410,19 +291,19 @@ export default function FormImmobles() {
               </datalist>
             </div>
             <div className="w-full md:w-2/12 px-3">
-              <label className="label-form" htmlFor="number">
-                Número Casa
-              </label>
-              <input
+              <Input
                 type="text"
+                label="Número Casa"
                 className={`input-form ${errors.number && "invalid"}`}
-                {...register("number", { required: false })}
+                error={errors.number}
+                register={register("number", {
+                  required: {
+                    value: false,
+                    message: "Campo é obrigatório",
+                  },
+                })}
               />
-              {errors.number && (
-                <small className="input-text-invalid">Campo obrigatório</small>
-              )}
             </div>
-
             <div className="w-full md:w-4/12 px-3 mb-6">
               <label className="label-form" htmlFor="neighborhoods_id">
                 Bairro
@@ -488,17 +369,57 @@ export default function FormImmobles() {
                 ))}
               </datalist>
             </div>
+            <div className="w-full font-bold uppercase font-play pt-5 px-3">
+              Dados da Conta Bancária <hr className="my-5" />
+            </div>
+            <div className="w-full md:w-2/12 px-3">
+              <Input
+                type="text"
+                label="Agência"
+                className={`input-form ${errors.ag_bank && "invalid"}`}
+                error={errors.ag_bank}
+                register={register("ag_bank", {
+                  required: {
+                    value: false,
+                    message: "Campo é obrigatório",
+                  },
+                })}
+              />
+            </div>
+            <div className="w-full md:w-4/12 px-3">
+              <Input
+                type="text"
+                label="Conta Corrente"
+                className={`input-form ${errors.cc_bank && "invalid"}`}
+                error={errors.cc_bank}
+                register={register("cc_bank", {
+                  required: {
+                    value: false,
+                    message: "Campo é obrigatório",
+                  },
+                })}
+              />
+            </div>
+            <div className="w-full md:w-4/12 px-3">
+              <Input
+                type="text"
+                label="Chave Pix"
+                className={`input-form ${errors.pix_bank && "invalid"}`}
+                error={errors.pix_bank}
+                register={register("pix_bank", {
+                  required: {
+                    value: false,
+                    message: "Campo é obrigatório",
+                  },
+                })}
+              />
+            </div>
           </div>
         </form>
       </div>
-      <ModalCategory addCategories={setCategories} />
       <ModalStreet addStreets={setStreets} />
       <ModalDistrict addDistricts={setNeighborhoods} />
       <ModalCity addCities={setCities} />
-      <ModalPhoto
-        immobleId={immobleId || ""}
-        addPhotos={watch("photos") || []}
-      />
     </>
   );
 }

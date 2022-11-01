@@ -1,30 +1,35 @@
-import { parse } from "query-string";
+import { parse, stringify } from "query-string";
 import { KeyboardEvent, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Loading } from "../../components/loading";
-import { PropsImmobilePagination } from "../../global/types/types";
+import { PropsImmobles, PropsPagination } from "../../global/types/types";
 import { Pagination } from "../../components/pagination";
-import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEdit,
+  faSort,
+  faTimes,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { situationText } from "../../utils/functions";
 import { api } from "../../api/api";
 
 export default function Immobiles() {
   const [loading, setLoading] = useState<boolean>(true);
-  const [immobiles, setImmobiles] = useState<PropsImmobilePagination>();
+  const [immobiles, setImmobiles] = useState<PropsPagination<PropsImmobles[]>>(
+    {} as PropsPagination<PropsImmobles[]>,
+  );
 
   const navigate = useNavigate();
   const location = useLocation();
-
+  const locationDecodURI = decodeURI(location.search);
   const query = parse(location.search);
 
-  const q = (query.q || "") as unknown as string;
+  const qs = (query.q || "") as unknown as string;
   const limit = (query.limit || "25") as string;
   const page = (query.page || "1") as string;
 
-  function handleKeyPressSearch(
-    event: KeyboardEvent<EventTarget & HTMLInputElement>,
-  ) {
+  function handleSearch(event: KeyboardEvent<EventTarget & HTMLInputElement>) {
     if (event.currentTarget.value) {
       if (event.code === "Enter" || event.keyCode === 13) {
         navigate({
@@ -32,6 +37,14 @@ export default function Immobiles() {
         });
       }
     }
+  }
+
+  function handleOrder(orderString: string) {
+    const qsParse = parse(orderString);
+
+    navigate({
+      search: decodeURI(stringify({ ...query, ...qsParse })),
+    });
   }
 
   async function handleDelete({
@@ -48,31 +61,29 @@ export default function Immobiles() {
       .then(() =>
         setImmobiles({
           ...immobiles,
-          data: immobiles?.data.filter((f: { id: string }) => f.id !== id),
-        } as PropsImmobilePagination),
+          data: immobiles?.data?.filter((f: { id: string }) => f.id !== id),
+        }),
       )
       .finally(() => setLoading(false));
   }
 
-  async function loadImmobiles({ limit, page, q }: { [k: string]: string }) {
+  async function loadImmobiles() {
+    const conveterParse = parse(
+      `page=${page}&limit=${limit}&search[reference]=${qs}&search[description]=${qs}&search[city]=${qs}&search[street]=${qs}&search[district]=${qs}`,
+    );
+
     setLoading(true);
     await api
-      .get(
-        `/immobiles?page=${page}&limit=${limit}&search[reference]=${q}&search[description]=${q}&search[city]=${q}&search[street]=${q}&search[district]=${q}`,
-      )
+      .get(`/immobiles?${decodeURI(stringify({ ...query, ...conveterParse }))}`)
       .then(async resp => setImmobiles(await resp.data))
       .finally(() => setLoading(false));
   }
 
   useEffect(() => {
     (async () => {
-      loadImmobiles({
-        limit,
-        page,
-        q,
-      });
+      loadImmobiles();
     })();
-  }, [limit, page, q]);
+  }, [locationDecodURI]);
 
   if (loading) return <Loading />;
 
@@ -85,9 +96,9 @@ export default function Immobiles() {
               type="text"
               className="input-form"
               defaultValue={`${query.q || ""}`}
-              onKeyDown={handleKeyPressSearch}
+              onKeyDown={handleSearch}
             />
-            {q && (
+            {qs && (
               <Link className="btn-default text-black" to="/adm/immobiles">
                 <FontAwesomeIcon icon={faTimes} />
               </Link>
@@ -110,14 +121,50 @@ export default function Immobiles() {
 
       <li className="list-orders uppercase font-play font-bold bg-gray-200">
         <span className="w-1/12">ações</span>
-        <span className="w-1/12">CÓD</span>
-        <span className="w-4/12">descrição do imóvel</span>
+        <span
+          className="w-1/12 cursor-pointer"
+          onClick={() => {
+            const testReference = locationDecodURI.indexOf("[reference]=asc");
+            if (testReference !== -1) {
+              handleOrder("order[reference]=desc");
+            } else {
+              handleOrder("order[reference]=asc");
+            }
+          }}
+        >
+          <FontAwesomeIcon icon={faSort} /> CÓD
+        </span>
+        <span
+          className="w-4/12 cursor-pointer"
+          onClick={() => {
+            const testReference = locationDecodURI.indexOf("[description]=asc");
+            if (testReference !== -1) {
+              handleOrder("order[description]=desc");
+            } else {
+              handleOrder("order[description]=asc");
+            }
+          }}
+        >
+          <FontAwesomeIcon icon={faSort} /> descrição do imóvel
+        </span>
         <span className="w-4/12">Rua, Avenida, Apto.</span>
-        <span className="text-center w-1/12">Site</span>
+        <span
+          className="text-center w-1/12 cursor-pointer"
+          onClick={() => {
+            const testReference = locationDecodURI.indexOf("[published]=asc");
+            if (testReference !== -1) {
+              handleOrder("order[published]=desc");
+            } else {
+              handleOrder("order[published]=asc");
+            }
+          }}
+        >
+          <FontAwesomeIcon icon={faSort} /> Site
+        </span>
         <span className="text-center w-1/12">Situação</span>
       </li>
 
-      {immobiles?.data.map(
+      {immobiles?.data?.map(
         ({ id, reference, description, street, published, situation }) => (
           <li key={id} className="list-orders">
             <span className="flex gap-1 w-1/12">
@@ -151,7 +198,7 @@ export default function Immobiles() {
         ),
       )}
 
-      {!immobiles?.data.length && (
+      {!immobiles?.data?.length && (
         <li className="py-3 px-6 text-center">Nenhum imovel encontado</li>
       )}
 

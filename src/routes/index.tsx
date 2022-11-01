@@ -7,12 +7,13 @@ import { FormImmobiles, Immobiles } from "../pages/admin-immobiles";
 import { Error } from "../pages/error";
 import { SiteHome } from "../pages/site-home";
 import { SiteImmoble } from "../pages/site-immoble";
-import { Streets } from "../pages/admin-streets";
-import FormStreets from "../pages/admin-streets/form-streets";
+import { Streets, FormStreets } from "../pages/admin-streets";
 import { Cities, FormCities } from "../pages/admin-cities";
 import { FormStates, States } from "../pages/admin-states";
 import { Categories, FormCategories } from "../pages/admin-categories";
 import { FormNeighborhoods, Neighborhoods } from "../pages/admin-neighborhoods";
+import { Customers, FormCustomers } from "../pages/admin-customers";
+import { FormOwners, Owners } from "../pages/admin-owners";
 
 export const router = createBrowserRouter([
   {
@@ -301,6 +302,94 @@ export const router = createBrowserRouter([
                   </title>
                 </Helmet>
                 <FormNeighborhoods />
+              </>
+            ),
+          },
+        ],
+      },
+      {
+        path: "customers",
+        children: [
+          {
+            path: "",
+            element: (
+              <>
+                <Helmet>
+                  <title>
+                    Lista de Clientes - {import.meta.env.VITE_REACT_TITLE}
+                  </title>
+                </Helmet>
+                <Customers />
+              </>
+            ),
+          },
+          {
+            path: "new",
+            element: (
+              <>
+                <Helmet>
+                  <title>
+                    Cadastrar Clientes - {import.meta.env.VITE_REACT_TITLE}
+                  </title>
+                </Helmet>
+                <FormCustomers />
+              </>
+            ),
+          },
+          {
+            path: ":customerId/edit",
+            element: (
+              <>
+                <Helmet>
+                  <title>
+                    Editar Clientes - {import.meta.env.VITE_REACT_TITLE}
+                  </title>
+                </Helmet>
+                <FormCustomers />
+              </>
+            ),
+          },
+        ],
+      },
+      {
+        path: "owners",
+        children: [
+          {
+            path: "",
+            element: (
+              <>
+                <Helmet>
+                  <title>
+                    Lista de Proprietários - {import.meta.env.VITE_REACT_TITLE}
+                  </title>
+                </Helmet>
+                <Owners />
+              </>
+            ),
+          },
+          {
+            path: "new",
+            element: (
+              <>
+                <Helmet>
+                  <title>
+                    Cadastrar Proprietários - {import.meta.env.VITE_REACT_TITLE}
+                  </title>
+                </Helmet>
+                <FormOwners />
+              </>
+            ),
+          },
+          {
+            path: ":ownerId/edit",
+            element: (
+              <>
+                <Helmet>
+                  <title>
+                    Editar Proprietários - {import.meta.env.VITE_REACT_TITLE}
+                  </title>
+                </Helmet>
+                <FormOwners />
               </>
             ),
           },

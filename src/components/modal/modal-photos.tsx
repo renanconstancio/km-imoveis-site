@@ -20,10 +20,14 @@ export default function ModalPhoto({ immobleId, addPhotos }: PropsModal) {
   const [photos, setPhotoModal] = useState<PropsPhoto[]>([]);
   const [endEvent, setEndEvent] = useState<boolean>(false);
 
+  let tempSortPhotos: PropsPhoto[] = [];
+
   async function handleSortImage(listSort: PropsPhoto[]) {
+    tempSortPhotos = listSort;
     setPhotoModal(listSort);
+    console.log(tempSortPhotos);
     if (endEvent) {
-      await api.put(`/immobiles/photos/sort`, listSort);
+      await api.put(`/immobiles/photos/sort`, tempSortPhotos);
     }
   }
 
@@ -49,7 +53,7 @@ export default function ModalPhoto({ immobleId, addPhotos }: PropsModal) {
     await api
       .patch(`/immobiles/${immobleId}/photos`, formData)
       .then(async ({ data, status }) => {
-        if (immobleId && status === 200) {
+        if (immobleId && status === 201) {
           setPhotoModal(data.photos);
           setLoading(false);
         }
@@ -97,7 +101,7 @@ export default function ModalPhoto({ immobleId, addPhotos }: PropsModal) {
                 <ReactSortable
                   list={photos}
                   setList={handleSortImage}
-                  onEnd={() => setEndEvent(!endEvent)}
+                  onChange={() => setEndEvent(!endEvent)}
                   className="flex flex-wrap mb-6 "
                   tag="ul"
                 >
