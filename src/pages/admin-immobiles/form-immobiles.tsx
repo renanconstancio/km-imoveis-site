@@ -182,7 +182,7 @@ export default function FormImmobles() {
 
   useEffect(() => {
     (async () => {
-      if (immobleId) loadImmoble;
+      if (immobleId) loadImmoble();
     })();
   }, [immobleId]);
 

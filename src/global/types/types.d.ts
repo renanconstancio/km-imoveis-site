@@ -1,8 +1,8 @@
-export type PropsPagination<T> = {
+export type PropsPagination<T = T> = {
   limit: number;
   page: number;
   total: number;
-  data?: T;
+  data: T;
 };
 
 export type PropsPhoto = {

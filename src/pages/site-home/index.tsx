@@ -2,14 +2,16 @@ import { api } from "../../api/api";
 import { useEffect, useState } from "react";
 import { CarouselIndex } from "../../components/carousel";
 import { Card } from "../../components/card";
-import { PropsImmobilePagination } from "../../global/types/types";
+import { PropsImmobles, PropsPagination } from "../../global/types/types";
 import { Filters } from "../../components/filters";
 import { useLocation } from "react-router-dom";
 import { parse } from "query-string";
 
 export function SiteHome() {
   const [loading, setLoading] = useState(true);
-  const [immobiles, setImmobiles] = useState<PropsImmobilePagination>();
+  const [immobiles, setImmobiles] = useState<PropsPagination<PropsImmobles[]>>(
+    {} as PropsPagination<PropsImmobles[]>,
+  );
 
   const location = useLocation();
   const query = parse(location.search);
@@ -58,7 +60,7 @@ export function SiteHome() {
         <Filters />
 
         <div className="container text-2xl uppercase font-play font-bold mb-7">
-          {immobiles?.data.length} encotrado(s)
+          {immobiles?.data?.length} encotrado(s)
         </div>
 
         <ul className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-7">

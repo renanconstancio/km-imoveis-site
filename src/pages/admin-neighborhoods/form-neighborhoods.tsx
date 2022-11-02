@@ -46,9 +46,12 @@ export default function FormNeighborhoods() {
       await api
         .post(`/neighborhoods`, newPostData)
         .then(async resp => {
-          navigate({
-            pathname: `/adm/neighborhoods/${(await resp.data).id}/edit`,
-          });
+          changeAlert({
+            message: "Dados salvos com sucesso.",
+          }),
+            navigate({
+              pathname: `/adm/neighborhoods/${(await resp.data).id}/edit`,
+            });
         })
         .catch(() =>
           changeAlert({

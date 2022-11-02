@@ -49,7 +49,10 @@ export default function FormStreets() {
       await api
         .post(`/streets`, newPostData)
         .then(async resp => {
-          navigate({ pathname: `/adm/streets/${(await resp.data).id}/edit` });
+          changeAlert({
+            message: "Dados salvos com sucesso.",
+          }),
+            navigate({ pathname: `/adm/streets/${(await resp.data).id}/edit` });
         })
         .catch(() =>
           changeAlert({
