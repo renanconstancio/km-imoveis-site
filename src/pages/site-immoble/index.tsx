@@ -1,4 +1,4 @@
-import { api } from "../../api/api";
+import { api } from "../../services/api";
 import { useEffect, useState } from "react";
 
 import { PropsImmobles } from "../../global/types/types";

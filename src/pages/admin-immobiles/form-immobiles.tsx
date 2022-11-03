@@ -1,6 +1,7 @@
 import {
   PropsCategories,
   PropsCities,
+  PropsCustomers,
   PropsImmobles,
   PropsNeighborhoods,
   PropsStreets,
@@ -11,13 +12,13 @@ import {
   ModalDistrict,
   ModalCity,
 } from "../../components/modal";
-import { api } from "../../api/api";
+import { api } from "../../services/api";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useAlert } from "../../hooks/use-alert";
 import { useModal } from "../../hooks/use-modal";
-import { find } from "../../utils/functions";
+import { findSearch } from "../../utils/functions";
 import ModalPhoto from "../../components/modal/modal-photos";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -28,6 +29,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Input } from "../../components/inputs";
 import { maskCurrency, maskCurrencyUs } from "../../utils/mask";
+import ModalTenant from "../../components/modal/modal-tenant";
+import ModalOwner from "../../components/modal/modal-owner";
 
 const tags = [
   "banheiro",
@@ -55,6 +58,8 @@ export default function FormImmobles() {
   const [neighborhoods, setNeighborhoods] = useState<PropsNeighborhoods[]>([]);
   const [streets, setStreets] = useState<PropsStreets[]>([]);
   const [categories, setCategories] = useState<PropsCategories[]>([]);
+  const [tenants, setTenant] = useState<PropsCustomers[]>([]);
+  const [owners, setOwner] = useState<PropsCustomers[]>([]);
 
   const {
     openCategory,
@@ -67,6 +72,10 @@ export default function FormImmobles() {
     closeCity,
     openPhoto,
     closePhoto,
+    openTenant,
+    closeTenant,
+    openOwner,
+    closeOwner,
   } = useModal();
 
   const { changeAlert } = useAlert();
@@ -84,12 +93,22 @@ export default function FormImmobles() {
   } = useForm<PropsImmobles>();
 
   async function onSubmit(data: PropsImmobles) {
+    const rwsOwner = owners.find(
+      item => [item.first_name, item.last_name].join(" ") === data.tenant_id,
+    );
+    const rwsTenant = tenants.find(
+      item => [item.first_name, item.last_name].join(" ") === data.tenant_id,
+    );
     const rwsCity = cities.find(
       item => [item.city, item.state.state].join("/") === data.cities_id,
     );
-    const rwsStreet = find(streets, data.streets_id, "street");
-    const rwsDistrict = find(neighborhoods, data.neighborhoods_id, "district");
-    const rwsCategory = find(categories, data.categories_id, "category");
+    const rwsStreet = findSearch(streets, data.streets_id, "street");
+    const rwsDistrict = findSearch(
+      neighborhoods,
+      data.neighborhoods_id,
+      "district",
+    );
+    const rwsCategory = findSearch(categories, data.categories_id, "category");
 
     const newPostData = {
       ...data,
@@ -100,6 +119,8 @@ export default function FormImmobles() {
       categories_id: rwsCategory?.id,
       neighborhoods_id: rwsDistrict?.id,
       streets_id: rwsStreet?.id,
+      tenant_id: rwsTenant?.id,
+      owner_id: rwsOwner?.id,
     };
 
     if (data.id)
@@ -144,6 +165,13 @@ export default function FormImmobles() {
           categories_id: immoble.category?.category,
           neighborhoods_id: immoble?.district?.district,
           streets_id: immoble.street?.street,
+          owner_id: [immoble.owner?.first_name, immoble.owner?.last_name].join(
+            " ",
+          ),
+          tenant_id: [
+            immoble.tenant?.first_name,
+            immoble.tenant?.last_name,
+          ].join(" "),
         });
       })
       .catch(e => {
@@ -182,11 +210,26 @@ export default function FormImmobles() {
 
   useEffect(() => {
     (async () => {
+      api
+        .get("/customers?limit=10000search[type]=tenant")
+        .then(async res => setTenant(await res.data.data));
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      api
+        .get("/customers?limit=10000search[type]=owner")
+        .then(async res => setOwner(await res.data.data));
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
       if (immobleId) loadImmoble();
     })();
   }, [immobleId]);
 
-  console.log(maskCurrency("120000"));
   return (
     <>
       <div className="overflow-x-auto rounded-sm bg-white p-6">
@@ -488,9 +531,82 @@ export default function FormImmobles() {
                 ))}
               </datalist>
             </div>
+
+            <div className="w-full md:w-6/12 px-3 mb-6">
+              <label className="label-form" htmlFor="tenant_id">
+                Locatário
+              </label>
+              <div className="flex ">
+                <span className="flex-1">
+                  <input
+                    list="tenant_id"
+                    type="search"
+                    className={`input-form ${errors.tenant_id && "invalid"}`}
+                    placeholder="Pesquisar..."
+                    {...register("tenant_id", { required: true })}
+                  />
+                </span>
+                <span
+                  className="ml-3 btn-primary self-center cursor-pointer flex text-xl"
+                  onClick={() => closeTenant(!openTenant)}
+                >
+                  <FontAwesomeIcon icon={faFolderOpen} />
+                </span>
+              </div>
+              {errors.tenant_id && (
+                <small className="input-text-invalid">Campo obrigatório</small>
+              )}
+              <datalist id="tenant_id">
+                {tenants.map(({ id, first_name, last_name }) => (
+                  <option key={id} value={[first_name, last_name].join(" ")} />
+                ))}
+              </datalist>
+            </div>
+            <div className="w-full md:w-6/12 px-3 mb-6">
+              <label className="label-form" htmlFor="owner_id">
+                Proprietário
+              </label>
+              <div className="flex ">
+                <span className="flex-1">
+                  <input
+                    list="owner_id"
+                    type="search"
+                    className={`input-form ${errors.owner_id && "invalid"}`}
+                    placeholder="Pesquisar..."
+                    {...register("owner_id", { required: true })}
+                  />
+                </span>
+                <span
+                  className="ml-3 btn-primary self-center cursor-pointer flex text-xl"
+                  onClick={() => closeOwner(!openOwner)}
+                >
+                  <FontAwesomeIcon icon={faFolderOpen} />
+                </span>
+              </div>
+              {errors.owner_id && (
+                <small className="input-text-invalid">Campo obrigatório</small>
+              )}
+              <datalist id="owner_id">
+                {neighborhoods.map(({ id, district }) => (
+                  <option key={id} value={[district].join(", ")} />
+                ))}
+              </datalist>
+            </div>
           </div>
         </form>
       </div>
+      <ModalTenant
+        addTenant={setTenant}
+        streets={streets}
+        neighborhoods={neighborhoods}
+        cities={cities}
+      />
+      <ModalOwner
+        addOwner={setOwner}
+        streets={streets}
+        neighborhoods={neighborhoods}
+        cities={cities}
+      />
       <ModalCategory addCategories={setCategories} />
       <ModalStreet addStreets={setStreets} />
       <ModalDistrict addDistricts={setNeighborhoods} />

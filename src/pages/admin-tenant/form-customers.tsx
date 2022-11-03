@@ -19,8 +19,8 @@ import { Input } from "../../components/inputs";
 import { maskPhone } from "../../utils/mask";
 import { useModal } from "../../hooks/use-modal";
 import { ModalCity, ModalDistrict, ModalStreet } from "../../components/modal";
-import { find } from "../../utils/functions";
-import { api } from "../../api/api";
+import { findSearch } from "../../utils/functions";
+import { api } from "../../services/api";
 
 export default function FormCustomers() {
   const [cities, setCities] = useState<PropsCities[]>([]);
@@ -50,8 +50,12 @@ export default function FormCustomers() {
   } = useForm<PropsCustomers>();
 
   async function onSubmit(data: PropsCustomers) {
-    const rwsStreet = find(streets, data.streets_id, "street");
-    const rwsDistrict = find(neighborhoods, data.neighborhoods_id, "district");
+    const rwsStreet = findSearch(streets, data.streets_id, "street");
+    const rwsDistrict = findSearch(
+      neighborhoods,
+      data.neighborhoods_id,
+      "district",
+    );
     const rwsCity = cities.find(
       item => [item.city, item.state.state].join("/") === data.cities_id,
     );

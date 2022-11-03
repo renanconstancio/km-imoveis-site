@@ -12,8 +12,9 @@ import { Cities, FormCities } from "../pages/admin-cities";
 import { FormStates, States } from "../pages/admin-states";
 import { Categories, FormCategories } from "../pages/admin-categories";
 import { FormNeighborhoods, Neighborhoods } from "../pages/admin-neighborhoods";
-import { Customers, FormCustomers } from "../pages/admin-customers";
+import { Customers, FormCustomers } from "../pages/admin-tenant";
 import { FormOwners, Owners } from "../pages/admin-owners";
+import { FormUsers, Users } from "../pages/admin-users";
 
 export const router = createBrowserRouter([
   {
@@ -390,6 +391,50 @@ export const router = createBrowserRouter([
                   </title>
                 </Helmet>
                 <FormOwners />
+              </>
+            ),
+          },
+        ],
+      },
+      {
+        path: "users",
+        children: [
+          {
+            path: "",
+            element: (
+              <>
+                <Helmet>
+                  <title>
+                    Lista de Usuários - {import.meta.env.VITE_REACT_TITLE}
+                  </title>
+                </Helmet>
+                <Users />
+              </>
+            ),
+          },
+          {
+            path: "new",
+            element: (
+              <>
+                <Helmet>
+                  <title>
+                    Cadastrar Usuários - {import.meta.env.VITE_REACT_TITLE}
+                  </title>
+                </Helmet>
+                <FormUsers />
+              </>
+            ),
+          },
+          {
+            path: ":userId/edit",
+            element: (
+              <>
+                <Helmet>
+                  <title>
+                    Editar Usuários - {import.meta.env.VITE_REACT_TITLE}
+                  </title>
+                </Helmet>
+                <FormUsers />
               </>
             ),
           },

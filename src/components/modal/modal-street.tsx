@@ -1,11 +1,11 @@
 import { useForm } from "react-hook-form";
 import { PropsStreet } from "../../global/types/types";
 import { useModal } from "../../hooks/use-modal";
-import { api } from "../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Input } from "../inputs";
 import { maskCep } from "../../utils/mask";
+import { api } from "../../services/api";
 
 type PropsModal = {
   addStreets: (data: any) => void;

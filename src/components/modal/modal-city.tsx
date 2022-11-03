@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useModal } from "../../hooks/use-modal";
 import { PropsCities } from "../../global/types/types";
-import { api } from "../../api/api";
+import { api } from "../../services/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 

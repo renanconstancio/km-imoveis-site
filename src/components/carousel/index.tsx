@@ -1,7 +1,7 @@
 import "react-responsive-carousel/lib/styles/carousel.css";
 import { Carousel } from "react-responsive-carousel";
 import { useEffect, useState } from "react";
-import { api } from "../../api/api";
+import { api } from "../../services/api";
 
 import importImage01 from "../../assets/banners/banner-a.jpg";
 import importImage02 from "../../assets/banners/banner-b.jpg";

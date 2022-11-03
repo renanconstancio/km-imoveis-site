@@ -2,15 +2,15 @@ import { parse } from "query-string";
 import { KeyboardEvent, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Loading } from "../../components/loading";
-import { PropsNeighborhoods } from "../../global/types/types";
+import { PropsUsers } from "../../global/types/types";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { api } from "../../services/api";
 
-export default function Neighborhoods() {
+export default function Users() {
   const [clear, setClear] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [neighborhoods, setNeighborhoods] = useState<PropsNeighborhoods[]>([]);
+  const [users, setUsers] = useState<PropsUsers[]>([]);
 
   const location = useLocation();
 
@@ -18,16 +18,14 @@ export default function Neighborhoods() {
 
   const q = (query.q || "") as unknown as string;
 
-  function handleKeyPressSearch(
-    event: KeyboardEvent<EventTarget & HTMLInputElement>,
-  ) {
+  function handleSearch(event: KeyboardEvent<EventTarget & HTMLInputElement>) {
     if (event.currentTarget.value) {
       if (event.code === "Enter" || event.keyCode === 13) {
         setClear(!clear);
-        setNeighborhoods(
-          neighborhoods?.filter(
-            (f: { district: string }) =>
-              f.district
+        setUsers(
+          users?.filter(
+            (f: { first_name: string }) =>
+              f.first_name
                 .toLowerCase()
                 .includes(event.currentTarget.value.toLowerCase()), //f.street === event.currentTarget.value,
           ),
@@ -36,30 +34,28 @@ export default function Neighborhoods() {
     }
   }
 
-  async function handleDelete(data: PropsNeighborhoods) {
-    if (!confirm(`Você deseja excluir ${data.district}?`)) return;
+  async function handleDelete(data: PropsUsers) {
+    if (!confirm(`Você deseja excluir ${data.first_name}?`)) return;
     setLoading(true);
     await api
-      .delete(`/neighborhoods/${data.id}`)
+      .delete(`/users/${data.id}`)
       .then(() =>
-        setNeighborhoods(
-          neighborhoods?.filter((f: { id: string }) => f.id !== data.id),
-        ),
+        setUsers(users?.filter((f: { id: string }) => f.id !== data.id)),
       )
       .finally(() => setLoading(false));
   }
 
-  async function loadNeighborhoods() {
+  async function loadUsers() {
     setLoading(true);
     await api
-      .get(`/neighborhoods`)
-      .then(async resp => setNeighborhoods(await resp.data))
+      .get(`/users`)
+      .then(async resp => setUsers(await resp.data))
       .finally(() => setLoading(false));
   }
 
   useEffect(() => {
     (async () => {
-      loadNeighborhoods();
+      loadUsers();
     })();
   }, []);
 
@@ -74,14 +70,14 @@ export default function Neighborhoods() {
               type="text"
               className="input-form"
               defaultValue={`${query.q || ""}`}
-              onKeyDown={handleKeyPressSearch}
+              onKeyDown={handleSearch}
             />
             {(q || clear) && (
               <button
                 className="btn-default text-black"
                 type="button"
                 onClick={() => {
-                  loadNeighborhoods();
+                  loadUsers();
                   setClear(!clear);
                 }}
               >
@@ -90,7 +86,7 @@ export default function Neighborhoods() {
             )}
           </aside>
           <nav>
-            <Link className="btn-success" to="/adm/neighborhoods/new">
+            <Link className="btn-success" to="/adm/users/new">
               <FontAwesomeIcon icon={faEdit} /> Criar
             </Link>
           </nav>
@@ -99,15 +95,15 @@ export default function Neighborhoods() {
 
       <li className="list-orders uppercase font-play font-bold bg-gray-200">
         <span className="w-1/12">ações</span>
-        <span className="w-11/12">Bairros</span>
+        <span className="w-11/12">Nome.</span>
       </li>
 
-      {neighborhoods?.map(rws => (
+      {users?.map(rws => (
         <li key={rws.id} className="list-orders">
           <span className="flex gap-1 w-1/12">
             <Link
               className="btn-primary btn-xs"
-              to={`/adm/neighborhoods/${rws.id}/edit`}
+              to={`/adm/users/${rws.id}/edit`}
             >
               <FontAwesomeIcon icon={faEdit} />
             </Link>
@@ -118,11 +114,11 @@ export default function Neighborhoods() {
               <FontAwesomeIcon icon={faTrash} />
             </span>
           </span>
-          <span className="w-11/12">{rws.district}</span>
+          <span className="w-11/12">{rws.first_name}</span>
         </li>
       ))}
 
-      {!neighborhoods.length && (
+      {!users.length && (
         <li className="py-3 px-6 text-center">Nenhum imovel encontado</li>
       )}
     </ul>

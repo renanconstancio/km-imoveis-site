@@ -1,4 +1,4 @@
-export function find(arr: any[], value: string, key: string) {
+export function findSearch(arr: any[], value: string, key: string) {
   return arr.find(item => item[key] === value);
 }
 

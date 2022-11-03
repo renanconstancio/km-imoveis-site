@@ -12,7 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { situationText } from "../../utils/functions";
-import { api } from "../../api/api";
+import { api } from "../../services/api";
 
 export default function Immobiles() {
   const [loading, setLoading] = useState<boolean>(true);

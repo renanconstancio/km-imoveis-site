@@ -2,18 +2,43 @@ import { useAuth } from "../../hooks/use-auth";
 
 import bgLogin from "../../assets/0cuf0u.jpg";
 import bgLogo from "../../assets/logo.svg";
+import { useAlert } from "../../hooks/use-alert";
+import { useForm } from "react-hook-form";
+import { Input } from "../../components/inputs";
+import { Alert } from "../../components/alert";
+import { api } from "../../services/api";
+
+type PropsUserLogin = {
+  email: string;
+  password: string;
+};
 
 export function Login() {
   const { login } = useAuth();
+  const { alert, changeAlert } = useAlert();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<PropsUserLogin>();
 
-  function handleSubmit(e: any) {
-    e.preventDefault();
-    login({
-      id: "1565asf-ads-fasd-afdsaf",
-      name: "renan",
-      token: "4asdfds8asd.@vdfadsfasdfds.asfs#4gafasdf",
-      roles: [],
-    });
+  async function onSubmit(data: PropsUserLogin) {
+    await api
+      .post(`/users/login`, data)
+      .then(async res => {
+        const { user, token } = await res.data;
+        login({
+          id: user.id,
+          name: user.last_name,
+          token: token,
+          roles: [],
+        });
+      })
+      .catch(() =>
+        changeAlert({
+          message: "E-mail/Senha incorreto!.",
+        }),
+      );
   }
 
   return (
@@ -22,30 +47,49 @@ export function Login() {
       style={{ backgroundImage: `url(${bgLogin})` }}
     >
       <div className="container px-6 py-12 h-full">
-        <div className="flex justify-center items-center flex-wrap h-full g-6 p-10 text-gray-800 bg-white/70">
-          <div className="md:w-8/12 lg:w-6/12 mb-12 md:mb-0">
-            <img src={bgLogo} className="w-full" alt="Phone image" />
-          </div>
-          <div className="md:w-8/12 lg:w-5/12 lg:ml-20 ">
-            <form onSubmit={handleSubmit}>
+        <div className="flex justify-center items-center flex-wrap h-full text-gray-800 ">
+          <div className="md:w-8/12 lg:w-5/12 lg:ml-20 bg-white">
+            <form onSubmit={handleSubmit(onSubmit)} className="p-10">
+              <div className="pb-5">
+                <img
+                  src={bgLogo}
+                  alt="Logo"
+                  width={"200"}
+                  className="block mx-auto"
+                />
+              </div>
               <div className="mb-6">
-                <input
-                  type="text"
-                  className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                  placeholder="Email address"
+                <Input
+                  type="email"
+                  label="E-mail *"
+                  className={`input-form ${errors.email && "invalid"}`}
+                  error={errors.email}
+                  register={register("email", {
+                    required: {
+                      value: true,
+                      message: "Campo é obrigatório",
+                    },
+                  })}
                 />
               </div>
 
               <div className="mb-6">
-                <input
+                <Input
                   type="password"
-                  className="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                  placeholder="Password"
+                  label="Senha *"
+                  className={`input-form ${errors.password && "invalid"}`}
+                  error={errors.password}
+                  register={register("password", {
+                    required: {
+                      value: true,
+                      message: "Campo é obrigatório",
+                    },
+                  })}
                 />
               </div>
 
-              <div className="flex justify-between items-center mb-6">
-                <div className="form-group form-check">
+              {/*<div className="flex justify-between items-center mb-6">
+                 <div className="form-group form-check">
                   <input
                     type="checkbox"
                     className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
@@ -58,24 +102,28 @@ export function Login() {
                   >
                     Remember me
                   </label>
-                </div>
+                </div> 
                 <a
                   href="#!"
                   className="text-blue-600 hover:text-blue-700 focus:text-blue-700 active:text-blue-800 duration-200 transition ease-in-out"
                 >
                   Forgot password?
                 </a>
-              </div>
+              </div>*/}
 
               <button
                 type="submit"
-                className="inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
+                className="inline-block px-7 py-5 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
                 data-mdb-ripple="true"
                 data-mdb-ripple-color="light"
               >
-                Sign in
+                Fazer Login
               </button>
-
+              {alert.message && (
+                <div className="mt-7">
+                  <Alert message={alert.message} title={alert.title} />
+                </div>
+              )}
               {/* <div className="flex items-center my-4 before:flex-1 before:border-t before:border-gray-300 before:mt-0.5 after:flex-1 after:border-t after:border-gray-300 after:mt-0.5">
                 <p className="text-center font-semibold mx-4 mb-0">OR</p>
               </div>

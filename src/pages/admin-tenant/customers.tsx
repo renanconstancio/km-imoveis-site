@@ -11,7 +11,7 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { api } from "../../api/api";
+import { api } from "../../services/api";
 
 export default function Customers() {
   const [loading, setLoading] = useState<boolean>(true);

@@ -5,7 +5,7 @@ import { Loading } from "../../components/loading";
 import { PropsCategories } from "../../global/types/types";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { api } from "../../api/api";
+import { api } from "../../services/api";
 
 export default function Categories() {
   const [clear, setClear] = useState<boolean>(false);

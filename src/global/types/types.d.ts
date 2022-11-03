@@ -5,6 +5,18 @@ export type PropsPagination<T = T> = {
   data: T;
 };
 
+export type PropsUsers = {
+  id: string;
+  type: string;
+  email: string;
+  first_name: string;
+  last_name: string | null;
+  phone: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+};
+
 export type PropsPhoto = {
   position: number;
   image_xs: string;
@@ -18,6 +30,8 @@ export type PropsImmobles = {
   neighborhoods_id: string;
   streets_id: string;
   categories_id: string;
+  owner_id: string | null;
+  tenant_id: string | null;
   number: string;
   description: string;
   reference: string;
@@ -31,6 +45,21 @@ export type PropsImmobles = {
   created_at: string;
   updated_at: string;
   deleted_at: string;
+  user?: {
+    id: string;
+    first_name: string;
+    last_name: string;
+  };
+  tenant?: {
+    id: string;
+    first_name: string;
+    last_name: string;
+  };
+  owner?: {
+    id: string;
+    first_name: string;
+    last_name: string;
+  };
   city?: {
     id: string;
     city: string;
@@ -150,6 +179,7 @@ export type PropsCustomers = {
   type: string | "owner" | "tenant";
   first_name: string;
   last_name: string;
+  email: string;
   cpf: string;
   rg: string;
   cnpj: string;

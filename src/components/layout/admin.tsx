@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NavLink, Outlet } from "react-router-dom";
 import { useAlert } from "../../hooks/use-alert";
 import { useAuth } from "../../hooks/use-auth";
-import { Login } from "../../pages/login";
+import { Login } from "../../pages/admin-login";
 import { Alert } from "../alert";
 
 export default function Admin() {
@@ -92,6 +92,14 @@ export default function Admin() {
           }
         >
           <FontAwesomeIcon icon={faStar} /> Estados
+        </NavLink>
+        <NavLink
+          to="/adm/users"
+          className={({ isActive }) =>
+            isActive ? activeClassName : classDefaultName
+          }
+        >
+          <FontAwesomeIcon icon={faUser} /> Usuários
         </NavLink>
         <span className="cursor-pointer" onClick={logout}>
           <FontAwesomeIcon icon={faSignOut} /> Sair

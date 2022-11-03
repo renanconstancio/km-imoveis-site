@@ -3,12 +3,12 @@ import { PropsCities } from "../../global/types/types";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { api } from "../../api/api";
+import { api } from "../../services/api";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
-import { find } from "../../utils/functions";
+import { findSearch } from "../../utils/functions";
 
 export default function FormCities() {
   const [states, setSates] = useState([]);
@@ -21,14 +21,13 @@ export default function FormCities() {
 
   const {
     reset,
-    watch,
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<PropsCities>();
 
   async function onSubmit(data: PropsCities) {
-    const rwsState = find(states, data.states_id, "state");
+    const rwsState = findSearch(states, data.states_id, "state");
     const newPostData = {
       ...data,
       states_id: rwsState?.id,

@@ -1,6 +1,6 @@
 import { PropsCategories } from "../../global/types/types";
 
-import { api } from "../../api/api";
+import { api } from "../../services/api";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
@@ -60,25 +60,27 @@ export default function FormCategories() {
         );
   }
 
+  async function loadCategories() {
+    await api
+      .get(`/categories/${categoryId}`)
+      .then(async res => {
+        const resp = (await res.data) as PropsCategories;
+        reset({
+          ...resp,
+        });
+      })
+      .catch(() =>
+        changeAlert({
+          message: "Não foi possivel conectar ao servidor.",
+        }),
+      );
+  }
+
   useEffect(() => {
     (async () => {
-      if (!categoryId) return;
-
-      api
-        .get(`/categories/${categoryId}`)
-        .then(async res => {
-          const resp = (await res.data) as PropsCategories;
-          reset({
-            ...resp,
-          });
-        })
-        .catch(() =>
-          changeAlert({
-            message: "Não foi possivel conectar ao servidor.",
-          }),
-        );
+      if (categoryId) loadCategories();
     })();
-  }, [categoryId, reset, changeAlert]);
+  }, [categoryId]);
 
   return (
     <>

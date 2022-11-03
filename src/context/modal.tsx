@@ -6,6 +6,8 @@ export type ModalType = {
   openStreet: boolean;
   openNeighborhoods: boolean;
   openCity: boolean;
+  openTenant: boolean;
+  openOwner: boolean;
 };
 
 export type ModalContextType = {
@@ -13,8 +15,10 @@ export type ModalContextType = {
   openCategory: boolean;
   openStreet: boolean;
   openNeighborhoods: boolean;
-  openCity: boolean;
   openPhoto: boolean;
+  openCity: boolean;
+  openTenant: boolean;
+  openOwner: boolean;
 
   closeModal: (open: boolean) => void;
   closePhoto: (open: boolean) => void;
@@ -22,6 +26,8 @@ export type ModalContextType = {
   closeStreet: (open: boolean) => void;
   closeNeighborhoods: (open: boolean) => void;
   closeCity: (open: boolean) => void;
+  closeTenant: (open: boolean) => void;
+  closeOwner: (open: boolean) => void;
 };
 
 export const ModalContext = createContext<ModalContextType>(
@@ -35,6 +41,8 @@ export function ModalProvider({ children }: { children: ReactNode }) {
   const [openStreet, setCloseStreet] = useState(false);
   const [openNeighborhoods, setCloseNeighborhoods] = useState(false);
   const [openCity, setCloseCity] = useState(false);
+  const [openTenant, closeTenant] = useState(false);
+  const [openOwner, closeOwner] = useState(false);
 
   return (
     <ModalContext.Provider
@@ -45,12 +53,17 @@ export function ModalProvider({ children }: { children: ReactNode }) {
         openStreet: openStreet,
         openNeighborhoods: openNeighborhoods,
         openCity: openCity,
+        openTenant: openTenant,
+        openOwner: openOwner,
+
         closeModal: setClose,
         closePhoto: setPhoto,
         closeCategory: setCloseCategory,
         closeStreet: setCloseStreet,
         closeNeighborhoods: setCloseNeighborhoods,
         closeCity: setCloseCity,
+        closeTenant: closeTenant,
+        closeOwner: closeOwner,
       }}
     >
       {children}

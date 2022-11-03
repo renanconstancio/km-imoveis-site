@@ -1,4 +1,4 @@
-import { api } from "../../api/api";
+import { api } from "../../services/api";
 import { useEffect, useState } from "react";
 import { CarouselIndex } from "../../components/carousel";
 import { Card } from "../../components/card";

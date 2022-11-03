@@ -1,6 +1,6 @@
 import { PropsStates } from "../../global/types/types";
 
-import { api } from "../../api/api";
+import { api } from "../../services/api";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";

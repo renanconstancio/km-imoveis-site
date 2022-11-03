@@ -7,7 +7,7 @@ import {
   PropsNeighborhoods,
 } from "../../global/types/types";
 import { Input } from "../inputs";
-import { api } from "../../api/api";
+import { api } from "../../services/api";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";

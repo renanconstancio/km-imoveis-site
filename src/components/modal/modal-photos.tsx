@@ -5,7 +5,7 @@ import { useAlert } from "../../hooks/use-alert";
 import { ReactSortable } from "react-sortablejs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { api } from "../../api/api";
+import { api } from "../../services/api";
 import { Loading } from "../loading";
 
 type PropsModal = {
