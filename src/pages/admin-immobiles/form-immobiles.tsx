@@ -94,7 +94,7 @@ export default function FormImmobles() {
 
   async function onSubmit(data: PropsImmobles) {
     const rwsOwner = owners.find(
-      item => [item.first_name, item.last_name].join(" ") === data.tenant_id,
+      item => [item.first_name, item.last_name].join(" ") === data.owner_id,
     );
     const rwsTenant = tenants.find(
       item => [item.first_name, item.last_name].join(" ") === data.tenant_id,
@@ -211,7 +211,7 @@ export default function FormImmobles() {
   useEffect(() => {
     (async () => {
       api
-        .get("/customers?limit=10000search[type]=tenant")
+        .get("/customers?limit=10000&search[type]=tenant")
         .then(async res => setTenant(await res.data.data));
     })();
   }, []);
@@ -219,7 +219,7 @@ export default function FormImmobles() {
   useEffect(() => {
     (async () => {
       api
-        .get("/customers?limit=10000search[type]=owner")
+        .get("/customers?limit=10000&search[type]=owner")
         .then(async res => setOwner(await res.data.data));
     })();
   }, []);
@@ -543,7 +543,7 @@ export default function FormImmobles() {
                     type="search"
                     className={`input-form ${errors.tenant_id && "invalid"}`}
                     placeholder="Pesquisar..."
-                    {...register("tenant_id", { required: true })}
+                    {...register("tenant_id", { required: false })}
                   />
                 </span>
                 <span
@@ -587,8 +587,8 @@ export default function FormImmobles() {
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
               <datalist id="owner_id">
-                {neighborhoods.map(({ id, district }) => (
-                  <option key={id} value={[district].join(", ")} />
+                {owners.map(({ id, first_name, last_name }) => (
+                  <option key={id} value={[first_name, last_name].join(" ")} />
                 ))}
               </datalist>
             </div>

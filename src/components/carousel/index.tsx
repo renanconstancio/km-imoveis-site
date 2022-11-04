@@ -3,8 +3,6 @@ import { Carousel } from "react-responsive-carousel";
 import { useEffect, useState } from "react";
 import { api } from "../../services/api";
 
-import importImage01 from "../../assets/banners/banner-a.jpg";
-import importImage02 from "../../assets/banners/banner-b.jpg";
 import { PropsBanners } from "../../global/types/types";
 
 export function CarouselIndex() {
@@ -29,15 +27,8 @@ export function CarouselIndex() {
             backgroundPosition: "center bottom",
             backgroundSize: "cover",
           }}
-        >
-          {/* <img src={} className="object-contain" /> */}
-        </div>
+        ></div>
       ))}
-
-      {/* <div style={{ height: 430 }}>
-        <img src={importImage02} />
-       <p className="legend">Legend 2</p>
-      </div> */}
     </Carousel>
   );
 }
@@ -55,7 +46,7 @@ export function CarouselIcons({ images }: { images: string[] }) {
     >
       {images.map(image => (
         <div key={image}>
-          <img src={image} className="object-cover h-64 w-96" />
+          <img src={image} className="w-full" />
         </div>
       ))}
     </Carousel>

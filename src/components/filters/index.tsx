@@ -51,7 +51,9 @@ export function Filters() {
 
   useEffect(() => {
     (async () => {
-      api.get("/districts").then(async res => setNeighborhoods(await res.data));
+      api
+        .get("/neighborhoods")
+        .then(async res => setNeighborhoods(await res.data));
     })();
   }, []);
 

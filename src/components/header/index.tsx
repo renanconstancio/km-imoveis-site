@@ -1,5 +1,8 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo.svg";
+
+import iconWhatsapp from "../../assets/whatsapp.svg";
 
 export function Header() {
   return (
@@ -10,11 +13,12 @@ export function Header() {
             <img src={logo} alt="Logo" />
           </Link>
           <ul className="container flex justify-end gap-3 mx-auto px-4">
-            <li>
-              <i className="fas fa-phone"></i> (00) 00000-0000
+            <li className="flex gap-1">
+              <img src={iconWhatsapp} width={20} />
+              <span>{import.meta.env.VITE_PHONE}</span>
             </li>
-            <li>
-              <i className="fas fa-map-marker-alt"></i> endereço aqui
+            {/* <li>
+              <FontAwesomeIcon icon={faMapPin} /> endereço aqui
             </li>
             <li>
               <i className="fab fa-facebook"></i>
@@ -24,7 +28,7 @@ export function Header() {
             </li>
             <li>
               <i className="fab fa-whatsapp"></i>
-            </li>
+            </li> */}
           </ul>
         </nav>
       </div>
