@@ -51,7 +51,11 @@ export default function ModalPhoto({ immobleId, addPhotos }: PropsModal) {
     }
     setLoading(true);
     await api
-      .patch(`/immobiles/${immobleId}/photos`, formData)
+      .patch(`/immobiles/${immobleId}/photos`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
       .then(async ({ data, status }) => {
         if (immobleId && status === 201) {
           setPhotoModal(data.photos);
