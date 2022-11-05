@@ -55,7 +55,7 @@ jobs:
           username: kmenegociosimobiliarios
           password: K@sch0ut
           local-dir: dist/   
-          server-dir: site/
+          server-dir: /home/kmenegociosimobiliarios/www/site/
 
 
       # - name: Deploy to Firebase
