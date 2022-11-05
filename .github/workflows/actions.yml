@@ -54,7 +54,10 @@ jobs:
           server: ftp.nodejsng10f03.kinghost.net
           username: kmenegociosimobiliarios
           password: K@sch0ut
-          local-dir: dist/          
+          local-dir: dist/   
+          server-dir: site/
+
+
       # - name: Deploy to Firebase
       #   uses: w9jds/firebase-action@master
       #   with:
