@@ -167,6 +167,9 @@ export function Filters({ variant = "col" }: PropsFiltersComp) {
           />
         </li>
         <li>
+          <label htmlFor="" className="label-form">
+            &nbsp;
+          </label>
           <button
             className="btn-primary flex gap-2 h-[38px] px-3"
             type="submit"

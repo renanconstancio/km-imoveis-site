@@ -52,14 +52,14 @@ export function SiteImmoble() {
             </section>
           </div>
           <ul className="container px-4 flex flex-col flex-wrap sm:flex-row">
-            <li className="flex-initial w-full">
+            <li className="flex-initial basis-full">
               <H2 title={`${immoble?.description}`} />
               <Address address={[immoble?.district?.district].join(", ")} />
             </li>
-            <li className="flex-initial w-full sm:w-8/12">
+            <li className="flex-initial basis-full sm:basis-8/12">
               <CarouselIcons images={photos} />
             </li>
-            <li className="flex-initial w-full mt-5 sm:mt-0 sm:w-4/12 sm:pl-5">
+            <li className="flex-initial basis-full mt-5 sm:mt-0 sm:basis-4/12 sm:pl-5">
               <Price price={immoble?.rent_price} style={{ fontSize: "32px" }} />
               <hr />
               <section className="flex gap-5 items-center mt-4">
@@ -75,13 +75,13 @@ export function SiteImmoble() {
                 <span>FONE</span>
               </section> */}
             </li>
-            <li className="flex-initial w-full sm:w-8/12">
+            <li className="flex-initial basis-full sm:basis-8/12">
               <H2 title="Descrição do Imóvel" />
               Aerea Constr.: {immoble?.building_area}
               <br />
               Aerea Terrea.: {immoble?.terrain_area}
             </li>
-            <li className="flex-initial w-full sm:w-8/12">
+            <li className="flex-initial basis-full sm:basis-8/12">
               <H2 title="Corretor" />
               {immoble?.user?.first_name}
               <br />

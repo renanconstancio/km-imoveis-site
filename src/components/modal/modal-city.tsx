@@ -65,7 +65,7 @@ export default function ModalCity({ addCities }: PropsModal) {
               className="flex flex-wrap -mx-3"
               onSubmit={handleSubmit(onSubmit)}
             >
-              <div className="w-full md:w-5/12 px-3 mb-5">
+              <div className="basis-full md:basis-5/12 px-3 mb-5">
                 <label className="label-form" htmlFor="situation">
                   Estado
                 </label>
@@ -90,7 +90,7 @@ export default function ModalCity({ addCities }: PropsModal) {
                   ))}
                 </datalist>
               </div>
-              <div className="w-full md:w-9/12 px-3">
+              <div className="basis-full md:basis-9/12 px-3">
                 <label className="label-form" htmlFor="city">
                   Cidade.
                 </label>
@@ -105,7 +105,7 @@ export default function ModalCity({ addCities }: PropsModal) {
                   </small>
                 )}
               </div>
-              <div className="w-full mt-5 px-3">
+              <div className="basis-full mt-5 px-3">
                 <button className="btn-primary" type="submit">
                   Salvar
                 </button>

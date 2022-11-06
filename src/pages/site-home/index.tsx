@@ -8,6 +8,7 @@ import { useLocation } from "react-router-dom";
 import { parse, stringify } from "query-string";
 import { Loading } from "../../components/loading";
 import { useGeolocation } from "../../hooks/use-geolocation";
+import { Pagination } from "../../components/pagination";
 
 export function SiteHome() {
   const [loading, setLoading] = useState(true);
@@ -25,7 +26,7 @@ export function SiteHome() {
   const district = (query.district || "") as string;
   const category = (query.category || "") as string;
   const city = (query.city || "") as string;
-  const limit = (query.limit || "25") as string;
+  const limit = (query.limit || "20") as string;
   const page = (query.page || "1") as string;
 
   console.log("geolocation", geolocation);
@@ -44,22 +45,18 @@ export function SiteHome() {
   }
 
   useEffect(() => {
-    (async () => {
-      loadImmobiles();
-    })();
+    loadImmobiles();
   }, [locationDecodUri]);
-
-  console.log("locationDecodURI", locationDecodUri);
 
   return (
     <>
       {location.pathname === "/" && (
         <div className="bg-slate-100">
           <section className="container px-4 flex flex-wrap items-center">
-            <div className="flex-initial w-full md:w-1/3 mt-4 md:mt-0">
+            <div className="flex-initial basis-full md:basis-1/3 mt-4 md:mt-0">
               <Filters />
             </div>
-            <div className="flex-initial w-full mb-5 mt-5 md:m-0 md:w-2/3">
+            <div className="flex-initial basis-full mb-5 mt-5 md:m-0 md:basis-2/3">
               <CarouselIndex />
             </div>
           </section>
@@ -75,12 +72,24 @@ export function SiteHome() {
       )}
 
       <div className="border-b border-gray-200 py-2">
-        <div className="container px-4 text-2xl uppercase font-play font-bold mb-7">
-          {immobiles?.data?.length} encotrado(s)
-        </div>
+        <section className="container px-4 uppercase font-play font-bold mb-7">
+          {immobiles?.total} encotrado(s)
+        </section>
+
+        {!loading && location.pathname !== "/" && (
+          <section className="container px-4 uppercase font-play font-bold mb-7">
+            <Pagination
+              total={immobiles?.total || 0}
+              currentPage={Number(`${page || "1"}`)}
+              perPage={Number(`${limit || "25"}`)}
+            />
+          </section>
+        )}
 
         {loading ? (
-          <Loading />
+          <section className="py-28">
+            <Loading />
+          </section>
         ) : (
           <ul className="container px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {immobiles?.data?.map((item, k) => (
@@ -99,6 +108,16 @@ export function SiteHome() {
               />
             ))}
           </ul>
+        )}
+
+        {!loading && location.pathname !== "/" && (
+          <section className="container px-4 uppercase font-play font-bold mt-7 mb-7">
+            <Pagination
+              total={immobiles?.total || 0}
+              currentPage={Number(`${page || "1"}`)}
+              perPage={Number(`${limit || "25"}`)}
+            />
+          </section>
         )}
       </div>
     </>
