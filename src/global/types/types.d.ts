@@ -26,6 +26,7 @@ export type PropsPhoto = {
 
 export type PropsImmobles = {
   id: string;
+  users_id: string;
   cities_id: string;
   neighborhoods_id: string;
   streets_id: string;
@@ -49,6 +50,7 @@ export type PropsImmobles = {
     id: string;
     first_name: string;
     last_name: string;
+    phone: string;
   };
   tenant?: {
     id: string;

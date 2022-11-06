@@ -7,6 +7,7 @@ import { Filters } from "../../components/filters";
 import { useLocation } from "react-router-dom";
 import { parse, stringify } from "query-string";
 import { Loading } from "../../components/loading";
+import { useGeolocation } from "../../hooks/use-geolocation";
 
 export function SiteHome() {
   const [loading, setLoading] = useState(true);
@@ -14,9 +15,12 @@ export function SiteHome() {
     {} as PropsPagination<PropsImmobles[]>,
   );
 
+  const { geolocation } = useGeolocation();
   const location = useLocation();
+
   const query = parse(location.search);
-  const locationDecodURI = decodeURI(location.search);
+  const locationDecodUri = decodeURI(location.search);
+  const situation = (query.situation || "") as string;
   const reference = (query.reference || "") as string;
   const district = (query.district || "") as string;
   const category = (query.category || "") as string;
@@ -24,12 +28,15 @@ export function SiteHome() {
   const limit = (query.limit || "25") as string;
   const page = (query.page || "1") as string;
 
+  console.log("geolocation", geolocation);
+
   async function loadImmobiles() {
+    setLoading(true);
+
     const conveterParse = parse(
-      `page=${page}&limit=${limit}&search[reference]=${reference}&search[city]=${city}&search[district]=${district}`,
+      `page=${page}&limit=${limit}&search[situation]=${situation}&search[category]=${category}&search[reference]=${reference}&search[city]=${city}&search[district]=${district}`,
     );
 
-    setLoading(true);
     await api
       .get(`/immobiles?${decodeURI(stringify({ ...query, ...conveterParse }))}`)
       .then(async resp => setImmobiles(await resp.data))
@@ -40,19 +47,19 @@ export function SiteHome() {
     (async () => {
       loadImmobiles();
     })();
-  }, [locationDecodURI]);
+  }, [locationDecodUri]);
 
-  console.log(location.pathname);
+  console.log("locationDecodURI", locationDecodUri);
 
   return (
     <>
       {location.pathname === "/" && (
         <div className="bg-slate-100">
           <section className="container px-4 flex flex-wrap items-center">
-            <div className="flex-initial w-full md:w-1/3 order-last mt-4 md:mt-0 md:order-first">
+            <div className="flex-initial w-full md:w-1/3 mt-4 md:mt-0">
               <Filters />
             </div>
-            <div className="flex-initial w-full md:w-2/3">
+            <div className="flex-initial w-full mb-5 mt-5 md:m-0 md:w-2/3">
               <CarouselIndex />
             </div>
           </section>
@@ -61,7 +68,7 @@ export function SiteHome() {
 
       {location.pathname !== "/" && (
         <div className="bg-slate-100 -mt-2 mb-5">
-          <section className="container flex flex-1 flex-end p-5 ">
+          <section className="container p-5">
             <Filters variant="row" />
           </section>
         </div>
@@ -79,7 +86,7 @@ export function SiteHome() {
             {immobiles?.data?.map((item, k) => (
               <Card
                 key={k}
-                id={item.id}
+                id={item.reference}
                 title={item.description}
                 rent_price={item.rent_price}
                 sale_price={item.sale_price}
