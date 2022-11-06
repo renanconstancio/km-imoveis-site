@@ -79,9 +79,7 @@ export default function Customers() {
   }
 
   useEffect(() => {
-    (async () => {
-      loadCustomers();
-    })();
+    loadCustomers();
   }, [locationDecodURI]);
 
   if (loading) return <Loading />;
@@ -89,7 +87,7 @@ export default function Customers() {
   return (
     <ul className="overflow-x-auto rounded-sm bg-white p-5">
       <li className="flex border-b mb-3 pb-3 gap-3 justify-between">
-        <section className="w-6/12 flex gap-3 justify-end items-center">
+        <section className="basis-6/12 flex gap-3 justify-end items-center">
           <aside className="flex flex-1">
             <input
               type="text"
@@ -119,9 +117,9 @@ export default function Customers() {
       </li>
 
       <li className="list-orders uppercase font-play font-bold bg-gray-200">
-        <span className="w-1/12">ações</span>
+        <span className="basis-1/12">ações</span>
         <span
-          className="w-4/12 cursor-pointer"
+          className="basis-4/12 cursor-pointer"
           onClick={() => {
             const testReference = locationDecodURI.indexOf("[last_name]=asc");
             if (testReference !== -1) {
@@ -134,7 +132,7 @@ export default function Customers() {
           <FontAwesomeIcon icon={faSort} /> Nome
         </span>
         <span
-          className="w-4/12 cursor-pointer"
+          className="basis-4/12 cursor-pointer"
           onClick={() => {
             const testReference = locationDecodURI.indexOf("[first_name]=asc");
             if (testReference !== -1) {
@@ -146,12 +144,12 @@ export default function Customers() {
         >
           <FontAwesomeIcon icon={faSort} /> Sobrenome
         </span>
-        <span className="w-3/12">Telefone.</span>
+        <span className="basis-3/12">Telefone.</span>
       </li>
 
       {customers?.data?.map(({ id, first_name, last_name, phone }) => (
         <li key={id} className="list-orders">
-          <span className="flex gap-1 w-1/12">
+          <span className="flex gap-1 basis-1/12">
             <Link
               className="btn-primary btn-xs"
               to={`/adm/customers/${id}/edit`}
@@ -165,9 +163,9 @@ export default function Customers() {
               <FontAwesomeIcon icon={faTrash} />
             </span>
           </span>
-          <span className="w-4/12">{first_name}</span>
-          <span className="w-4/12">{last_name}</span>
-          <span className="w-3/12">{phone}</span>
+          <span className="basis-4/12">{first_name}</span>
+          <span className="basis-4/12">{last_name}</span>
+          <span className="basis-3/12">{phone}</span>
         </li>
       ))}
 

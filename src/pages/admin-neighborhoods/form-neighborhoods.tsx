@@ -60,25 +60,25 @@ export default function FormNeighborhoods() {
         );
   }
 
-  useEffect(() => {
-    (async () => {
-      if (!districtId) return;
+  async function loadNeighborhoods() {
+    api
+      .get(`/neighborhoods/${districtId}`)
+      .then(async res => {
+        const resp = (await res.data) as PropsNeighborhoods;
+        reset({
+          ...resp,
+        });
+      })
+      .catch(() =>
+        changeAlert({
+          message: "Não foi possivel conectar ao servidor.",
+        }),
+      );
+  }
 
-      api
-        .get(`/neighborhoods/${districtId}`)
-        .then(async res => {
-          const resp = (await res.data) as PropsNeighborhoods;
-          reset({
-            ...resp,
-          });
-        })
-        .catch(() =>
-          changeAlert({
-            message: "Não foi possivel conectar ao servidor.",
-          }),
-        );
-    })();
-  }, [districtId, reset, changeAlert]);
+  useEffect(() => {
+    if (districtId) loadNeighborhoods();
+  }, [districtId]);
 
   return (
     <>
@@ -94,9 +94,13 @@ export default function FormNeighborhoods() {
             <span>Voltar</span>
           </Link>
         </div>
-        <form className="w-full" id="form" onSubmit={handleSubmit(onSubmit)}>
+        <form
+          id="form"
+          className="basis-full"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full md:w-4/12 px-3">
+            <div className="basis-full md:basis-4/12 px-3">
               <Input
                 type="text"
                 label="Bairro *"

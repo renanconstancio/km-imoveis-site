@@ -103,9 +103,13 @@ export default function FormCities() {
             <span>Voltar</span>
           </Link>
         </div>
-        <form className="w-full" id="form" onSubmit={handleSubmit(onSubmit)}>
+        <form
+          id="form"
+          className="basis-full"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full md:w-4/12 px-3">
+            <div className="basis-full md:basis-4/12 px-3">
               <label className="label-form" htmlFor="street">
                 RUA.
               </label>
@@ -118,7 +122,7 @@ export default function FormCities() {
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
             </div>
-            <div className="w-full md:w-2/12 px-3 mb-5">
+            <div className="basis-full md:basis-2/12 px-3 mb-5">
               <label className="label-form" htmlFor="situation">
                 Estado
               </label>

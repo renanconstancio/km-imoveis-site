@@ -33,25 +33,26 @@ import { maskCurrency, maskCurrencyUs } from "../../utils/mask";
 import ModalTenant from "../../components/modal/modal-tenant";
 import ModalOwner from "../../components/modal/modal-owner";
 
-const tags = [
-  "banheiro",
-  "2 banheiro",
-  "3 banheiro",
-  "quarto",
-  "2 quarto",
-  "3 quarto",
-  "4 quarto",
+const tagsImmoble = [
+  "1 banheiro",
+  "2 banheiros",
+  "3 banheiros",
+  "1 quarto",
+  "2 quartos",
+  "3 quartos",
+  "4 quartos",
   "sala",
   "copa",
   "cozinha",
   "sala de star",
   "1 suite",
+  "2 suite",
   "ventilador",
   "ar condicionado",
   "caragem",
-  "caragem 2 carros",
-  "caragem 3 carros",
-  "caragem 4 carros",
+  "caragem p/ 2 carros",
+  "caragem p/ 3 carros",
+  "caragem p/ 4 carros",
 ];
 
 export default function FormImmobles() {
@@ -261,7 +262,7 @@ export default function FormImmobles() {
 
   return (
     <>
-      <div className="overflow-x-auto rounded-sm bg-white p-6">
+      <div className="overflobasis-x-auto rounded-sm bg-white p-6">
         <div className="border-b pb-3 mb-5 flex gap-3">
           <button className="btn-success btn-ico" type="submit" form="form">
             <FontAwesomeIcon icon={faSave} />
@@ -282,9 +283,13 @@ export default function FormImmobles() {
             <span>Voltar</span>
           </Link>
         </div>
-        <form className="w-full" id="form" onSubmit={handleSubmit(onSubmit)}>
+        <form
+          className="basis-full"
+          id="form"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full md:w-2/12 px-3">
+            <div className="basis-full md:basis-2/12 px-3">
               <Input
                 type="text"
                 label="CÓD. *"
@@ -298,7 +303,7 @@ export default function FormImmobles() {
                 })}
               />
             </div>
-            <div className="w-full md:w-6/12 px-3">
+            <div className="basis-full md:basis-6/12 px-3">
               <Input
                 type="text"
                 label="Descrição do Imóvel * "
@@ -312,8 +317,8 @@ export default function FormImmobles() {
                 })}
               />
             </div>
-            <div className="w-full mb-6"></div>
-            <div className="w-full md:w-4/12 px-3 mb-6">
+            <div className="basis-full mb-6"></div>
+            <div className="basis-full md:basis-4/12 px-3 mb-6">
               <label className="label-form" htmlFor="users_id">
                 Captador
               </label>
@@ -337,7 +342,7 @@ export default function FormImmobles() {
                 ))}
               </datalist>
             </div>
-            <div className="w-full md:w-4/12 px-3">
+            <div className="basis-full md:basis-4/12 px-3">
               <Input
                 type="text"
                 label="Captador/Outros"
@@ -353,7 +358,7 @@ export default function FormImmobles() {
             </div>
           </div>
           <div className="flex flex-wrap -mx-3">
-            <div className="w-full md:w-3/12 px-3">
+            <div className="basis-full md:basis-3/12 px-3">
               <Input
                 type="text"
                 label="Área de Construção (m²)"
@@ -367,7 +372,7 @@ export default function FormImmobles() {
                 })}
               />
             </div>
-            <div className="w-full md:w-3/12 px-3">
+            <div className="basis-full md:basis-3/12 px-3">
               <Input
                 type="text"
                 label="Área Terrea (m²)"
@@ -381,7 +386,7 @@ export default function FormImmobles() {
                 })}
               />
             </div>
-            <div className="w-full md:w-2/12 px-3">
+            <div className="basis-full md:basis-2/12 px-3">
               <Input
                 type="tel"
                 mask={maskCurrency}
@@ -396,7 +401,7 @@ export default function FormImmobles() {
                 })}
               />
             </div>
-            <div className="w-full md:w-2/12 px-3">
+            <div className="basis-full md:basis-2/12 px-3">
               <Input
                 type="tel"
                 mask={maskCurrency}
@@ -411,7 +416,7 @@ export default function FormImmobles() {
                 })}
               />
             </div>
-            <div className="w-full md:w-2/12 px-3 mb-6">
+            <div className="basis-full md:basis-2/12 px-3 mb-6">
               <label className="label-form" htmlFor="situation">
                 Situação
               </label>
@@ -426,7 +431,7 @@ export default function FormImmobles() {
                 </select>
               </div>
             </div>
-            <div className="w-full md:w-2/12 px-3 mb-6">
+            <div className="basis-full md:basis-2/12 px-3 mb-6">
               <label className="label-form" htmlFor="published">
                 Web
               </label>
@@ -440,7 +445,7 @@ export default function FormImmobles() {
                 </select>
               </div>
             </div>
-            <div className="w-full md:w-4/12 px-3 mb-6">
+            <div className="basis-full md:basis-4/12 px-3 mb-6">
               <label className="label-form" htmlFor="categories_id">
                 Categoria
               </label>
@@ -474,7 +479,7 @@ export default function FormImmobles() {
             </div>
             {/* </div>
           <div className="flex flex-wrap -mx-3"> */}
-            <div className="w-full md:w-6/12 px-3 mb-6">
+            <div className="basis-full md:basis-6/12 px-3 mb-6">
               <label className="label-form" htmlFor="streets_id">
                 Rua
               </label>
@@ -504,7 +509,7 @@ export default function FormImmobles() {
                 ))}
               </datalist>
             </div>
-            <div className="w-full md:w-2/12 px-3">
+            <div className="basis-full md:basis-2/12 px-3">
               <label className="label-form" htmlFor="number">
                 Número Casa
               </label>
@@ -518,7 +523,7 @@ export default function FormImmobles() {
               )}
             </div>
 
-            <div className="w-full md:w-4/12 px-3 mb-6">
+            <div className="basis-full md:basis-4/12 px-3 mb-6">
               <label className="label-form" htmlFor="neighborhoods_id">
                 Bairro
               </label>
@@ -550,7 +555,7 @@ export default function FormImmobles() {
                 ))}
               </datalist>
             </div>
-            <div className="w-full md:w-4/12 px-3 mb-6">
+            <div className="basis-full md:basis-4/12 px-3 mb-6">
               <label className="label-form" htmlFor="cities_id">
                 Cidade
               </label>
@@ -584,7 +589,7 @@ export default function FormImmobles() {
               </datalist>
             </div>
 
-            <div className="w-full md:w-6/12 px-3 mb-6">
+            <div className="basis-full md:basis-6/12 px-3 mb-6">
               <label className="label-form" htmlFor="tenant_id">
                 Locatário
               </label>
@@ -614,11 +619,11 @@ export default function FormImmobles() {
                 ))}
               </datalist>
             </div>
-            <div className="w-full md:w-6/12 px-3 mb-6">
+            <div className="basis-full md:basis-6/12 px-3 mb-6">
               <label className="label-form" htmlFor="owner_id">
                 Proprietário
               </label>
-              <div className="flex ">
+              <div className="flex">
                 <span className="flex-1">
                   <input
                     list="owner_id"
@@ -643,6 +648,17 @@ export default function FormImmobles() {
                   <option key={id} value={[first_name, last_name].join(" ")} />
                 ))}
               </datalist>
+            </div>
+            <div className="basis-full px-3 mb-6">
+              <label className="label-form">Outras Info</label>
+              <hr className="mb-5" />
+              <div className="flex flex-wrap">
+                {tagsImmoble.map((label, k) => (
+                  <div className="basis-1/4" key={k}>
+                    <input type="checkbox" name="" id="" /> {label}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </form>
