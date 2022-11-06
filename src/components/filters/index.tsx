@@ -1,17 +1,12 @@
 import { parse, stringify } from "query-string";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  PropsCategories,
-  PropsCities,
-  PropsNeighborhoods,
-} from "../../global/types/types";
+import { PropsCategories, PropsNeighborhoods } from "../../global/types/types";
 import { Input } from "../inputs";
 import { api } from "../../services/api";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { useGeolocation } from "../../hooks/use-geolocation";
+import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
 
 type PropsFiltersComp = {
   variant?: "row" | "col";
@@ -22,61 +17,86 @@ type PropsFilters = {
   district: string;
   city: string;
   reference: string;
+  situation: string | "location" | "purchase" | "sale";
 };
 
 export function Filters({ variant = "col" }: PropsFiltersComp) {
-  const [cities, setCities] = useState<PropsCities[]>([]);
-  const [neighborhoods, setNeighborhoods] = useState<PropsNeighborhoods[]>([]);
+  const [openClose, setOpenClose] = useState<boolean>(false);
   const [categories, setCategories] = useState<PropsCategories[]>([]);
+  const [neighborhoods, setNeighborhoods] = useState<PropsNeighborhoods[]>([]);
+  // const [cities, setCities] = useState<PropsCities[]>([]);
 
   const { handleSubmit, register } = useForm<PropsFilters>();
-  const { geolocation } = useGeolocation();
 
   const navigate = useNavigate();
   const location = useLocation();
   const parsed = parse(location.search);
 
   function onSubmit(data: PropsFilters) {
+    if (data.situation === "Locação") data = { ...data, situation: "location" };
+
+    if (data.situation === "Compra") data = { ...data, situation: "purchase" };
+
     navigate({
       pathname: "/search",
       search: stringify({ ...parsed, ...data }),
     });
   }
 
-  useEffect(() => {
-    (async () => {
-      api.get("/categories").then(async res => setCategories(await res.data));
-    })();
-  }, []);
+  async function loadCategories() {
+    await api
+      .get("/categories")
+      .then(async res => setCategories(await res.data));
+  }
+
+  // async function loadCities() {
+  //   await api.get("/cities").then(async res =>
+  //     setCities(
+  //       await res.data.filter((f: any) => {
+  //         return [f.city, f.state.state].join("/") === geolocation?.nome;
+  //       }),
+  //     ),
+  //   );
+  // }
+
+  async function loadNeighborhoods() {
+    await api
+      .get("/neighborhoods")
+      .then(async res => setNeighborhoods(await res.data));
+  }
 
   useEffect(() => {
     (async () => {
-      api.get("/cities").then(async res =>
-        setCities(
-          await res.data.filter((f: any) => {
-            return [f.city, f.state.state].join("/") === geolocation.nome;
-          }),
-        ),
-      );
+      if (!categories.length) loadCategories();
     })();
-  }, []);
+  }, [categories]);
+
+  // useEffect(() => {
+  //   (async () => {
+  //     if (!cities) loadCities();
+  //   })();
+  // }, [cities]);
 
   useEffect(() => {
     (async () => {
-      api
-        .get("/neighborhoods")
-        .then(async res => setNeighborhoods(await res.data));
+      if (!neighborhoods.length) loadNeighborhoods();
     })();
-  }, []);
-
-  console.log(geolocation);
+  }, [neighborhoods]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+      <span
+        className="btn-primary cursor-pointer inline-block md:hidden"
+        onClick={() => setOpenClose(!openClose)}
+      >
+        <FontAwesomeIcon icon={faBars} />
+      </span>
       <ul
-        className={`flex ${
-          variant === "col" ? "flex-col" : "flex-row items-end"
-        } gap-5 md:mr-5`}
+        className={`${
+          !openClose ? "hidden mt-3 md:m-0 md:flex" : "flex mt-3 md:m-0"
+        } ${
+          variant === "col" ? "flex-col" : "flex-col md:flex-row"
+        } gap-5 md:mr-5 aling-end`}
       >
         <li>
           <Input
@@ -95,6 +115,20 @@ export function Filters({ variant = "col" }: PropsFiltersComp) {
         </li>
         <li>
           <Input
+            list="situation"
+            type="search"
+            label="Locação/Compra"
+            className={`input-form`}
+            placeholder={"Locação/Compra"}
+            register={register("situation")}
+          />
+          <datalist id="situation">
+            <option value="Locação" data-id="location" />
+            <option value="Compra" data-id="purchase" />
+          </datalist>
+        </li>
+        <li>
+          <Input
             list="district"
             type="search"
             label="Bairro"
@@ -108,7 +142,7 @@ export function Filters({ variant = "col" }: PropsFiltersComp) {
             ))}
           </datalist>
         </li>
-        <li>
+        {/* <li>
           <Input
             list="cities"
             type="search"
@@ -122,7 +156,7 @@ export function Filters({ variant = "col" }: PropsFiltersComp) {
               <option value={[city, state.state].join("/")} key={id} />
             ))}
           </datalist>
-        </li>
+        </li> */}
         <li>
           <Input
             type="text"

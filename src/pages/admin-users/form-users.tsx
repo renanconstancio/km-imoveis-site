@@ -112,7 +112,7 @@ export default function FormUsers() {
                   {...register("type", { required: false })}
                 >
                   <option value="admin">Adiministrador</option>
-                  <option value="user">Usários</option>
+                  <option value="user">Usuários</option>
                   <option value="root">Root</option>
                 </select>
               </div>

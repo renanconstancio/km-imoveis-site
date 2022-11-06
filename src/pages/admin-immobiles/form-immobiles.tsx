@@ -5,6 +5,7 @@ import {
   PropsImmobles,
   PropsNeighborhoods,
   PropsStreets,
+  PropsUsers,
 } from "../../global/types/types";
 import {
   ModalCategory,
@@ -60,6 +61,7 @@ export default function FormImmobles() {
   const [categories, setCategories] = useState<PropsCategories[]>([]);
   const [tenants, setTenant] = useState<PropsCustomers[]>([]);
   const [owners, setOwner] = useState<PropsCustomers[]>([]);
+  const [users, setUsers] = useState<PropsUsers[]>([]);
 
   const {
     openCategory,
@@ -93,6 +95,9 @@ export default function FormImmobles() {
   } = useForm<PropsImmobles>();
 
   async function onSubmit(data: PropsImmobles) {
+    const rwsUser = users.find(
+      item => [item.first_name].join(" ") === data.users_id,
+    );
     const rwsOwner = owners.find(
       item => [item.first_name, item.last_name].join(" ") === data.owner_id,
     );
@@ -121,6 +126,7 @@ export default function FormImmobles() {
       streets_id: rwsStreet?.id,
       tenant_id: rwsTenant?.id,
       owner_id: rwsOwner?.id,
+      users_id: rwsUser?.id,
     };
 
     if (data.id)
@@ -161,6 +167,7 @@ export default function FormImmobles() {
           ...immoble,
           sale_price: `${maskCurrency(immoble.sale_price)}`,
           rent_price: `${maskCurrency(immoble.rent_price)}`,
+          users_id: immoble.user?.first_name,
           cities_id: [immoble.city?.city, immoble.city?.state.state].join("/"),
           categories_id: immoble.category?.category,
           neighborhoods_id: immoble?.district?.district,
@@ -182,52 +189,74 @@ export default function FormImmobles() {
       });
   }
 
-  useEffect(() => {
-    (async () => {
-      api.get("/categories").then(async res => setCategories(await res.data));
-    })();
-  }, []);
+  async function loadCategories() {
+    await api
+      .get("/categories")
+      .then(async res => setCategories(await res.data));
+  }
+
+  async function loadCities() {
+    await api.get("/cities").then(async res => setCities(await res.data));
+  }
+
+  async function loadNeighborhoods() {
+    await api
+      .get("/neighborhoods")
+      .then(async res => setNeighborhoods(await res.data));
+  }
+
+  async function loadStreets() {
+    await api
+      .get("/neighborhoods")
+      .then(async res => setStreets(await res.data));
+  }
+
+  async function loadTenants() {
+    await api
+      .get("/customers?limit=10000&search[type]=tenant")
+      .then(async res => setTenant(await res.data?.data));
+  }
+
+  async function loadOwners() {
+    await api
+      .get("/customers?limit=10000&search[type]=owner")
+      .then(async res => setOwner(await res.data?.data));
+  }
+
+  async function loadUsers() {
+    await api.get("/users").then(async res => setUsers(await res.data));
+  }
 
   useEffect(() => {
-    (async () => {
-      api.get("/cities").then(async res => setCities(await res.data));
-    })();
-  }, []);
+    if (!categories.length) loadCategories();
+  }, [categories]);
 
   useEffect(() => {
-    (async () => {
-      api
-        .get("/neighborhoods")
-        .then(async res => setNeighborhoods(await res.data));
-    })();
-  }, []);
+    if (!cities.length) loadCities();
+  }, [cities]);
 
   useEffect(() => {
-    (async () => {
-      api.get("/streets").then(async res => setStreets(await res.data));
-    })();
-  }, []);
+    if (!neighborhoods.length) loadNeighborhoods();
+  }, [neighborhoods]);
 
   useEffect(() => {
-    (async () => {
-      api
-        .get("/customers?limit=10000&search[type]=tenant")
-        .then(async res => setTenant(await res.data.data));
-    })();
-  }, []);
+    if (!streets.length) loadStreets();
+  }, [streets]);
 
   useEffect(() => {
-    (async () => {
-      api
-        .get("/customers?limit=10000&search[type]=owner")
-        .then(async res => setOwner(await res.data.data));
-    })();
-  }, []);
+    if (!tenants.length) loadTenants();
+  }, [tenants]);
 
   useEffect(() => {
-    (async () => {
-      if (immobleId) loadImmoble();
-    })();
+    if (!owners.length) loadOwners();
+  }, [owners]);
+
+  useEffect(() => {
+    if (!users.length) loadUsers();
+  }, [users]);
+
+  useEffect(() => {
+    if (immobleId) loadImmoble();
   }, [immobleId]);
 
   return (
@@ -283,10 +312,35 @@ export default function FormImmobles() {
                 })}
               />
             </div>
+            <div className="w-full mb-6"></div>
+            <div className="w-full md:w-4/12 px-3 mb-6">
+              <label className="label-form" htmlFor="users_id">
+                Captador
+              </label>
+              <div className="flex ">
+                <span className="flex-1">
+                  <input
+                    list="users_id"
+                    type="search"
+                    className={`input-form ${errors.users_id && "invalid"}`}
+                    placeholder="Pesquisar..."
+                    {...register("users_id", { required: true })}
+                  />
+                </span>
+              </div>
+              {errors.users_id && (
+                <small className="input-text-invalid">Campo obrigatório</small>
+              )}
+              <datalist id="users_id">
+                {users.map(({ id, first_name }) => (
+                  <option key={id} value={[first_name].join(", ")} />
+                ))}
+              </datalist>
+            </div>
             <div className="w-full md:w-4/12 px-3">
               <Input
                 type="text"
-                label="Captador"
+                label="Captador/Outros"
                 className={`input-form ${errors.pickup && "invalid"}`}
                 error={errors.pickup}
                 register={register("pickup", {
@@ -342,7 +396,6 @@ export default function FormImmobles() {
                 })}
               />
             </div>
-
             <div className="w-full md:w-2/12 px-3">
               <Input
                 type="tel"

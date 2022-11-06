@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useState } from "react";
 
 export type GeolocationType = {
+  nome: string;
   capital: number;
   codigo_ibge: number;
   codigo_uf: number;
@@ -8,12 +9,11 @@ export type GeolocationType = {
   fuso_horario: string;
   latitude: number;
   longitude: number;
-  nome: string;
   siafi_id: number;
 };
 
 export type GeolocationContextType = {
-  geolocation: GeolocationType;
+  geolocation?: GeolocationType;
   addGeolocation: (geolocations: GeolocationType) => void;
 };
 

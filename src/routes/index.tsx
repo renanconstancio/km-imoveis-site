@@ -45,7 +45,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "immoble/:title/:immobleId",
+        path: "immoble/:title/code/:reference",
         element: <SiteImmoble />,
       },
     ],
