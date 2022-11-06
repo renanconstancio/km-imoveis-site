@@ -8,15 +8,18 @@ import { router } from "./routes";
 import { AlertProvider } from "./context/alert";
 import { ModalProvider } from "./context/modal";
 import { AuthProvider } from "./context/auth";
+import { GeolocationProvider } from "./context/geolocation";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <AuthProvider>
-    <AlertProvider>
-      <ModalProvider>
-        <HelmetProvider>
-          <RouterProvider router={router} />
-        </HelmetProvider>
-      </ModalProvider>
-    </AlertProvider>
+    <GeolocationProvider>
+      <AlertProvider>
+        <ModalProvider>
+          <HelmetProvider>
+            <RouterProvider router={router} />
+          </HelmetProvider>
+        </ModalProvider>
+      </AlertProvider>
+    </GeolocationProvider>
   </AuthProvider>,
 );

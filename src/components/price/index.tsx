@@ -7,7 +7,7 @@ type Props = React.HTMLAttributes<HTMLSpanElement> & {
 export function Price({ price, ...rest }: Props) {
   return (
     <span
-      className="font-play font-bold text-sky-500 text-sm block mb-3"
+      className="font-play font-bold text-km-blue text-sm block mb-3"
       {...rest}
     >
       R$: {maskCurrency(price)}

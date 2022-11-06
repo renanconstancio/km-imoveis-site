@@ -11,6 +11,11 @@ import { api } from "../../services/api";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { useGeolocation } from "../../hooks/use-geolocation";
+
+type PropsFiltersComp = {
+  variant?: "row" | "col";
+};
 
 type PropsFilters = {
   category: string;
@@ -19,12 +24,13 @@ type PropsFilters = {
   reference: string;
 };
 
-export function Filters() {
+export function Filters({ variant = "col" }: PropsFiltersComp) {
   const [cities, setCities] = useState<PropsCities[]>([]);
   const [neighborhoods, setNeighborhoods] = useState<PropsNeighborhoods[]>([]);
   const [categories, setCategories] = useState<PropsCategories[]>([]);
 
   const { handleSubmit, register } = useForm<PropsFilters>();
+  const { geolocation } = useGeolocation();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,7 +38,7 @@ export function Filters() {
 
   function onSubmit(data: PropsFilters) {
     navigate({
-      pathname: location.pathname,
+      pathname: "/search",
       search: stringify({ ...parsed, ...data }),
     });
   }
@@ -45,7 +51,13 @@ export function Filters() {
 
   useEffect(() => {
     (async () => {
-      api.get("/cities").then(async res => setCities(await res.data));
+      api.get("/cities").then(async res =>
+        setCities(
+          await res.data.filter((f: any) => {
+            return [f.city, f.state.state].join("/") === geolocation.nome;
+          }),
+        ),
+      );
     })();
   }, []);
 
@@ -57,12 +69,15 @@ export function Filters() {
     })();
   }, []);
 
+  console.log(geolocation);
+
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="container border-cyan-400 border-t-8 bg-slate-100 mb-7 p-5"
-    >
-      <ul className="flex flex-row flex-wrap items-end gap-5">
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <ul
+        className={`flex ${
+          variant === "col" ? "flex-col" : "flex-row items-end"
+        } gap-5 md:mr-5`}
+      >
         <li>
           <Input
             list="category"
@@ -118,7 +133,10 @@ export function Filters() {
           />
         </li>
         <li>
-          <button className="btn-primary flex gap-2" type="submit">
+          <button
+            className="btn-primary flex gap-2 h-[38px] px-3"
+            type="submit"
+          >
             <span>
               <FontAwesomeIcon icon={faSearch} />
             </span>

@@ -34,6 +34,17 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: "search",
+        element: (
+          <>
+            <Helmet>
+              <title>{import.meta.env.VITE_REACT_TITLE}</title>
+            </Helmet>
+            <SiteHome />
+          </>
+        ),
+      },
+      {
         path: "immoble/:title/:immobleId",
         element: <SiteImmoble />,
       },

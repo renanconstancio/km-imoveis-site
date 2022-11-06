@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo.svg";
 
@@ -7,9 +6,9 @@ import iconWhatsapp from "../../assets/whatsapp.svg";
 export function Header() {
   return (
     <header>
-      <div className="border-b border-gray-200 py-2">
+      <div className="border-b border-gray-200 py-4">
         <nav className="flex justify-between items-center container mx-auto px-4">
-          <Link to="/" className="w-40">
+          <Link to="/" className="w-56">
             <img src={logo} alt="Logo" />
           </Link>
           <ul className="container flex justify-end gap-3 mx-auto px-4">

@@ -3,7 +3,7 @@ import logo from "../../assets/logo.svg";
 export function Footer() {
   return (
     <footer>
-      <section className="container my-4 text-center">
+      <section className="container px-4 my-4 text-center">
         <img src={logo} alt="Logo" width={100} className="mx-auto" />
         <address>
           {import.meta.env.VITE_ADDRESS}

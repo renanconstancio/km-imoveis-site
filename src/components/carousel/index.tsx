@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { api } from "../../services/api";
 
 import { PropsBanners } from "../../global/types/types";
+import { H2 } from "../title";
+import { Price } from "../price";
+import { maskCurrency } from "../../utils/mask";
 
 export function CarouselIndex() {
   const [banners, setBanners] = useState<PropsBanners[]>([]);
@@ -17,18 +20,34 @@ export function CarouselIndex() {
   }, []);
 
   return (
-    <Carousel showArrows={true} dynamicHeight={false} showThumbs={false}>
-      {banners.map(({ id, photos }) => (
-        <div
-          key={id}
-          style={{
-            height: 430,
-            backgroundImage: `url(${photos.image_lg})`,
-            backgroundPosition: "center bottom",
-            backgroundSize: "cover",
-          }}
-        ></div>
-      ))}
+    <Carousel
+      showArrows={true}
+      dynamicHeight={false}
+      showThumbs={false}
+      autoPlay={true}
+    >
+      {banners.map(
+        ({ id, photos, reference, description, rent_price, sale_price }) => (
+          <div
+            key={id}
+            style={{
+              height: 430,
+              backgroundImage: `url(${photos.image_lg})`,
+              backgroundPosition: "center bottom",
+              backgroundSize: "cover",
+            }}
+            className="flex flex-col justify-end items-start p-7 "
+          >
+            <h2 className="drop-shadow-md font-play font-bold text-3xl mb-5 text-km-blue">
+              {description}
+            </h2>
+            <small className="drop-shadow-md">CÓD.: {reference}</small>
+            {/* <span className="font-play font-bold text-sm block mb-3">
+              R$: {maskCurrency(rent_price)}
+            </span> */}
+          </div>
+        ),
+      )}
     </Carousel>
   );
 }
@@ -39,8 +58,8 @@ export function CarouselIcons({ images }: { images: string[] }) {
       showArrows={true}
       showIndicators={false}
       dynamicHeight={false}
-      showThumbs={false}
-      showStatus={false}
+      showThumbs={true}
+      showStatus={true}
       centerSlidePercentage={100}
       width={"100%"}
     >

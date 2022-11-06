@@ -112,7 +112,7 @@ export default function FormImmobles() {
 
     const newPostData = {
       ...data,
-      published: data.published === "true" ? true : false,
+      published: data.published ? true : false,
       sale_price: maskCurrencyUs(`${data.sale_price || 0}`),
       rent_price: maskCurrencyUs(`${data.rent_price || 0}`),
       cities_id: rwsCity?.id,
@@ -380,7 +380,6 @@ export default function FormImmobles() {
               <div className="relative">
                 <select
                   className="input-form"
-                  defaultValue={"false"}
                   {...register("published", { required: false })}
                 >
                   <option value={"true"}>Publicar</option>

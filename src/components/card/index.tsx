@@ -34,7 +34,7 @@ export function Card({
 
         {/* <CarouselIcons images={images} /> */}
 
-        <img src={images[0]} className="object-cover" />
+        <img src={images[0]} className="mx-auto object-cover" alt={title} />
 
         <div className="p-5">
           <H2 title={title} />
