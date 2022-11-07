@@ -113,7 +113,7 @@ export default function ModalPhoto({ immobleId, addPhotos }: PropsModal) {
                     <li
                       id={item.id}
                       key={index}
-                      className="w-full md:w-4/12 p-2"
+                      className="basis-full md:basis-4/12 p-2"
                     >
                       <section className="relative border p-3">
                         <img

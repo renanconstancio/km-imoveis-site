@@ -56,9 +56,7 @@ export default function States() {
   }
 
   useEffect(() => {
-    (async () => {
-      loadStates();
-    })();
+    loadStates();
   }, []);
 
   if (loading) return <Loading />;

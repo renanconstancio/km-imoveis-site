@@ -95,9 +95,13 @@ export default function FormStreets() {
             <span>Voltar</span>
           </Link>
         </div>
-        <form className="w-full" id="form" onSubmit={handleSubmit(onSubmit)}>
+        <form
+          id="form"
+          className="basis-full"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full md:w-4/12 px-3">
+            <div className="basis-full md:basis-4/12 px-3">
               <Input
                 type="text"
                 label="Rua, Avenida, Apto. *"
@@ -111,7 +115,8 @@ export default function FormStreets() {
                 })}
               />
             </div>
-            <div className="w-full md:w-2/12 px-3">
+            <div className="basis-full mb-6"></div>
+            <div className="basis-full md:basis-2/12 px-3">
               <Input
                 mask={maskCep}
                 type="text"

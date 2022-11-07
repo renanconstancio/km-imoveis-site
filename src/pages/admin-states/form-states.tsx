@@ -46,6 +46,9 @@ export default function FormStates() {
       await api
         .post(`/states`, newPostData)
         .then(async resp => {
+          changeAlert({
+            message: "Dados salvos com sucesso.",
+          });
           navigate({ pathname: `/adm/states/${(await resp.data).id}/edit` });
         })
         .catch(() =>
@@ -55,25 +58,17 @@ export default function FormStates() {
         );
   }
 
-  useEffect(() => {
-    (async () => {
-      if (!stateId) return;
+  async function loadStates() {
+    await api.get(`/states/${stateId}`).then(async res =>
+      reset({
+        ...(await res.data),
+      }),
+    );
+  }
 
-      api
-        .get(`/states/${stateId}`)
-        .then(async res => {
-          const resp = (await res.data) as PropsStates;
-          reset({
-            ...resp,
-          });
-        })
-        .catch(() =>
-          changeAlert({
-            message: "Não foi possivel conectar ao servidor.",
-          }),
-        );
-    })();
-  }, [stateId, reset, changeAlert]);
+  useEffect(() => {
+    if (stateId) loadStates();
+  }, [stateId]);
 
   return (
     <>
@@ -89,9 +84,13 @@ export default function FormStates() {
             <span>Voltar</span>
           </Link>
         </div>
-        <form className="w-full" id="form" onSubmit={handleSubmit(onSubmit)}>
+        <form
+          id="form"
+          className="basis-full"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full md:w-4/12 px-3">
+            <div className="basis-full md:basis-4/12 px-3">
               <Input
                 type="text"
                 label="Estado. *"

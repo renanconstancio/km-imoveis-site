@@ -34,8 +34,8 @@ export function Filters({ variant = "col" }: PropsFiltersComp) {
 
   function onSubmit(data: PropsFilters) {
     if (data.situation === "Locação") data = { ...data, situation: "location" };
-
     if (data.situation === "Compra") data = { ...data, situation: "purchase" };
+    if (data.situation === "Venda") data = { ...data, situation: "sale" };
 
     navigate({
       pathname: "/search",
@@ -125,6 +125,7 @@ export function Filters({ variant = "col" }: PropsFiltersComp) {
           <datalist id="situation">
             <option value="Locação" data-id="location" />
             <option value="Compra" data-id="purchase" />
+            <option value="Venda" data-id="sale" />
           </datalist>
         </li>
         <li>
@@ -167,6 +168,9 @@ export function Filters({ variant = "col" }: PropsFiltersComp) {
           />
         </li>
         <li>
+          <label htmlFor="" className="label-form">
+            &nbsp;
+          </label>
           <button
             className="btn-primary flex gap-2 h-[38px] px-3"
             type="submit"

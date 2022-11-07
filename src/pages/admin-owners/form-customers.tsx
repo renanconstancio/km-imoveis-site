@@ -16,7 +16,7 @@ import {
   faUndo,
 } from "@fortawesome/free-solid-svg-icons";
 import { Input } from "../../components/inputs";
-import { maskPhone } from "../../utils/mask";
+import { maskCPF, maskPhone } from "../../utils/mask";
 import { useModal } from "../../hooks/use-modal";
 import { ModalCity, ModalDistrict, ModalStreet } from "../../components/modal";
 import { findSearch } from "../../utils/functions";
@@ -68,6 +68,7 @@ export default function FormCustomers() {
       streets_id: rwsStreet?.id,
       rent_value: "0",
       rental_value: "0",
+      email: "",
     };
 
     if (data.id)
@@ -142,9 +143,7 @@ export default function FormCustomers() {
   }, []);
 
   useEffect(() => {
-    (async () => {
-      if (ownerId) loadCustomers();
-    })();
+    if (ownerId) loadCustomers();
   }, [ownerId]);
 
   return (
@@ -160,9 +159,13 @@ export default function FormCustomers() {
             <span>Voltar</span>
           </Link>
         </div>
-        <form className="w-full" id="form" onSubmit={handleSubmit(onSubmit)}>
+        <form
+          className="basis-full"
+          id="form"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full md:w-5/12 px-3">
+            <div className="basis-full md:basis-5/12 px-3">
               <Input
                 type="text"
                 label="Nome. *"
@@ -176,7 +179,7 @@ export default function FormCustomers() {
                 })}
               />
             </div>
-            <div className="w-full md:w-5/12 px-3">
+            <div className="basis-full md:basis-5/12 px-3">
               <Input
                 type="text"
                 label="Sobrenome * "
@@ -192,7 +195,7 @@ export default function FormCustomers() {
             </div>
           </div>
           <div className="flex flex-wrap -mx-3">
-            <div className="w-full md:w-3/12 px-3 mb-6">
+            <div className="basis-full md:basis-3/12 px-3 mb-6">
               <Input
                 type="text"
                 label="CNPJ"
@@ -206,7 +209,7 @@ export default function FormCustomers() {
                 })}
               />
             </div>
-            <div className="w-full md:w-3/12 px-3 mb-6">
+            <div className="basis-full md:basis-3/12 px-3 mb-6">
               <Input
                 type="text"
                 label="IE "
@@ -220,7 +223,7 @@ export default function FormCustomers() {
                 })}
               />
             </div>
-            <div className="w-full md:w-3/12 px-3 mb-6">
+            <div className="basis-full md:basis-3/12 px-3 mb-6">
               <Input
                 type="text"
                 label="RG "
@@ -234,9 +237,10 @@ export default function FormCustomers() {
                 })}
               />
             </div>
-            <div className="w-full md:w-3/12 px-3 mb-6">
+            <div className="basis-full md:basis-3/12 px-3 mb-6">
               <Input
-                type="text"
+                mask={maskCPF}
+                type="tel"
                 label="CPF *"
                 className={`input-form ${errors.cpf && "invalid"}`}
                 error={errors.cpf}
@@ -248,7 +252,7 @@ export default function FormCustomers() {
                 })}
               />
             </div>
-            <div className="w-full md:w-3/12 px-3 mb-6">
+            <div className="basis-full md:basis-3/12 px-3 mb-6">
               <Input
                 mask={maskPhone}
                 type="text"
@@ -264,7 +268,7 @@ export default function FormCustomers() {
               />
             </div>
 
-            <div className="w-full md:w-6/12 px-3 mb-6">
+            <div className="basis-full md:basis-6/12 px-3 mb-6">
               <label className="label-form" htmlFor="streets_id">
                 Rua
               </label>
@@ -294,7 +298,7 @@ export default function FormCustomers() {
                 ))}
               </datalist>
             </div>
-            <div className="w-full md:w-2/12 px-3">
+            <div className="basis-full md:basis-2/12 px-3">
               <Input
                 type="text"
                 label="Número Casa"
@@ -308,7 +312,7 @@ export default function FormCustomers() {
                 })}
               />
             </div>
-            <div className="w-full md:w-4/12 px-3 mb-6">
+            <div className="basis-full md:basis-4/12 px-3 mb-6">
               <label className="label-form" htmlFor="neighborhoods_id">
                 Bairro
               </label>
@@ -340,7 +344,7 @@ export default function FormCustomers() {
                 ))}
               </datalist>
             </div>
-            <div className="w-full md:w-4/12 px-3 mb-6">
+            <div className="basis-full md:basis-4/12 px-3 mb-6">
               <label className="label-form" htmlFor="cities_id">
                 Cidade
               </label>
@@ -373,10 +377,10 @@ export default function FormCustomers() {
                 ))}
               </datalist>
             </div>
-            <div className="w-full font-bold uppercase font-play pt-5 px-3">
+            <div className="basis-full font-bold uppercase font-play pt-5 px-3">
               Dados da Conta Bancária <hr className="my-5" />
             </div>
-            <div className="w-full md:w-2/12 px-3">
+            <div className="basis-full md:basis-2/12 px-3">
               <Input
                 type="text"
                 label="Agência"
@@ -390,7 +394,7 @@ export default function FormCustomers() {
                 })}
               />
             </div>
-            <div className="w-full md:w-4/12 px-3">
+            <div className="basis-full md:basis-4/12 px-3">
               <Input
                 type="text"
                 label="Conta Corrente"
@@ -404,7 +408,7 @@ export default function FormCustomers() {
                 })}
               />
             </div>
-            <div className="w-full md:w-4/12 px-3">
+            <div className="basis-full md:basis-4/12 px-3">
               <Input
                 type="text"
                 label="Chave Pix"

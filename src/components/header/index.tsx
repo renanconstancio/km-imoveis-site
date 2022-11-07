@@ -1,3 +1,5 @@
+import { faHome, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo.svg";
 
@@ -8,26 +10,27 @@ export function Header() {
     <header>
       <div className="border-b border-gray-200 py-4">
         <nav className="flex justify-between items-center container mx-auto px-4">
-          <Link to="/" className="w-56">
+          <Link to="/" className="basis-64">
             <img src={logo} alt="Logo" />
           </Link>
-          <ul className="container flex justify-end gap-3 mx-auto px-4">
-            <li className="flex gap-1">
-              <img src={iconWhatsapp} width={20} />
-              <span>{import.meta.env.VITE_PHONE}</span>
-            </li>
-            {/* <li>
-              <FontAwesomeIcon icon={faMapPin} /> endereço aqui
+          <ul className="basis-full flex justify-end gap-3 mx-auto px-4">
+            <li></li>
+            <li>
+              <Link to="/">
+                <FontAwesomeIcon icon={faHome} /> Inicio
+              </Link>
             </li>
             <li>
-              <i className="fab fa-facebook"></i>
+              <Link to="/search">
+                <FontAwesomeIcon icon={faSearch} /> Imovéis
+              </Link>
             </li>
             <li>
-              <i className="fab fa-instagram"></i>
+              <Link className="flex gap-1" to="/">
+                <img src={iconWhatsapp} width={18} />
+                <span>Contato {import.meta.env.VITE_PHONE}</span>
+              </Link>
             </li>
-            <li>
-              <i className="fab fa-whatsapp"></i>
-            </li> */}
           </ul>
         </nav>
       </div>

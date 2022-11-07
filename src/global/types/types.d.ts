@@ -35,6 +35,7 @@ export type PropsImmobles = {
   tenant_id: string | null;
   number: string;
   description: string;
+  description_text: string;
   reference: string;
   sale_price: string;
   rent_price: string;

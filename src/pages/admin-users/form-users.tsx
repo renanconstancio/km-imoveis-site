@@ -100,9 +100,13 @@ export default function FormUsers() {
             <span>Voltar</span>
           </Link>
         </div>
-        <form className="w-full" id="form" onSubmit={handleSubmit(onSubmit)}>
+        <form
+          id="form"
+          className="basis-full"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full md:w-2/12 px-3 mb-6">
+            <div className="basis-full md:basis-2/12 px-3 mb-6">
               <label className="label-form" htmlFor="type">
                 Tipo
               </label>
@@ -117,8 +121,8 @@ export default function FormUsers() {
                 </select>
               </div>
             </div>
-            <div className="w-full"></div>
-            <div className="w-full md:w-5/12 px-3 mb-6">
+            <div className="basis-full"></div>
+            <div className="basis-full md:basis-5/12 px-3 mb-6">
               <Input
                 type="text"
                 label="Nome *"
@@ -132,8 +136,8 @@ export default function FormUsers() {
                 })}
               />
             </div>
-            <div className="w-full"></div>
-            <div className="w-full md:w-4/12 px-3 mb-6">
+            <div className="basis-full"></div>
+            <div className="basis-full md:basis-4/12 px-3 mb-6">
               <Input
                 type="text"
                 label="Sobrenome *"
@@ -147,8 +151,8 @@ export default function FormUsers() {
                 })}
               />
             </div>
-            <div className="w-full"></div>
-            <div className="w-full md:w-4/12 px-3 mb-6">
+            <div className="basis-full"></div>
+            <div className="basis-full md:basis-4/12 px-3 mb-6">
               <Input
                 type="text"
                 label="E-mail *"
@@ -162,8 +166,8 @@ export default function FormUsers() {
                 })}
               />
             </div>
-            <div className="w-full"></div>
-            <div className="w-full md:w-3/12 px-3 mb-6">
+            <div className="basis-full"></div>
+            <div className="basis-full md:basis-3/12 px-3 mb-6">
               <Input
                 type="password"
                 label="Senha *"
@@ -178,8 +182,8 @@ export default function FormUsers() {
                 // })}
               />
             </div>
-            <div className="w-full"></div>
-            <div className="w-full md:w-3/12 px-3 mb-6">
+            <div className="basis-full"></div>
+            <div className="basis-full md:basis-3/12 px-3 mb-6">
               <Input
                 mask={maskPhone}
                 type="tel"

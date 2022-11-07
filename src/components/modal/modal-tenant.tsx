@@ -95,7 +95,7 @@ export default function ModalTenant({
                 <span>Salvar</span>
               </button>
               <div className="flex flex-wrap -mx-3 mb-6">
-                <div className="w-full md:w-5/12 px-3">
+                <div className="basis-full md:basis-5/12 px-3">
                   <Input
                     type="text"
                     label="Nome. *"
@@ -109,7 +109,7 @@ export default function ModalTenant({
                     })}
                   />
                 </div>
-                <div className="w-full md:w-5/12 px-3">
+                <div className="basis-full md:basis-5/12 px-3">
                   <Input
                     type="text"
                     label="Sobrenome * "
@@ -125,7 +125,7 @@ export default function ModalTenant({
                 </div>
               </div>
               <div className="flex flex-wrap -mx-3">
-                <div className="w-full md:w-5/12 px-3">
+                <div className="basis-full md:basis-5/12 px-3">
                   <Input
                     type="text"
                     label="E-mail "
@@ -139,7 +139,7 @@ export default function ModalTenant({
                     })}
                   />
                 </div>
-                <div className="w-full md:w-3/12 px-3 mb-6">
+                <div className="basis-full md:basis-3/12 px-3 mb-6">
                   <Input
                     type="text"
                     label="CNPJ"
@@ -153,7 +153,7 @@ export default function ModalTenant({
                     })}
                   />
                 </div>
-                <div className="w-full md:w-3/12 px-3 mb-6">
+                <div className="basis-full md:basis-3/12 px-3 mb-6">
                   <Input
                     type="text"
                     label="IE "
@@ -167,7 +167,7 @@ export default function ModalTenant({
                     })}
                   />
                 </div>
-                <div className="w-full md:w-3/12 px-3 mb-6">
+                <div className="basis-full md:basis-3/12 px-3 mb-6">
                   <Input
                     type="text"
                     label="RG "
@@ -181,7 +181,7 @@ export default function ModalTenant({
                     })}
                   />
                 </div>
-                <div className="w-full md:w-3/12 px-3 mb-6">
+                <div className="basis-full md:basis-3/12 px-3 mb-6">
                   <Input
                     mask={maskCPF}
                     type="text"
@@ -196,7 +196,7 @@ export default function ModalTenant({
                     })}
                   />
                 </div>
-                <div className="w-full md:w-3/12 px-3 mb-6">
+                <div className="basis-full md:basis-3/12 px-3 mb-6">
                   <Input
                     mask={maskPhone}
                     type="text"
@@ -212,7 +212,7 @@ export default function ModalTenant({
                   />
                 </div>
 
-                <div className="w-full md:w-6/12 px-3 mb-6">
+                <div className="basis-full md:basis-6/12 px-3 mb-6">
                   <label className="label-form" htmlFor="streets_id">
                     Rua
                   </label>
@@ -234,7 +234,7 @@ export default function ModalTenant({
                     ))}
                   </datalist>
                 </div>
-                <div className="w-full md:w-2/12 px-3">
+                <div className="basis-full md:basis-2/12 px-3">
                   <label className="label-form" htmlFor="number">
                     Número Casa
                   </label>
@@ -250,7 +250,7 @@ export default function ModalTenant({
                   )}
                 </div>
 
-                <div className="w-full md:w-4/12 px-3 mb-6">
+                <div className="basis-full md:basis-4/12 px-3 mb-6">
                   <label className="label-form" htmlFor="neighborhoods_id">
                     Bairro
                   </label>
@@ -275,7 +275,7 @@ export default function ModalTenant({
                     ))}
                   </datalist>
                 </div>
-                <div className="w-full md:w-4/12 px-3 mb-6">
+                <div className="basis-full md:basis-4/12 px-3 mb-6">
                   <label className="label-form" htmlFor="cities_id">
                     Cidade
                   </label>
