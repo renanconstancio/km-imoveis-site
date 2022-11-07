@@ -54,9 +54,7 @@ export default function Users() {
   }
 
   useEffect(() => {
-    (async () => {
-      loadUsers();
-    })();
+    loadUsers();
   }, []);
 
   if (loading) return <Loading />;

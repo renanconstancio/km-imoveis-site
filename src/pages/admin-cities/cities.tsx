@@ -55,9 +55,7 @@ export default function Cities() {
   }
 
   useEffect(() => {
-    (async () => {
-      loadCities();
-    })();
+    loadCities();
   }, []);
 
   if (loading) return <Loading />;

@@ -58,8 +58,8 @@ export default function Neighborhoods() {
   }
 
   useEffect(() => {
-    if (!neighborhoods.length) loadNeighborhoods();
-  }, [neighborhoods]);
+    loadNeighborhoods();
+  }, []);
 
   if (loading) return <Loading />;
 

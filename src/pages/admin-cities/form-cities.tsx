@@ -111,7 +111,7 @@ export default function FormCities() {
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="basis-full md:basis-4/12 px-3">
               <label className="label-form" htmlFor="street">
-                RUA.
+                Cidade *
               </label>
               <input
                 type="text"
@@ -122,9 +122,10 @@ export default function FormCities() {
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
             </div>
+            <div className="basis-full mb-5"></div>
             <div className="basis-full md:basis-2/12 px-3 mb-5">
               <label className="label-form" htmlFor="situation">
-                Estado
+                Estado *
               </label>
               <div className="flex">
                 <input

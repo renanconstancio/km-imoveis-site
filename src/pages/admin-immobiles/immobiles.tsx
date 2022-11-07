@@ -80,9 +80,7 @@ export default function Immobiles() {
   }
 
   useEffect(() => {
-    (async () => {
-      loadImmobiles();
-    })();
+    loadImmobiles();
   }, [locationDecodURI]);
 
   if (loading) return <Loading />;

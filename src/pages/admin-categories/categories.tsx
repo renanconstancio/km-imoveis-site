@@ -58,9 +58,7 @@ export default function Categories() {
   }
 
   useEffect(() => {
-    (async () => {
-      loadCategories();
-    })();
+    loadCategories();
   }, []);
 
   if (loading) return <Loading />;

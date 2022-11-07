@@ -56,8 +56,8 @@ export default function Streets() {
   }
 
   useEffect(() => {
-    if (!streets.length) loadStreets();
-  }, [streets]);
+    loadStreets();
+  }, []);
 
   if (loading) return <Loading />;
 

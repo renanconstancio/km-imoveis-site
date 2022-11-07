@@ -16,7 +16,7 @@ import {
   faUndo,
 } from "@fortawesome/free-solid-svg-icons";
 import { Input } from "../../components/inputs";
-import { maskPhone } from "../../utils/mask";
+import { maskCPF, maskPhone } from "../../utils/mask";
 import { useModal } from "../../hooks/use-modal";
 import { ModalCity, ModalDistrict, ModalStreet } from "../../components/modal";
 import { findSearch } from "../../utils/functions";
@@ -68,6 +68,7 @@ export default function FormCustomers() {
       streets_id: rwsStreet?.id,
       rent_value: "0",
       rental_value: "0",
+      email: "",
     };
 
     if (data.id)
@@ -142,9 +143,7 @@ export default function FormCustomers() {
   }, []);
 
   useEffect(() => {
-    (async () => {
-      if (ownerId) loadCustomers();
-    })();
+    if (ownerId) loadCustomers();
   }, [ownerId]);
 
   return (
@@ -240,7 +239,8 @@ export default function FormCustomers() {
             </div>
             <div className="basis-full md:basis-3/12 px-3 mb-6">
               <Input
-                type="text"
+                mask={maskCPF}
+                type="tel"
                 label="CPF *"
                 className={`input-form ${errors.cpf && "invalid"}`}
                 error={errors.cpf}

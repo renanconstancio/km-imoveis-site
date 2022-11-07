@@ -39,7 +39,11 @@ export function SiteHome() {
     );
 
     await api
-      .get(`/immobiles?${decodeURI(stringify({ ...query, ...conveterParse }))}`)
+      .get(
+        `/immobiles/list/all?${decodeURI(
+          stringify({ ...query, ...conveterParse }),
+        )}`,
+      )
       .then(async resp => setImmobiles(await resp.data))
       .finally(() => setLoading(false));
   }

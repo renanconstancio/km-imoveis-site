@@ -46,6 +46,9 @@ export default function FormStates() {
       await api
         .post(`/states`, newPostData)
         .then(async resp => {
+          changeAlert({
+            message: "Dados salvos com sucesso.",
+          });
           navigate({ pathname: `/adm/states/${(await resp.data).id}/edit` });
         })
         .catch(() =>

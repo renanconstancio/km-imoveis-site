@@ -13,7 +13,7 @@ import {
   ModalDistrict,
   ModalCity,
 } from "../../components/modal";
-import { api } from "../../services/api";
+import { api, tags } from "../../services/api";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
@@ -27,33 +27,20 @@ import {
   faImage,
   faSave,
   faUndo,
+  faBath,
+  faBed,
+  faCar,
+  faExpand,
+  faFan,
+  faShower,
+  faSink,
+  faStarOfLife,
+  faTv,
 } from "@fortawesome/free-solid-svg-icons";
 import { Input } from "../../components/inputs";
 import { maskCurrency, maskCurrencyUs } from "../../utils/mask";
 import ModalTenant from "../../components/modal/modal-tenant";
 import ModalOwner from "../../components/modal/modal-owner";
-
-const tagsImmoble = [
-  "1 banheiro",
-  "2 banheiros",
-  "3 banheiros",
-  "1 quarto",
-  "2 quartos",
-  "3 quartos",
-  "4 quartos",
-  "sala",
-  "copa",
-  "cozinha",
-  "sala de star",
-  "1 suite",
-  "2 suite",
-  "ventilador",
-  "ar condicionado",
-  "caragem",
-  "caragem p/ 2 carros",
-  "caragem p/ 3 carros",
-  "caragem p/ 4 carros",
-];
 
 export default function FormImmobles() {
   const [cities, setCities] = useState<PropsCities[]>([]);
@@ -63,6 +50,7 @@ export default function FormImmobles() {
   const [tenants, setTenant] = useState<PropsCustomers[]>([]);
   const [owners, setOwner] = useState<PropsCustomers[]>([]);
   const [users, setUsers] = useState<PropsUsers[]>([]);
+  const [descriptionText, setDescriptionText] = useState<string[]>([]);
 
   const {
     openCategory,
@@ -118,6 +106,7 @@ export default function FormImmobles() {
 
     const newPostData = {
       ...data,
+      description_text: descriptionText?.join(","),
       published: data.published ? true : false,
       sale_price: maskCurrencyUs(`${data.sale_price || 0}`),
       rent_price: maskCurrencyUs(`${data.rent_price || 0}`),
@@ -181,6 +170,8 @@ export default function FormImmobles() {
             immoble.tenant?.last_name,
           ].join(" "),
         });
+        setDescriptionText(immoble.description_text.split(","));
+        console.log("immoble", immoble);
       })
       .catch(e => {
         console.log(e);
@@ -207,9 +198,7 @@ export default function FormImmobles() {
   }
 
   async function loadStreets() {
-    await api
-      .get("/neighborhoods")
-      .then(async res => setStreets(await res.data));
+    await api.get("/streets").then(async res => setStreets(await res.data));
   }
 
   async function loadTenants() {
@@ -229,31 +218,31 @@ export default function FormImmobles() {
   }
 
   useEffect(() => {
-    if (!categories.length) loadCategories();
-  }, [categories]);
+    loadCategories();
+  }, []);
 
   useEffect(() => {
-    if (!cities.length) loadCities();
-  }, [cities]);
+    loadCities();
+  }, []);
 
   useEffect(() => {
-    if (!neighborhoods.length) loadNeighborhoods();
-  }, [neighborhoods]);
+    loadNeighborhoods();
+  }, []);
 
   useEffect(() => {
-    if (!streets.length) loadStreets();
-  }, [streets]);
+    loadStreets();
+  }, []);
 
   useEffect(() => {
-    if (!tenants.length) loadTenants();
-  }, [tenants]);
+    loadTenants();
+  }, []);
 
   useEffect(() => {
-    if (!owners.length) loadOwners();
-  }, [owners]);
+    loadOwners();
+  }, []);
 
   useEffect(() => {
-    if (!users.length) loadUsers();
+    loadUsers();
   }, [users]);
 
   useEffect(() => {
@@ -652,10 +641,54 @@ export default function FormImmobles() {
             <div className="basis-full px-3 mb-6">
               <label className="label-form">Outras Info</label>
               <hr className="mb-5" />
-              <div className="flex flex-wrap">
-                {tagsImmoble.map((label, k) => (
-                  <div className="basis-1/4" key={k}>
-                    <input type="checkbox" name="" id="" /> {label}
+              <div className="flex flex-wrap capitalize">
+                {tags.map((label, k) => (
+                  <div key={k} className="basis-1/4">
+                    <span
+                      className={`p-3 block m-1 ${
+                        descriptionText?.includes(label.tag)
+                          ? "bg-green-200"
+                          : "hover:bg-green-300"
+                      }`}
+                      onClick={() => {
+                        if (descriptionText?.includes(label.tag)) {
+                          setDescriptionText(
+                            descriptionText?.filter(item => {
+                              return item !== label.tag;
+                            }),
+                          );
+                          return;
+                        }
+                        setDescriptionText(old => [...old, label.tag]);
+                      }}
+                    >
+                      {label.icon === "faTv" && <FontAwesomeIcon icon={faTv} />}
+                      {label.icon === "faCar" && (
+                        <FontAwesomeIcon icon={faCar} />
+                      )}
+                      {label.icon === "faBath" && (
+                        <FontAwesomeIcon icon={faBath} />
+                      )}
+                      {label.icon === "faStarOfLife" && (
+                        <FontAwesomeIcon icon={faStarOfLife} />
+                      )}
+                      {label.icon === "faSink" && (
+                        <FontAwesomeIcon icon={faSink} />
+                      )}
+                      {label.icon === "faBed" && (
+                        <FontAwesomeIcon icon={faBed} />
+                      )}
+                      {label.icon === "faExpand" && (
+                        <FontAwesomeIcon icon={faExpand} />
+                      )}
+                      {label.icon === "faFan" && (
+                        <FontAwesomeIcon icon={faFan} />
+                      )}
+                      {label.icon === "faShower" && (
+                        <FontAwesomeIcon icon={faShower} />
+                      )}{" "}
+                      {label.tag}
+                    </span>
                   </div>
                 ))}
               </div>
