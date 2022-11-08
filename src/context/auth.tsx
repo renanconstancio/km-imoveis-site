@@ -5,6 +5,7 @@ export type AuthType = {
   id: string;
   name: string;
   token: string;
+  type: string;
   avatar?: string;
   roles: [];
 };

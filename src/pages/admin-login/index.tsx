@@ -22,7 +22,7 @@ export function Login() {
     formState: { errors },
   } = useForm<PropsUserLogin>();
 
-  async function onSubmit(data: PropsUserLogin) {
+  async function onHandleSubmit(data: PropsUserLogin) {
     await api
       .post(`/users/login`, data)
       .then(async res => {
@@ -30,6 +30,7 @@ export function Login() {
         login({
           id: user.id,
           name: user.last_name,
+          type: user.type,
           token: token,
           roles: [],
         });
@@ -49,7 +50,7 @@ export function Login() {
       <div className="container px-6 py-12 h-full">
         <div className="flex justify-center items-center flex-wrap h-full text-gray-800 ">
           <div className="md:basis-8/12 lg:basis-5/12 lg:ml-20 bg-white">
-            <form onSubmit={handleSubmit(onSubmit)} className="p-10">
+            <form onSubmit={handleSubmit(onHandleSubmit)} className="p-10">
               <div className="pb-5">
                 <img
                   src={bgLogo}

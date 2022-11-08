@@ -1,9 +1,9 @@
 import { faHome, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
-import logo from "../../assets/logo.svg";
 
 import iconWhatsapp from "../../assets/whatsapp.svg";
+import logo from "../../assets/logo.svg";
 
 export function Header() {
   return (

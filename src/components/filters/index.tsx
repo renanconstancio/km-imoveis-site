@@ -17,7 +17,7 @@ type PropsFilters = {
   district: string;
   city: string;
   reference: string;
-  situation: string | "location" | "purchase" | "sale";
+  situation: string | "location" | "purchase" | "sale" | "exchange";
 };
 
 export function Filters({ variant = "col" }: PropsFiltersComp) {
@@ -36,6 +36,7 @@ export function Filters({ variant = "col" }: PropsFiltersComp) {
     if (data.situation === "Locação") data = { ...data, situation: "location" };
     if (data.situation === "Compra") data = { ...data, situation: "purchase" };
     if (data.situation === "Venda") data = { ...data, situation: "sale" };
+    if (data.situation === "Permuta") data = { ...data, situation: "exchange" };
 
     navigate({
       pathname: "/search",
@@ -125,6 +126,7 @@ export function Filters({ variant = "col" }: PropsFiltersComp) {
           <datalist id="situation">
             <option value="Locação" data-id="location" />
             <option value="Compra" data-id="purchase" />
+            <option value="Permuta" data-id="exchange" />
             <option value="Venda" data-id="sale" />
           </datalist>
         </li>

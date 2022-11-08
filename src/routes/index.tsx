@@ -15,6 +15,7 @@ import { FormNeighborhoods, Neighborhoods } from "../pages/admin-neighborhoods";
 import { Customers, FormCustomers } from "../pages/admin-tenant";
 import { FormOwners, Owners } from "../pages/admin-owners";
 import { FormUsers, Users } from "../pages/admin-users";
+import { Logs } from "../pages/admin-logs";
 
 export const router = createBrowserRouter([
   {
@@ -450,6 +451,17 @@ export const router = createBrowserRouter([
             ),
           },
         ],
+      },
+      {
+        path: "logs",
+        element: (
+          <>
+            <Helmet>
+              <title>Logs - {import.meta.env.VITE_REACT_TITLE}</title>
+            </Helmet>
+            <Logs />
+          </>
+        ),
       },
     ],
   },

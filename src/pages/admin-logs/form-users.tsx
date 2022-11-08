@@ -10,13 +10,11 @@ import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
 import { Input } from "../../components/inputs";
 import { maskPhone } from "../../utils/mask";
-import { useAuth } from "../../hooks/use-auth";
 
 export default function FormUsers() {
-  const navigate = useNavigate();
-
   const { changeAlert } = useAlert();
-  const { auth } = useAuth();
+
+  const navigate = useNavigate();
 
   const { userId } = useParams<{ userId: string | undefined }>();
 
@@ -25,7 +23,6 @@ export default function FormUsers() {
     register,
     handleSubmit,
     setValue,
-    watch,
     formState: { errors },
   } = useForm<PropsUsers & { password: string }>();
 
@@ -120,7 +117,7 @@ export default function FormUsers() {
                 >
                   <option value="admin">Adiministrador</option>
                   <option value="user">Usuários</option>
-                  {auth?.type === "root" && <option value="root">Root</option>}
+                  <option value="root">Root</option>
                 </select>
               </div>
             </div>

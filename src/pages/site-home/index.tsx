@@ -1,4 +1,4 @@
-import { api } from "../../services/api";
+import { api, tags } from "../../services/api";
 import { useEffect, useState } from "react";
 import { CarouselIndex } from "../../components/carousel";
 import { Card } from "../../components/card";
@@ -100,14 +100,19 @@ export function SiteHome() {
               <Card
                 key={k}
                 id={item.reference}
-                title={item.description}
-                rent_price={item.rent_price}
-                sale_price={item.sale_price}
+                reference={item.reference}
+                situation={item.situation}
+                description={item.description}
+                descriptionText={item.description_text}
+                buildingArea={item.building_area}
+                terrainArea={item.terrain_area}
+                rentPrice={item.rent_price}
+                salePrice={item.sale_price}
                 address={[
                   item.district?.district,
                   `${item.city?.city}/${item.city?.state.state}`,
                 ].join(", ")}
-                tags={[]}
+                tags={tags}
                 images={item?.photos?.map(f => f.image_xs) || []}
               />
             ))}

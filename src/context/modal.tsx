@@ -8,6 +8,7 @@ export type ModalType = {
   openCity: boolean;
   openTenant: boolean;
   openOwner: boolean;
+  openLog: boolean;
 };
 
 export type ModalContextType = {
@@ -19,6 +20,7 @@ export type ModalContextType = {
   openCity: boolean;
   openTenant: boolean;
   openOwner: boolean;
+  openLog: boolean;
 
   closeModal: (open: boolean) => void;
   closePhoto: (open: boolean) => void;
@@ -28,6 +30,7 @@ export type ModalContextType = {
   closeCity: (open: boolean) => void;
   closeTenant: (open: boolean) => void;
   closeOwner: (open: boolean) => void;
+  closeLog: (open: boolean) => void;
 };
 
 export const ModalContext = createContext<ModalContextType>(
@@ -43,6 +46,7 @@ export function ModalProvider({ children }: { children: ReactNode }) {
   const [openCity, setCloseCity] = useState(false);
   const [openTenant, closeTenant] = useState(false);
   const [openOwner, closeOwner] = useState(false);
+  const [openLog, closeLog] = useState(false);
 
   return (
     <ModalContext.Provider
@@ -55,6 +59,7 @@ export function ModalProvider({ children }: { children: ReactNode }) {
         openCity: openCity,
         openTenant: openTenant,
         openOwner: openOwner,
+        openLog: openLog,
 
         closeModal: setClose,
         closePhoto: setPhoto,
@@ -64,6 +69,7 @@ export function ModalProvider({ children }: { children: ReactNode }) {
         closeCity: setCloseCity,
         closeTenant: closeTenant,
         closeOwner: closeOwner,
+        closeLog: closeLog,
       }}
     >
       {children}

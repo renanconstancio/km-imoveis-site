@@ -23,6 +23,7 @@ import {
   faStarOfLife,
   faTv,
 } from "@fortawesome/free-solid-svg-icons";
+import { situationText, situationTextClassName } from "../../utils/functions";
 
 export function SiteImmoble() {
   const [loading, setLoading] = useState(true);
@@ -57,6 +58,29 @@ export function SiteImmoble() {
             <title>
               {immoble?.description} - {import.meta.env.VITE_REACT_TITLE}
             </title>
+            <meta
+              name="description"
+              content={`${immoble?.description} - ${
+                import.meta.env.VITE_REACT_TITLE
+              }`}
+            />
+
+            <meta property="og:url" content={`${location.href}`} />
+            <meta
+              property="og:title"
+              content={`${immoble?.description} - ${
+                import.meta.env.VITE_REACT_TITLE
+              }`}
+            />
+            <meta
+              property="og:description"
+              content={`${immoble?.description} - ${
+                import.meta.env.VITE_REACT_TITLE
+              }`}
+            />
+            <meta property="og:type" content="article" />
+            <meta property="og:image" content={immoble.photos?.[0].image_xs} />
+            <meta property="og:image:type" content="image/webp" />
           </Helmet>
           <div className="bg-slate-100 -mt-2 mb-5">
             <section className="container p-5">
@@ -66,9 +90,24 @@ export function SiteImmoble() {
           <ul className="container px-4 flex flex-col flex-wrap sm:flex-row">
             <li className="flex-initial basis-full">
               <H2 title={`${immoble?.description}`} />
-              <Address address={[immoble?.district?.district].join(", ")} />
+              <small>CÓD.: {immoble?.reference}</small>
+              <Address
+                address={[
+                  immoble.district?.district,
+                  `${immoble.city?.city}/${immoble.city?.state.state}`,
+                ].join(", ")}
+              />
             </li>
-            <li className="flex-initial basis-full sm:basis-8/12">
+            <li className="flex-initial basis-full sm:basis-8/12 relative">
+              <ul className="absolute left-0 top-3 h-[auto] w-auto z-[9999] font-play text-white text-lg flex gap-2">
+                <li
+                  className={`p-1 ${situationTextClassName(
+                    immoble?.situation,
+                  )}`}
+                >
+                  {situationText(immoble?.situation)}
+                </li>
+              </ul>
               <CarouselIcons images={photos} />
             </li>
             <li className="flex-initial basis-full mt-5 sm:mt-0 sm:basis-4/12 sm:pl-5">
@@ -87,7 +126,7 @@ export function SiteImmoble() {
                 </span>
                 {tags.map((r, index) => {
                   if (
-                    immoble?.description_text.split(",").includes(`${r.tag}`)
+                    immoble?.description_text?.split(",").includes(`${r.tag}`)
                   ) {
                     return (
                       <span key={index}>

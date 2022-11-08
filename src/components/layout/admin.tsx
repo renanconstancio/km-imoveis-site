@@ -1,4 +1,5 @@
 import {
+  faBug,
   faBuilding,
   faHome,
   faList,
@@ -23,11 +24,13 @@ export default function Admin() {
   const { alert } = useAlert();
   const { auth, logout } = useAuth();
 
+  console.log(auth?.type);
+
   return !auth?.id ? (
     <Login />
   ) : (
     <div className="flex flex-row h-screen bg-gray-100 overflow-hidden">
-      <nav className="basis-1/5 pl-5 py-5 h-screen bg-gray-800 text-white font-play flex flex-col">
+      <nav className="basis-1/5 pl-5 h-screen bg-gray-800 text-white font-play flex flex-col overflow-y-auto">
         <NavLink
           to="/adm/immobiles"
           className={({ isActive }) =>
@@ -101,6 +104,17 @@ export default function Admin() {
         >
           <FontAwesomeIcon icon={faUser} /> Usuários
         </NavLink>
+        {auth?.type === "root" && (
+          <NavLink
+            to="/adm/logs"
+            className={({ isActive }) =>
+              isActive ? activeClassName : classDefaultName
+            }
+          >
+            <FontAwesomeIcon icon={faBug} /> Logs
+          </NavLink>
+        )}
+
         <span className="cursor-pointer" onClick={logout}>
           <FontAwesomeIcon icon={faSignOut} /> Sair
         </span>

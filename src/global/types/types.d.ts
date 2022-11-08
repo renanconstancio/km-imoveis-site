@@ -5,6 +5,19 @@ export type PropsPagination<T = T> = {
   data: T;
 };
 
+export type PropsLogs = {
+  created_at: string;
+  users_id?: string | null;
+  type: "access" | "create" | "update" | "delete";
+  route: string;
+  text: any;
+  user?: {
+    type: string;
+    email: string;
+    first_name?: string;
+  };
+};
+
 export type PropsUsers = {
   id: string;
   type: string;

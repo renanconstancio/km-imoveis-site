@@ -171,7 +171,6 @@ export default function FormImmobles() {
           ].join(" "),
         });
         setDescriptionText(immoble.description_text.split(","));
-        console.log("immoble", immoble);
       })
       .catch(e => {
         console.log(e);
@@ -243,7 +242,7 @@ export default function FormImmobles() {
 
   useEffect(() => {
     loadUsers();
-  }, [users]);
+  }, []);
 
   useEffect(() => {
     if (immobleId) loadImmoble();
@@ -414,9 +413,10 @@ export default function FormImmobles() {
                   className="input-form"
                   {...register("situation", { required: false })}
                 >
-                  <option value="location">Locação</option>
-                  <option value="purchase">Compra</option>
                   <option value="sale">Venda</option>
+                  <option value="location">Locação</option>
+                  <option value="exchange">Permuta</option>
+                  <option value="purchase">Compra</option>
                 </select>
               </div>
             </div>
