@@ -29,24 +29,6 @@ export default function Immobiles() {
   const limit = (query.limit || "25") as string;
   const page = (query.page || "1") as string;
 
-  function handleSearch(event: KeyboardEvent<EventTarget & HTMLInputElement>) {
-    if (event.currentTarget.value) {
-      if (event.code === "Enter" || event.keyCode === 13) {
-        navigate({
-          search: `?q=${event.currentTarget.value}`,
-        });
-      }
-    }
-  }
-
-  function handleOrder(orderString: string) {
-    const qsParse = parse(orderString);
-
-    navigate({
-      search: decodeURI(stringify({ ...query, ...qsParse })),
-    });
-  }
-
   async function handleDelete({
     id,
     description,
@@ -67,14 +49,32 @@ export default function Immobiles() {
       .finally(() => setLoading(false));
   }
 
+  function handleSearch(event: KeyboardEvent<EventTarget & HTMLInputElement>) {
+    if (event.currentTarget.value) {
+      if (event.code === "Enter" || event.keyCode === 13) {
+        navigate({
+          search: `?q=${event.currentTarget.value}`,
+        });
+      }
+    }
+  }
+
+  function handleOrder(orderString: string) {
+    const qsParse = parse(orderString);
+
+    navigate({
+      search: decodeURI(stringify({ ...query, ...qsParse })),
+    });
+  }
+
   async function loadImmobiles() {
-    const conveterParse = parse(
+    const urlParse = parse(
       `page=${page}&limit=${limit}&search[reference]=${qs}&search[description]=${qs}&search[city]=${qs}&search[street]=${qs}&search[district]=${qs}`,
     );
 
     setLoading(true);
     await api
-      .get(`/immobiles?${decodeURI(stringify({ ...query, ...conveterParse }))}`)
+      .get(`/immobiles?${decodeURI(stringify({ ...query, ...urlParse }))}`)
       .then(async resp => setImmobiles(await resp.data))
       .finally(() => setLoading(false));
   }

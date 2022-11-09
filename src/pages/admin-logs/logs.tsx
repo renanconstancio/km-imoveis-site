@@ -1,8 +1,8 @@
-import { parse } from "query-string";
+import { parse, stringify } from "query-string";
 import { KeyboardEvent, useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Loading } from "../../components/loading";
-import { PropsLogs } from "../../global/types/types";
+import { PropsLogs, PropsPagination } from "../../global/types/types";
 import { faEdit, faEye, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { addClassName } from "../../utils/functions";
@@ -10,47 +10,52 @@ import { useModal } from "../../hooks/use-modal";
 import { format } from "date-fns";
 import { api } from "../../services/api";
 import ModalLog from "../../components/modal/modal-log";
+import { Pagination } from "../../components/pagination";
 
 export default function Logs() {
   const [clear, setClear] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [logs, setLogs] = useState<PropsLogs[]>([]);
   const [log, addLogs] = useState();
+  const [logs, setLogs] = useState<PropsPagination<PropsLogs[]>>(
+    {} as PropsPagination<PropsLogs[]>,
+  );
 
-  const location = useLocation();
   const { closeModal, open } = useModal();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const locationDecodUri = decodeURI(location.search);
 
   const query = parse(location.search);
-
-  const q = (query.q || "") as unknown as string;
+  const limit = (query.limit || "25") as string;
+  const page = (query.page || "1") as string;
+  const qs = (query.q || "") as unknown as string;
 
   function handleSearch(event: KeyboardEvent<EventTarget & HTMLInputElement>) {
     if (event.currentTarget.value) {
       if (event.code === "Enter" || event.keyCode === 13) {
-        setClear(!clear);
-        setLogs(
-          logs?.filter(
-            (f: { text: string }) =>
-              f.text
-                .toLowerCase()
-                .includes(event.currentTarget.value.toLowerCase()), //f.street === event.currentTarget.value,
-          ),
-        );
+        navigate({
+          search: `?q=${event.currentTarget.value}`,
+        });
       }
     }
   }
 
   async function loadLogs() {
+    const urlParse = parse(
+      `page=${page}&limit=${limit}&search[text]=${qs}&search[user]=${qs}`,
+    );
+
     setLoading(true);
     await api
-      .get("/logs")
+      .get(`/logs?${decodeURI(stringify({ ...query, ...urlParse }))}`)
       .then(async resp => setLogs(await resp.data))
       .finally(() => setLoading(false));
   }
 
   useEffect(() => {
     loadLogs();
-  }, []);
+  }, [locationDecodUri]);
 
   if (loading) return <Loading />;
 
@@ -66,25 +71,20 @@ export default function Logs() {
                 defaultValue={`${query.q || ""}`}
                 onKeyDown={handleSearch}
               />
-              {(q || clear) && (
-                <button
-                  className="btn-default text-black"
-                  type="button"
-                  onClick={() => {
-                    loadLogs();
-                    setClear(!clear);
-                  }}
-                >
+              {qs && (
+                <Link className="btn-default text-black" to="/adm/logs">
                   <FontAwesomeIcon icon={faTimes} />
-                </button>
+                </Link>
               )}
             </aside>
-            <nav>
-              <Link className="btn-success" to="/adm/logs/new">
-                <FontAwesomeIcon icon={faEdit} /> Criar
-              </Link>
-            </nav>
           </section>
+          <nav>
+            <Pagination
+              total={logs?.total || 0}
+              currentPage={Number(`${query.page || "1"}`)}
+              perPage={Number(`${query.limit || "25"}`)}
+            />
+          </nav>
         </li>
 
         <li className="list-orders uppercase font-play font-bold bg-gray-200">
@@ -94,19 +94,17 @@ export default function Logs() {
           <span className="basis-2/12">Data/Hora</span>
         </li>
 
-        {logs?.map(rws => (
+        {logs?.data?.map(rws => (
           <li key={rws.created_at} className="list-orders">
-            <span className="flex items-center gap-1 basis-1/12">
+            <span className="flex items-center basis-1/12">
+              {/* <span className={`${addClassName(rws.type)}`}></span> */}
               <span
-                className="btn-primary btn-xs"
+                className={`${addClassName(rws.type)}`}
                 onClick={() => {
                   closeModal(!open);
                   addLogs(rws.text);
                 }}
-              >
-                <FontAwesomeIcon icon={faEye} />
-              </span>
-              <span className={`${addClassName(rws.type)}`}></span>
+              />
             </span>
             <span className="basis-7/12">{rws?.user?.first_name}</span>
             <span className="basis-2/12">{rws?.route}</span>
@@ -116,7 +114,7 @@ export default function Logs() {
           </li>
         ))}
 
-        {!logs.length && (
+        {!logs.limit && (
           <li className="py-3 px-6 text-center">Nenhum imovel encontado</li>
         )}
       </ul>

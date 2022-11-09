@@ -25,7 +25,6 @@ export default function FormUsers() {
     register,
     handleSubmit,
     setValue,
-    watch,
     formState: { errors },
   } = useForm<PropsUsers & { password: string }>();
 
@@ -169,6 +168,36 @@ export default function FormUsers() {
                 })}
               />
             </div>
+            <div className="basis-full"></div>{" "}
+            <div className="basis-full md:basis-3/12 px-3 mb-6">
+              <Input
+                mask={maskPhone}
+                type="tel"
+                label="Telefone"
+                className={`input-form ${errors.phone && "invalid"}`}
+                error={errors.phone}
+                register={register("phone", {
+                  required: {
+                    value: false,
+                    message: "Campo é obrigatório",
+                  },
+                })}
+              />
+            </div>
+            <div className="basis-full md:basis-3/12 px-3 mb-6">
+              <Input
+                type="text"
+                label="CRECI"
+                className={`input-form ${errors.creci && "invalid"}`}
+                error={errors.creci}
+                register={register("creci", {
+                  required: {
+                    value: false,
+                    message: "Campo é obrigatório",
+                  },
+                })}
+              />
+            </div>
             <div className="basis-full"></div>
             <div className="basis-full md:basis-3/12 px-3 mb-6">
               <Input
@@ -183,22 +212,6 @@ export default function FormUsers() {
                 //     message: "Campo é obrigatório",
                 //   },
                 // })}
-              />
-            </div>
-            <div className="basis-full"></div>
-            <div className="basis-full md:basis-3/12 px-3 mb-6">
-              <Input
-                mask={maskPhone}
-                type="tel"
-                label="Telefone"
-                className={`input-form ${errors.phone && "invalid"}`}
-                error={errors.phone}
-                register={register("phone", {
-                  required: {
-                    value: false,
-                    message: "Campo é obrigatório",
-                  },
-                })}
               />
             </div>
           </div>

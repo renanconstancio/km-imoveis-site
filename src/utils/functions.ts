@@ -22,10 +22,10 @@ export function situationTextClassName(text: any) {
 
 export function addClassName(text: any) {
   return Object.assign({
-    access: "w-6 h-6 rounded-full bg-blue-200",
-    create: "w-6 h-6 rounded-full bg-green-200",
-    update: "w-6 h-6 rounded-full bg-orange-200",
-    delete: "w-6 h-6 rounded-full bg-red-200",
+    access: "w-8 h-8 cursor-pointer rounded-full text-blue-700 bg-blue-200",
+    create: "w-8 h-8 cursor-pointer rounded-full text-green-700 bg-green-200",
+    update: "w-8 h-8 cursor-pointer rounded-full text-orange-700 bg-orange-200",
+    delete: "w-8 h-8 cursor-pointer rounded-full text-red-700 bg-red-200",
   })[text];
 }
 
