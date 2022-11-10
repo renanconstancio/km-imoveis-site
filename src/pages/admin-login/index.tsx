@@ -29,7 +29,7 @@ export function Login() {
         const { user, token } = await res.data;
         login({
           id: user.id,
-          name: user.last_name,
+          name: user.first_name,
           type: user.type,
           token: token,
           roles: [],

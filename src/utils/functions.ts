@@ -38,3 +38,14 @@ export function slugiFy(string: string): string {
     .replace(/ /g, "-")
     .replace(/[^\w-]+/g, "");
 }
+
+export function greetingMessage(str: string) {
+  const h = new Date().getHours();
+  return h <= 5
+    ? `Boa madrugada ${str ?? ""}`
+    : h < 12
+    ? `Bom dia ${str ?? ""}`
+    : h < 18
+    ? `Boa tarde ${str ?? ""}`
+    : `Boa noite ${str ?? ""}`;
+}

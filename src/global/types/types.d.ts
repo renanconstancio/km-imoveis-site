@@ -231,3 +231,11 @@ export type PropsCustomers = {
     district: string;
   };
 };
+
+export type PropsDashboard = {
+  totalImmobiles: number;
+  totalImmobilesSale: number;
+  totalImmobilesLocation: number;
+  totalImmobilesExchange: number;
+  totalImmobilesPurchase: number;
+};

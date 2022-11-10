@@ -16,6 +16,7 @@ import { Customers, FormCustomers } from "../pages/admin-tenant";
 import { FormOwners, Owners } from "../pages/admin-owners";
 import { FormUsers, Users } from "../pages/admin-users";
 import { Logs } from "../pages/admin-logs";
+import { Dashboard } from "../pages/admin-dashborad";
 
 export const router = createBrowserRouter([
   {
@@ -56,6 +57,10 @@ export const router = createBrowserRouter([
     element: <Admin />,
     errorElement: <Error />,
     children: [
+      {
+        path: "",
+        element: <Dashboard />,
+      },
       {
         path: "immobiles",
         children: [
