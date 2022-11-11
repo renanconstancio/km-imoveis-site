@@ -36,6 +36,7 @@ import {
   faSink,
   faStarOfLife,
   faTv,
+  faPhoneVolume,
 } from "@fortawesome/free-solid-svg-icons";
 import { Input } from "../../components/inputs";
 import { maskCurrency, maskCurrencyUs } from "../../utils/mask";
@@ -50,7 +51,8 @@ export default function FormImmobles() {
   const [tenants, setTenant] = useState<PropsCustomers[]>([]);
   const [owners, setOwner] = useState<PropsCustomers[]>([]);
   const [users, setUsers] = useState<PropsUsers[]>([]);
-  const [descriptionText, setDescriptionText] = useState<string[]>([]);
+  const [tagsSite, setTagsSite] = useState<string[]>([]);
+  const [descriptionText, setDescriptionText] = useState<string>();
 
   const {
     openCategory,
@@ -106,7 +108,8 @@ export default function FormImmobles() {
 
     const newPostData = {
       ...data,
-      description_text: descriptionText?.join(","),
+      tags: tagsSite?.join(","),
+      description_text: descriptionText,
       published: data.published ? true : false,
       sale_price: maskCurrencyUs(`${data.sale_price || 0}`),
       rent_price: maskCurrencyUs(`${data.rent_price || 0}`),
@@ -118,7 +121,7 @@ export default function FormImmobles() {
       owner_id: rwsOwner?.id,
       users_id: rwsUser?.id,
     };
-
+    console.table(newPostData);
     if (data.id)
       await api
         .put(`/immobiles/${immobleId}`, newPostData)
@@ -170,7 +173,8 @@ export default function FormImmobles() {
             immoble.tenant?.last_name,
           ].join(" "),
         });
-        setDescriptionText(immoble.description_text.split(","));
+        setTagsSite(immoble?.tags?.split(",") || "");
+        setDescriptionText(immoble?.description_text);
       })
       .catch(e => {
         console.log(e);
@@ -646,20 +650,20 @@ export default function FormImmobles() {
                   <div key={k} className="basis-1/4">
                     <span
                       className={`p-3 block m-1 ${
-                        descriptionText?.includes(label.tag)
+                        tagsSite?.includes(label.tag)
                           ? "bg-green-200"
                           : "hover:bg-green-300"
                       }`}
                       onClick={() => {
-                        if (descriptionText?.includes(label.tag)) {
-                          setDescriptionText(
-                            descriptionText?.filter(item => {
+                        if (tagsSite?.includes(label.tag)) {
+                          setTagsSite(
+                            tagsSite?.filter(item => {
                               return item !== label.tag;
                             }),
                           );
                           return;
                         }
-                        setDescriptionText(old => [...old, label.tag]);
+                        setTagsSite(old => [...old, label.tag]);
                       }}
                     >
                       {label.icon === "faTv" && <FontAwesomeIcon icon={faTv} />}
@@ -684,6 +688,9 @@ export default function FormImmobles() {
                       {label.icon === "faFan" && (
                         <FontAwesomeIcon icon={faFan} />
                       )}
+                      {label.icon === "faPhoneVolume" && (
+                        <FontAwesomeIcon icon={faPhoneVolume} />
+                      )}
                       {label.icon === "faShower" && (
                         <FontAwesomeIcon icon={faShower} />
                       )}{" "}
@@ -692,6 +699,19 @@ export default function FormImmobles() {
                   </div>
                 ))}
               </div>
+            </div>
+            <div className="basis-full px-3 mb-6">
+              <label className="label-form">Descrição/Info</label>
+              <hr className="mb-5" />
+              <textarea
+                cols={30}
+                rows={17}
+                className={`input-form`}
+                placeholder="Pesquisar..."
+                onChange={e => setDescriptionText(e.target.value)}
+              >
+                {descriptionText}
+              </textarea>
             </div>
           </div>
         </form>

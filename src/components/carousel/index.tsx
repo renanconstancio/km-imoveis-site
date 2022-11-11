@@ -1,30 +1,19 @@
 import "react-responsive-carousel/lib/styles/carousel.css";
 import { Carousel } from "react-responsive-carousel";
-import { useEffect, useState } from "react";
-import { api } from "../../services/api";
-
 import { PropsBanners } from "../../global/types/types";
-import { H2 } from "../title";
-import { Price } from "../price";
 import { maskCurrency } from "../../utils/mask";
 
-export function CarouselIndex() {
-  const [banners, setBanners] = useState<PropsBanners[]>([]);
-
-  useEffect(() => {
-    (async () => {
-      await api
-        .get("/immobiles/sort/banner")
-        .then(async resp => setBanners(await resp.data));
-    })();
-  }, []);
-
+export function CarouselIndex({ banners }: { banners: PropsBanners[] }) {
   return (
     <Carousel
+      interval={4500}
+      autoPlay={true}
+      infiniteLoop={true}
       showArrows={true}
       dynamicHeight={false}
       showThumbs={false}
-      autoPlay={true}
+      centerSlidePercentage={100}
+      width={"100%"}
     >
       {banners.map(
         ({ id, photos, reference, description, rent_price, sale_price }) => (
@@ -38,13 +27,13 @@ export function CarouselIndex() {
             }}
             className="flex flex-col justify-end items-start p-7 "
           >
-            <h2 className="drop-shadow-md font-play font-bold text-3xl mb-5 text-km-blue">
+            <h2 className="drop-shadow-md font-play font-bold text-3xl mb-5 text-black">
               {description}
             </h2>
             <small className="drop-shadow-md">CÓD.: {reference}</small>
-            {/* <span className="font-play font-bold text-sm block mb-3">
+            <span className="font-play font-bold text-sm block mb-3">
               R$: {maskCurrency(rent_price)}
-            </span> */}
+            </span>
           </div>
         ),
       )}
@@ -55,6 +44,8 @@ export function CarouselIndex() {
 export function CarouselIcons({ images }: { images: string[] }) {
   return (
     <Carousel
+      infiniteLoop={true}
+      autoPlay={true}
       showArrows={true}
       showIndicators={false}
       dynamicHeight={false}

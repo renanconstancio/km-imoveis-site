@@ -1,39 +1,52 @@
-import { faHome, faSearch } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEnvelope,
+  faHome,
+  faInfo,
+  faSearch,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 
-import iconWhatsapp from "../../assets/whatsapp.svg";
-import logo from "../../assets/logo.svg";
+import logoSite from "../../assets/logo.svg";
+import { toNumber } from "../../utils/functions";
 
 export function Header() {
   return (
-    <header>
-      <div className="border-b border-gray-200 py-4">
-        <nav className="flex justify-between items-center container mx-auto px-4">
-          <Link to="/" className="basis-64">
-            <img src={logo} alt="Logo" />
-          </Link>
-          <ul className="basis-full flex justify-end gap-3 mx-auto px-4">
-            <li></li>
-            <li>
-              <Link to="/">
-                <FontAwesomeIcon icon={faHome} /> Inicio
-              </Link>
-            </li>
-            <li>
-              <Link to="/search">
-                <FontAwesomeIcon icon={faSearch} /> Imovéis
-              </Link>
-            </li>
-            <li>
-              <Link className="flex gap-1" to="/">
-                <img src={iconWhatsapp} width={18} />
-                <span>Contato {import.meta.env.VITE_PHONE}</span>
-              </Link>
-            </li>
-          </ul>
-        </nav>
-      </div>
+    <header className="border-b border-gray-200 py-4 bg-white">
+      <nav className="flex justify-between items-center container mx-auto px-4">
+        <Link to="/" className="basis-44">
+          <img src={logoSite} alt="Logo" className="max-w-full" />
+        </Link>
+        <ul className="basis-full flex justify-end gap-3 mx-auto px-4 uppercase text-sm">
+          <li>
+            <Link to="/" className="p-3 bg-slate-100 rounded-lg">
+              <FontAwesomeIcon icon={faHome} /> Inicio
+            </Link>
+          </li>
+          <li>
+            <Link to="/search" className="p-3 bg-slate-100 rounded-lg">
+              <FontAwesomeIcon icon={faSearch} /> Imovéis
+            </Link>
+          </li>{" "}
+          <li>
+            <Link to="/" className="p-3 bg-slate-100 rounded-lg">
+              <FontAwesomeIcon icon={faInfo} /> Quem Somos
+            </Link>
+          </li>
+          <li>
+            <a
+              href={`https://api.whatsapp.com/send?phone=${toNumber(
+                `55${import.meta.env.VITE_PHONE}`,
+              )}&text=Olá, gostaria de saber mais infomações sobre casa para locação`}
+              target="_blank"
+              rel="noreferrer"
+              className="p-3 bg-slate-100 rounded-lg"
+            >
+              <FontAwesomeIcon icon={faEnvelope} /> Contato
+            </a>
+          </li>
+        </ul>
+      </nav>
     </header>
   );
 }

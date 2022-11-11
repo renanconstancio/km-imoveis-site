@@ -1,16 +1,21 @@
 import logo from "../../assets/logo.svg";
+import { ButtonWhatsappFloat } from "../button-whatsapp";
 
 export function Footer() {
   return (
-    <footer>
-      <section className="container px-4 my-4 text-center">
-        <img src={logo} alt="Logo" width={100} className="mx-auto" />
+    <footer className="mt-5 bg-white">
+      <section className="container px-4 my-10 flex flex-row gap-5">
+        <img src={logo} alt="Logo" width={100} />
         <address>
           {import.meta.env.VITE_ADDRESS}
           <br />
           {import.meta.env.VITE_PHONE}
         </address>
       </section>
+      <ButtonWhatsappFloat
+        phone={import.meta.env.VITE_PHONE}
+        text={"Olá, estou entrando em contato, porque estou a procura de casas"}
+      />
     </footer>
   );
 }

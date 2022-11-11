@@ -2,6 +2,10 @@ export function findSearch(arr: any[], value: string, key: string) {
   return arr.find(item => item[key] === value);
 }
 
+export function toNumber(str: any) {
+  return str.replace(/\D/g, "");
+}
+
 export function situationText(text: any) {
   return Object.assign({
     location: "Locação",

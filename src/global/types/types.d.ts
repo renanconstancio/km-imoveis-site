@@ -50,6 +50,7 @@ export type PropsImmobles = {
   number: string;
   description: string;
   description_text: string;
+  tags: string;
   reference: string;
   sale_price: string;
   rent_price: string;
@@ -66,6 +67,7 @@ export type PropsImmobles = {
     first_name: string;
     last_name: string;
     phone: string;
+    creci: string;
   };
   tenant?: {
     id: string;
@@ -238,4 +240,9 @@ export type PropsDashboard = {
   totalImmobilesLocation: number;
   totalImmobilesExchange: number;
   totalImmobilesPurchase: number;
+};
+
+export type PropsWhatsapp = {
+  text: string;
+  phone: number;
 };

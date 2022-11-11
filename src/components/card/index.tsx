@@ -53,7 +53,7 @@ export function Card({
   tags,
 }: PropsCard) {
   return (
-    <li className="relative bg-slate-100">
+    <li className="relative bg-white overflow-hidden">
       <Link
         to={`/immoble/${slugiFy(description)}/code/${id}`}
         className="block"
@@ -64,11 +64,7 @@ export function Card({
           </li>
         </ul>
 
-        <img
-          src={images[0]}
-          className="mx-auto object-cover"
-          alt={description}
-        />
+        <img src={images[0]} className="mx-auto" alt={description} />
 
         <div className="p-5">
           <small>CÓD.: {reference}</small>

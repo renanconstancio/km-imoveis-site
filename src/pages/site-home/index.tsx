@@ -2,7 +2,11 @@ import { api, tags } from "../../services/api";
 import { useEffect, useState } from "react";
 import { CarouselIndex } from "../../components/carousel";
 import { Card } from "../../components/card";
-import { PropsImmobles, PropsPagination } from "../../global/types/types";
+import {
+  PropsBanners,
+  PropsImmobles,
+  PropsPagination,
+} from "../../global/types/types";
 import { Filters } from "../../components/filters";
 import { useLocation } from "react-router-dom";
 import { parse, stringify } from "query-string";
@@ -12,6 +16,7 @@ import { Pagination } from "../../components/pagination";
 
 export function SiteHome() {
   const [loading, setLoading] = useState(true);
+  const [banners, setBanners] = useState<PropsBanners[]>([]);
   const [immobiles, setImmobiles] = useState<PropsPagination<PropsImmobles[]>>(
     {} as PropsPagination<PropsImmobles[]>,
   );
@@ -28,8 +33,6 @@ export function SiteHome() {
   const city = (query.city || "") as string;
   const limit = (query.limit || "20") as string;
   const page = (query.page || "1") as string;
-
-  console.log("geolocation", geolocation);
 
   async function loadImmobiles() {
     setLoading(true);
@@ -48,6 +51,16 @@ export function SiteHome() {
       .finally(() => setLoading(false));
   }
 
+  async function loadBanners() {
+    await api
+      .get("/immobiles/sort/banner")
+      .then(async resp => setBanners(await resp.data));
+  }
+
+  useEffect(() => {
+    loadBanners();
+  }, []);
+
   useEffect(() => {
     loadImmobiles();
   }, [locationDecodUri]);
@@ -57,11 +70,11 @@ export function SiteHome() {
       {location.pathname === "/" && (
         <div className="bg-slate-100">
           <section className="container px-4 flex flex-wrap items-center">
-            <div className="flex-initial basis-full md:basis-1/3 mt-4 md:mt-0">
+            <div className="w-full md:w-1/3 mt-4 md:mt-0">
               <Filters />
             </div>
-            <div className="flex-initial basis-full mb-5 mt-5 md:m-0 md:basis-2/3">
-              <CarouselIndex />
+            <div className="w-full md:w-2/3 mb-5 mt-5 md:m-0">
+              {banners.length ? <CarouselIndex banners={banners} /> : ""}
             </div>
           </section>
         </div>

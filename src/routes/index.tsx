@@ -30,6 +30,7 @@ export const router = createBrowserRouter([
           <>
             <Helmet>
               <title>{import.meta.env.VITE_REACT_TITLE}</title>
+              <link rel="canonical" href={window.location.href} />
             </Helmet>
             <SiteHome />
           </>
@@ -41,6 +42,7 @@ export const router = createBrowserRouter([
           <>
             <Helmet>
               <title>{import.meta.env.VITE_REACT_TITLE}</title>
+              <link rel="canonical" href={window.location.href} />
             </Helmet>
             <SiteHome />
           </>

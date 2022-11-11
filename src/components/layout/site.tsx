@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { GeolocationType } from "../../context/geolocation";
 import { useGeolocation } from "../../hooks/use-geolocation";
-import { api } from "../../services/api";
 import { Footer } from "../footer";
 import { Header } from "../header";
+
+import iconFace from "../../assets/facebook.svg";
+import iconInsta from "../../assets/instagram.svg";
 
 // type PropsGeolocationStates = {
 //   codigo_uf: number;
@@ -106,10 +108,23 @@ export default function Site() {
   }, [cities, geolocation.latitude, geolocation.longitude]);
 
   return (
-    <>
+    <div className="bg-gray-200 flex flex-1 flex-col relative">
       <Header />
       <Outlet />
       <Footer />
-    </>
+
+      {/* <span className="fixed inset-y-0 left-0 w-0 z-50 flex flex-col justify-center gap-1">
+        <img
+          src={iconFace}
+          alt="Facebook"
+          style={{ width: 45, maxWidth: "auto!important" }}
+        />
+        <img
+          src={iconInsta}
+          alt="Instagram"
+          style={{ width: 45, maxWidth: "auto!important" }}
+        />
+      </span> */}
+    </div>
   );
 }
