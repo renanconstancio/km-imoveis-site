@@ -105,14 +105,15 @@ export default function FormImmobles() {
       "district",
     );
     const rwsCategory = findSearch(categories, data.categories_id, "category");
+    const existsTags = (tagsSite.length ? tagsSite : []).join(",");
 
     const newPostData = {
       ...data,
-      tags: tagsSite?.join(","),
       description_text: descriptionText,
-      published: data.published ? true : false,
+      published: data.published === true ? true : false,
       sale_price: maskCurrencyUs(`${data.sale_price || 0}`),
       rent_price: maskCurrencyUs(`${data.rent_price || 0}`),
+      tags: existsTags,
       cities_id: rwsCity?.id,
       categories_id: rwsCategory?.id,
       neighborhoods_id: rwsDistrict?.id,
@@ -121,8 +122,8 @@ export default function FormImmobles() {
       owner_id: rwsOwner?.id,
       users_id: rwsUser?.id,
     };
-    console.table(newPostData);
-    if (data.id)
+
+    if (immobleId) {
       await api
         .put(`/immobiles/${immobleId}`, newPostData)
         .then(() =>
@@ -135,20 +136,22 @@ export default function FormImmobles() {
             message: "Não foi possivel fazer um novo cadastro para o imovél.",
           }),
         );
-    else
-      await api
-        .post(`/immobiles`, newPostData)
-        .then(async resp => {
-          changeAlert({
-            message: "Dados salvos com sucesso.",
-          });
-          navigate({ pathname: `/adm/immobiles/${(await resp.data).id}/edit` });
-        })
-        .catch(() =>
-          changeAlert({
-            message: "Não foi possivel fazer um novo cadastro para o imovél.",
-          }),
-        );
+      return;
+    }
+
+    await api
+      .post(`/immobiles`, newPostData)
+      .then(async resp => {
+        changeAlert({
+          message: "Dados salvos com sucesso.",
+        });
+        navigate({ pathname: `/adm/immobiles/${(await resp.data).id}/edit` });
+      })
+      .catch(() =>
+        changeAlert({
+          message: "Não foi possivel fazer um novo cadastro para o imovél.",
+        }),
+      );
   }
 
   async function loadImmoble() {

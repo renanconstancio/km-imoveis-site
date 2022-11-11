@@ -54,8 +54,8 @@ export type PropsImmobles = {
   reference: string;
   sale_price: string;
   rent_price: string;
-  published: boolean;
-  situation: "location" | "purchase" | "sale";
+  published: true | false;
+  situation: "exchange" | "location" | "purchase" | "sale";
   pickup: string;
   building_area: string;
   terrain_area: string;

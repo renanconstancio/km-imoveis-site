@@ -28,5 +28,5 @@ jobs:
         username: ${{ secrets.username }}
         password: ${{ secrets.password }}
         local-dir: dist/
-        server-dir: /home/kmenegociosimobiliarios/www/test/
+        server-dir: www/site/
         log-level: verbose

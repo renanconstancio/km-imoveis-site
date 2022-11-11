@@ -60,6 +60,7 @@ export function SiteImmoble() {
             <title>
               {immoble?.description} - {import.meta.env.VITE_REACT_TITLE}
             </title>
+
             <link rel="canonical" href={window.location.href} />
             <meta
               name="description"
@@ -81,7 +82,6 @@ export function SiteImmoble() {
               }`}
             />
             <meta property="og:image" content={immoble.photos?.[0].image_xs} />
-            <meta property="og:image:type" content="image/webp" />
           </Helmet>
 
           <div className="bg-gray-100 -mt-2 mb-5">
@@ -89,111 +89,121 @@ export function SiteImmoble() {
               <Filters variant="row" />
             </section>
           </div>
+          <div className="container">
+            <ul className="divide-y divide-slate-200 bg-white mx-5 sm:mx-0 px-5 pb-7 flex flex-col flex-wrap sm:flex-row">
+              <li className="w-full">
+                <H2 title={`${immoble?.description}`} />
 
-          <ul className="container px-5 pb-7 flex flex-col flex-wrap sm:flex-row divide-y divide-slate-200 bg-white">
-            <li className="w-full ">
-              <H2 title={`${immoble?.description}`} />
+                <small>CÓD.: {immoble?.reference}</small>
 
-              <small>CÓD.: {immoble?.reference}</small>
-
-              <Address
-                address={[
-                  immoble.district?.district,
-                  `${immoble.city?.city}/${immoble.city?.state.state}`,
-                ].join(", ")}
-              />
-            </li>
-            <li className="pt-5 w-full sm:w-8/12 relative">
-              <ul className="absolute left-0 top-8 h-[auto] w-auto z-[9999] font-play text-white text-lg flex gap-2">
-                <li
-                  className={`p-1 ${situationTextClassName(
-                    immoble?.situation,
-                  )}`}
-                >
-                  {situationText(immoble?.situation)}
-                </li>
-              </ul>
-              <CarouselIcons images={photos} />
-            </li>
-            <li className="pt-5 w-full mt-5 sm:mt-0 sm:w-4/12 sm:pl-10">
-              <Price price={immoble?.rent_price} style={{ fontSize: "32px" }} />
-
-              <section className="font-[10] capitalize whitespace[-5] flex flex-col flex-wrap gap-3">
-                <span>
-                  <FontAwesomeIcon icon={faExpand} /> {immoble?.terrain_area}
-                </span>
-                <span>
-                  <FontAwesomeIcon icon={faExpand} /> {immoble?.building_area}
-                </span>
-                {tags.map((r, index) => {
-                  if (immoble?.tags?.split(",").includes(`${r.tag}`)) {
-                    return (
-                      <span key={index}>
-                        {r.icon === "faTv" && <FontAwesomeIcon icon={faTv} />}
-                        {r.icon === "faCar" && <FontAwesomeIcon icon={faCar} />}
-                        {r.icon === "faBath" && (
-                          <FontAwesomeIcon icon={faBath} />
-                        )}
-                        {r.icon === "faStarOfLife" && (
-                          <FontAwesomeIcon icon={faStarOfLife} />
-                        )}
-                        {r.icon === "faSink" && (
-                          <FontAwesomeIcon icon={faSink} />
-                        )}
-                        {r.icon === "faBed" && <FontAwesomeIcon icon={faBed} />}
-                        {r.icon === "faExpand" && (
-                          <FontAwesomeIcon icon={faExpand} />
-                        )}
-                        {r.icon === "faFan" && <FontAwesomeIcon icon={faFan} />}
-                        {r.icon === "faShower" && (
-                          <FontAwesomeIcon icon={faShower} />
-                        )}
-                        {r.icon === "faPhoneVolume" && (
-                          <FontAwesomeIcon icon={faPhoneVolume} />
-                        )}{" "}
-                        {r?.tag}
-                      </span>
-                    );
-                  }
-                })}
-              </section>
-              <section className="flex gap-5 items-center mt-4 mb-5">
-                <ButtonWhatsapp
-                  phone={immoble?.user?.phone || import.meta.env.VITE_PHONE}
-                  text={`Olá, gostaria de saber mais informações sobre o imóvel ${immoble?.description} | CÓD.: ${immoble?.reference}\nhttps://${window.location.host}`}
+                <Address
+                  address={[
+                    immoble.district?.district,
+                    `${immoble.city?.city}/${immoble.city?.state.state}`,
+                  ].join(", ")}
                 />
-              </section>
-            </li>
-            <li className="w-full sm:w-8/12 flex flex-col gap-3 pb-7">
-              {immoble?.description_text && (
-                <>
-                  <H2 title="Descrição do Imovél" />
-                  <div
-                    className="font-[12] capitalize flex flex-row flex-wrap gap-1"
-                    dangerouslySetInnerHTML={{
-                      __html: immoble?.description_text,
-                    }}
+              </li>
+              <li className="pt-5 w-full sm:w-8/12 relative">
+                <ul className="absolute left-0 top-8 h-[auto] w-auto z-[9999] font-play text-white text-lg flex gap-2">
+                  <li
+                    className={`p-1 ${situationTextClassName(
+                      immoble?.situation,
+                    )}`}
+                  >
+                    {situationText(immoble?.situation)}
+                  </li>
+                </ul>
+                <CarouselIcons images={photos} />
+              </li>
+              <li className="pt-5 w-full mt-5 sm:mt-0 sm:w-4/12 sm:pl-10">
+                <Price
+                  price={immoble?.rent_price}
+                  style={{ fontSize: "32px" }}
+                />
+
+                <section className="font-[10] capitalize whitespace[-5] flex flex-col flex-wrap gap-3">
+                  <span>
+                    <FontAwesomeIcon icon={faExpand} /> {immoble?.terrain_area}
+                  </span>
+                  <span>
+                    <FontAwesomeIcon icon={faExpand} /> {immoble?.building_area}
+                  </span>
+                  {tags.map((r, index) => {
+                    if (immoble?.tags?.split(",").includes(`${r.tag}`)) {
+                      return (
+                        <span key={index}>
+                          {r.icon === "faTv" && <FontAwesomeIcon icon={faTv} />}
+                          {r.icon === "faCar" && (
+                            <FontAwesomeIcon icon={faCar} />
+                          )}
+                          {r.icon === "faBath" && (
+                            <FontAwesomeIcon icon={faBath} />
+                          )}
+                          {r.icon === "faStarOfLife" && (
+                            <FontAwesomeIcon icon={faStarOfLife} />
+                          )}
+                          {r.icon === "faSink" && (
+                            <FontAwesomeIcon icon={faSink} />
+                          )}
+                          {r.icon === "faBed" && (
+                            <FontAwesomeIcon icon={faBed} />
+                          )}
+                          {r.icon === "faExpand" && (
+                            <FontAwesomeIcon icon={faExpand} />
+                          )}
+                          {r.icon === "faFan" && (
+                            <FontAwesomeIcon icon={faFan} />
+                          )}
+                          {r.icon === "faShower" && (
+                            <FontAwesomeIcon icon={faShower} />
+                          )}
+                          {r.icon === "faPhoneVolume" && (
+                            <FontAwesomeIcon icon={faPhoneVolume} />
+                          )}{" "}
+                          {r?.tag}
+                        </span>
+                      );
+                    }
+                  })}
+                </section>
+                <section className="flex gap-5 items-center mt-4 mb-5">
+                  <ButtonWhatsapp
+                    phone={immoble?.user?.phone || import.meta.env.VITE_PHONE}
+                    text={`Olá, gostaria de saber mais informações sobre o imóvel ${immoble?.description} | CÓD.: ${immoble?.reference}\nhttps://${window.location.host}`}
                   />
-                </>
-              )}
-            </li>
-            <li className="w-full sm:w-8/12 flex flex-col gap-2">
-              {immoble?.user?.first_name && (
-                <>
-                  <H2 title="Corretor" />
-                  {immoble?.user?.first_name && (
-                    <span>Nome: {immoble?.user?.first_name}</span>
-                  )}
-                  {immoble?.user?.phone && (
-                    <span>Telefone: {immoble?.user?.phone}</span>
-                  )}
-                  {immoble?.user?.creci && (
-                    <span>CRECI: {immoble?.user?.creci}</span>
-                  )}
-                </>
-              )}
-            </li>
-          </ul>
+                </section>
+              </li>
+              <li className="w-full sm:w-8/12 flex flex-col gap-3 pb-7">
+                {immoble?.description_text && (
+                  <>
+                    <H2 title="Descrição do Imovél" />
+                    <div
+                      className="font-[12] capitalize flex flex-row flex-wrap gap-1"
+                      dangerouslySetInnerHTML={{
+                        __html: immoble?.description_text,
+                      }}
+                    />
+                  </>
+                )}
+              </li>
+              <li className="w-full sm:w-8/12 flex flex-col gap-2">
+                {immoble?.user?.first_name && (
+                  <>
+                    <H2 title="Corretor" />
+                    {immoble?.user?.first_name && (
+                      <span>Nome: {immoble?.user?.first_name}</span>
+                    )}
+                    {immoble?.user?.phone && (
+                      <span>Telefone: {immoble?.user?.phone}</span>
+                    )}
+                    {immoble?.user?.creci && (
+                      <span>CRECI: {immoble?.user?.creci}</span>
+                    )}
+                  </>
+                )}
+              </li>
+            </ul>
+          </div>
         </>
       )}
     </div>
