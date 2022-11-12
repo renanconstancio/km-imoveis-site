@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.2",
   "type": "module",
+  "homepage": "https://www.kmenegociosimobiliarios.com.br/dist/",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
