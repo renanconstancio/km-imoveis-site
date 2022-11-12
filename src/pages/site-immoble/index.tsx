@@ -57,33 +57,38 @@ export function SiteImmoble() {
         <Loading />
       ) : (
         <>
-          <Helmet>
-            <title>
-              {immoble?.description} - {import.meta.env.VITE_REACT_TITLE}
-            </title>
+          {immoble?.description && (
+            <Helmet>
+              <title>
+                {immoble?.description} - {import.meta.env.VITE_REACT_TITLE}
+              </title>
 
-            <link rel="canonical" href={window.location.href} />
-            <meta
-              name="description"
-              content={`${immoble?.description} - ${
-                import.meta.env.VITE_REACT_TITLE
-              }`}
-            />
-            <meta property="og:url" content={`${location.href}`} />
-            <meta
-              property="og:title"
-              content={`${immoble?.description} - ${
-                import.meta.env.VITE_REACT_TITLE
-              }`}
-            />
-            <meta
-              property="og:description"
-              content={`${immoble?.description} - ${
-                import.meta.env.VITE_REACT_TITLE
-              }`}
-            />
-            <meta property="og:image" content={immoble.photos?.[0].image_xs} />
-          </Helmet>
+              <link rel="canonical" href={window.location.href} />
+              <meta
+                name="description"
+                content={`${immoble?.description} - ${
+                  import.meta.env.VITE_REACT_TITLE
+                }`}
+              />
+              <meta property="og:url" content={`${location.href}`} />
+              <meta
+                property="og:title"
+                content={`${immoble?.description} - ${
+                  import.meta.env.VITE_REACT_TITLE
+                }`}
+              />
+              <meta
+                property="og:description"
+                content={`${immoble?.description} - ${
+                  import.meta.env.VITE_REACT_TITLE
+                }`}
+              />
+              <meta
+                property="og:image"
+                content={immoble.photos?.[0].image_xs}
+              />
+            </Helmet>
+          )}
 
           <div className="bg-gray-100 -mt-2 mb-5">
             <section className="container p-5">
