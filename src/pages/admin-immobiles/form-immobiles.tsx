@@ -486,7 +486,7 @@ export default function FormImmobles() {
                     type="search"
                     className={`input-form ${errors.streets_id && "invalid"}`}
                     placeholder="Pesquisar..."
-                    {...register("streets_id", { required: true })}
+                    {...register("streets_id", { required: false })}
                   />
                 </span>
                 <span

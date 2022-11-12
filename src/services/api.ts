@@ -68,4 +68,12 @@ export const tags = [
   { tag: "garagem 4 carros", icon: "faCar" },
   { tag: "Portão Eletrônico", icon: "faCar" },
   { tag: "Interfone", icon: "faPhoneVolume" },
+
+  { tag: "Lavanderia", icon: "faJugDetegent" },
+  { tag: "Área Gourmet", icon: "faPhoneVolume" },
+  { tag: "Área Churraqueira", icon: "faPhoneVolume" },
+  { tag: "Piscina", icon: "faPhoneVolume" },
+  { tag: "Quarto de dispejo", icon: "faPhoneVolume" },
+  { tag: "Cozinha americana com copo", icon: "faPhoneVolume" },
+  { tag: "Jardim de inverno", icon: "faPhoneVolume" },
 ];

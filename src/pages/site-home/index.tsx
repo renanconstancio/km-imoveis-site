@@ -116,7 +116,6 @@ export function SiteHome() {
                 reference={item.reference}
                 situation={item.situation}
                 description={item.description}
-                descriptionText={item.description_text}
                 buildingArea={item.building_area}
                 terrainArea={item.terrain_area}
                 rentPrice={item.rent_price}
@@ -125,6 +124,7 @@ export function SiteHome() {
                   item.district?.district,
                   `${item.city?.city}/${item.city?.state.state}`,
                 ].join(", ")}
+                tag={item.tags}
                 tags={tags}
                 images={item?.photos?.map(f => f.image_xs) || []}
               />

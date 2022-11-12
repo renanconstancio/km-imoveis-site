@@ -1,15 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBath,
-  faBed,
-  faCar,
-  faExpand,
-  faFan,
-  faShower,
-  faSink,
-  faStarOfLife,
-  faTv,
-} from "@fortawesome/free-solid-svg-icons";
+import { faExpand } from "@fortawesome/free-solid-svg-icons";
 import { Address } from "../address";
 import { Price } from "../price";
 import { H2 } from "../title";
@@ -19,13 +9,13 @@ import {
   situationTextClassName,
   slugiFy,
 } from "../../utils/functions";
+import { CardTags } from "../card-tags";
 
 type PropsCard = React.HTMLAttributes<HTMLLIElement> & {
   id: string;
   situation: string;
   reference: string;
   description: string;
-  descriptionText: string;
   terrainArea: string;
   buildingArea: string;
   address: string;
@@ -36,6 +26,7 @@ type PropsCard = React.HTMLAttributes<HTMLLIElement> & {
     tag: string;
     icon: string;
   }[];
+  tag: string;
 };
 
 export function Card({
@@ -43,7 +34,6 @@ export function Card({
   situation,
   reference,
   description,
-  descriptionText,
   terrainArea,
   buildingArea,
   salePrice,
@@ -51,6 +41,7 @@ export function Card({
   address,
   images,
   tags,
+  tag,
 }: PropsCard) {
   return (
     <li className="relative bg-white overflow-hidden">
@@ -77,40 +68,19 @@ export function Card({
           {Number(rentPrice) * 1 > 0 && <Price price={rentPrice} />}
 
           <section className="text-xs capitalize whitespace[-2] flex flex-row flex-wrap gap-3">
-            <span>
-              <FontAwesomeIcon icon={faExpand} /> {terrainArea}
-            </span>
-            <span>
-              <FontAwesomeIcon icon={faExpand} /> {buildingArea}
-            </span>
-            {tags.map((r, index) => {
-              if (descriptionText?.split(",").includes(`${r.tag}`)) {
-                return (
-                  <span key={index}>
-                    {r.icon === "faTv" && <FontAwesomeIcon icon={faTv} />}
-                    {r.icon === "faCar" && <FontAwesomeIcon icon={faCar} />}
-                    {r.icon === "faBath" && <FontAwesomeIcon icon={faBath} />}
-                    {r.icon === "faStarOfLife" && (
-                      <FontAwesomeIcon icon={faStarOfLife} />
-                    )}
-                    {r.icon === "faSink" && <FontAwesomeIcon icon={faSink} />}
-                    {r.icon === "faBed" && <FontAwesomeIcon icon={faBed} />}
-                    {r.icon === "faExpand" && (
-                      <FontAwesomeIcon icon={faExpand} />
-                    )}
-                    {r.icon === "faFan" && <FontAwesomeIcon icon={faFan} />}
-                    {r.icon === "faShower" && (
-                      <FontAwesomeIcon icon={faShower} />
-                    )}{" "}
-                    {r?.tag}
-                  </span>
-                );
-              }
-            })}
+            {terrainArea && (
+              <span>
+                <FontAwesomeIcon icon={faExpand} /> {terrainArea}
+              </span>
+            )}
+            {buildingArea && (
+              <span>
+                <FontAwesomeIcon icon={faExpand} /> {buildingArea}
+              </span>
+            )}
+
+            <CardTags cardTag={tag} cardTags={tags} />
           </section>
-          {/* <span className="box-border h-32 w-32 p-4 border-4">
-            mais detalhes
-          </span> */}
         </div>
       </Link>
     </li>
