@@ -4,7 +4,7 @@
 set -e
 
 # build
-npm run build
+# npm run build
 
 # navigate into the build output directory
 cd dist
@@ -16,7 +16,7 @@ cd dist
 # echo 'www.example.com' > CNAME
 
 # git init
-git checkout -b deploy
+git checkout --orphan deploy
 git add -A
 git commit -m 'deploy'
 
