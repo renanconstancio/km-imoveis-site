@@ -185,6 +185,14 @@ export type PropsBanners = {
   description: string;
   sale_price: string;
   rent_price: string;
+  tags: string;
+  situation: "exchange" | "location" | "purchase" | "sale";
+  city: {
+    city: string;
+    state: {
+      state: string;
+    };
+  };
   photos: {
     id: string;
     image_lg: string;

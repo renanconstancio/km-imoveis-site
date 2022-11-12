@@ -13,7 +13,6 @@ import { CardTags } from "../card-tags";
 
 type PropsCard = React.HTMLAttributes<HTMLLIElement> & {
   id: string;
-  situation: string;
   reference: string;
   description: string;
   terrainArea: string;
@@ -22,6 +21,13 @@ type PropsCard = React.HTMLAttributes<HTMLLIElement> & {
   salePrice: string;
   rentPrice: string;
   images: string[];
+  situation: "exchange" | "location" | "purchase" | "sale";
+  city?: {
+    city: string;
+    state: {
+      state: string;
+    };
+  };
   tags: {
     tag: string;
     icon: string;
@@ -30,7 +36,6 @@ type PropsCard = React.HTMLAttributes<HTMLLIElement> & {
 };
 
 export function Card({
-  id,
   situation,
   reference,
   description,
@@ -46,7 +51,9 @@ export function Card({
   return (
     <li className="relative bg-white overflow-hidden">
       <Link
-        to={`/immoble/${slugiFy(description)}/code/${id}`}
+        to={`/${slugiFy(
+          `${situationText(situation)}`,
+        )}/imovel/${reference}/${slugiFy(`${description}`)}`}
         className="block"
       >
         <ul className="absolute left-0 top-3 h-[auto] w-auto z-[9999] font-play text-white text-sm flex gap-2">

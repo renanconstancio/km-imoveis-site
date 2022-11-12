@@ -49,7 +49,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "immoble/:title/code/:reference",
+        path: "/:situation/imovel/:reference/:desciption",
         element: <SiteImmoble />,
       },
     ],

@@ -1,32 +1,18 @@
-import { api, tags } from "../../services/api";
 import { useEffect, useState } from "react";
-
 import { PropsImmobles } from "../../global/types/types";
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { H2 } from "../../components/title";
 import { Address } from "../../components/address";
 import { Price } from "../../components/price";
-import faWhatsApp from "../../assets/whatsapp.svg";
 import { Loading } from "../../components/loading";
 import { CarouselIcons } from "../../components/carousel";
-import { Filters } from "../../components/filters";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBath,
-  faBed,
-  faCar,
-  faExpand,
-  faFan,
-  faPhoneVolume,
-  faShower,
-  faSink,
-  faStarOfLife,
-  faTv,
-} from "@fortawesome/free-solid-svg-icons";
+import { faExpand } from "@fortawesome/free-solid-svg-icons";
 import { situationText, situationTextClassName } from "../../utils/functions";
 import { ButtonWhatsapp } from "../../components/button-whatsapp";
 import { CardTags } from "../../components/card-tags";
+import { api, tags } from "../../services/api";
 
 export function SiteImmoble() {
   const [loading, setLoading] = useState(true);
@@ -48,7 +34,11 @@ export function SiteImmoble() {
   }, [reference]);
 
   useEffect(() => {
-    immoble?.photos?.map(r => setPhotos(photos => [...photos, r.image_lg]));
+    const sort: string[] = [];
+    immoble?.photos?.map((r, k) =>
+      sort.push(immoble?.photos?.[k]?.image_lg || ""),
+    );
+    setPhotos(sort);
   }, [immoble]);
 
   return (
@@ -85,16 +75,11 @@ export function SiteImmoble() {
               />
               <meta
                 property="og:image"
-                content={immoble.photos?.[0].image_xs}
+                content={immoble.photos?.[0]?.image_xs}
               />
             </Helmet>
           )}
 
-          <div className="bg-gray-100 -mt-2 mb-5">
-            <section className="container p-5">
-              <Filters variant="row" />
-            </section>
-          </div>
           <div className="container">
             <ul className="divide-y divide-slate-200 bg-white mx-5 sm:mx-0 px-5 pb-7 flex flex-col flex-wrap sm:flex-row">
               <li className="w-full">
@@ -119,7 +104,8 @@ export function SiteImmoble() {
                     {situationText(immoble?.situation)}
                   </li>
                 </ul>
-                <CarouselIcons images={photos} />
+
+                {photos.length && <CarouselIcons images={photos} />}
               </li>
               <li className="pt-5 w-full mt-5 sm:mt-0 sm:w-4/12 sm:pl-10">
                 {Number(immoble?.sale_price) * 1 > 0 && (

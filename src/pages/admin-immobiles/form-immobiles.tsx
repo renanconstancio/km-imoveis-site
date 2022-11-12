@@ -37,6 +37,15 @@ import {
   faStarOfLife,
   faTv,
   faPhoneVolume,
+  faKitchenSet,
+  faSnowflake,
+  faJugDetergent,
+  faBowlFood,
+  faWaterLadder,
+  faUtensils,
+  faDoorOpen,
+  faWind,
+  faWarehouse,
 } from "@fortawesome/free-solid-svg-icons";
 import { Input } from "../../components/inputs";
 import { maskCurrency, maskCurrencyUs } from "../../utils/mask";
@@ -52,6 +61,7 @@ export default function FormImmobles() {
   const [owners, setOwner] = useState<PropsCustomers[]>([]);
   const [users, setUsers] = useState<PropsUsers[]>([]);
   const [tagsSite, setTagsSite] = useState<string[]>([]);
+  const [onOff, setOnOff] = useState<boolean>(false);
   const [descriptionText, setDescriptionText] = useState<string>();
 
   const {
@@ -109,11 +119,11 @@ export default function FormImmobles() {
 
     const newPostData = {
       ...data,
-      description_text: descriptionText,
-      published: data.published === true ? true : false,
       sale_price: maskCurrencyUs(`${data.sale_price || 0}`),
       rent_price: maskCurrencyUs(`${data.rent_price || 0}`),
       tags: existsTags,
+      published: onOff,
+      description_text: descriptionText,
       cities_id: rwsCity?.id,
       categories_id: rwsCategory?.id,
       neighborhoods_id: rwsDistrict?.id,
@@ -178,6 +188,7 @@ export default function FormImmobles() {
         });
         setTagsSite(immoble?.tags?.split(",") || "");
         setDescriptionText(immoble?.description_text);
+        setOnOff(immoble?.published);
       })
       .catch(e => {
         console.log(e);
@@ -257,33 +268,47 @@ export default function FormImmobles() {
 
   return (
     <>
-      <div className="overflobasis-x-auto rounded-sm bg-white p-6">
-        <div className="border-b pb-3 mb-5 flex gap-3">
-          <button className="btn-success btn-ico" type="submit" form="form">
-            <FontAwesomeIcon icon={faSave} />
-            <span>Salvar</span>
-          </button>
-          {immobleId && (
-            <button
-              className="btn-primary btn-ico"
-              type="button"
-              onClick={() => closePhoto(!openPhoto)}
-            >
-              <FontAwesomeIcon icon={faImage} />
-              <span>{watch("photos")?.length} Fotos</span>
+      <div className="overflow-x-auto rounded-sm bg-white p-6">
+        <div className="border-b pb-3 mb-5 flex flex-row justify-between">
+          <aside className="flex flex-row gap-3">
+            <button className="btn-success btn-ico" type="submit" form="form">
+              <FontAwesomeIcon icon={faSave} />
+              <span>Salvar</span>
             </button>
-          )}
-          <Link className="btn-warning btn-ico" to="/adm/immobiles">
-            <FontAwesomeIcon icon={faUndo} />
-            <span>Voltar</span>
-          </Link>
+            {immobleId && (
+              <button
+                className="btn-primary btn-ico"
+                type="button"
+                onClick={() => closePhoto(!openPhoto)}
+              >
+                <FontAwesomeIcon icon={faImage} />
+                <span>{watch("photos")?.length} Fotos</span>
+              </button>
+            )}
+            <Link className="btn-warning btn-ico" to="/adm/immobiles">
+              <FontAwesomeIcon icon={faUndo} />
+              <span>Voltar</span>
+            </Link>
+          </aside>
+          <aside>
+            <span
+              className={`w-28 h-10 ${
+                !onOff
+                  ? "bg-red-300 text-red-700"
+                  : "bg-green-300 text-green-700"
+              } flex items-center justify-center font-play text-xl cursor-pointer`}
+              onClick={() => setOnOff(!onOff)}
+            >
+              {!onOff ? "OFFLINE" : "ONLINE"}
+            </span>
+          </aside>
         </div>
         <form
           className="basis-full"
           id="form"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="flex flex-wrap -mx-3 mb-6">
+          <div className="flex flex-wrap -mx-3">
             <div className="basis-full md:basis-2/12 px-3">
               <Input
                 type="text"
@@ -312,6 +337,36 @@ export default function FormImmobles() {
                 })}
               />
             </div>
+            <div className="basis-full md:basis-2/12 px-3">
+              <label className="label-form" htmlFor="situation">
+                Situação
+              </label>
+              <div className="relative">
+                <select
+                  className="input-form"
+                  {...register("situation", { required: false })}
+                >
+                  <option value="location">Locação</option>
+                  <option value="sale">Venda</option>
+                  <option value="exchange">Permuta</option>
+                  <option value="purchase">Compra</option>
+                </select>
+              </div>
+            </div>
+            {/* <div className="basis-full md:basis-2/12 px-3">
+              <label className="label-form" htmlFor="published">
+                Web
+              </label>
+              <div className="relative">
+                <select
+                  className="input-form"
+                  {...register("published", { required: false })}
+                >
+                  <option value={"false"}>OFFLINE</option>
+                  <option value={"true"}>ONLINE</option>
+                </select>
+              </div>
+            </div> */}
             <div className="basis-full mb-6"></div>
             <div className="basis-full md:basis-4/12 px-3 mb-6">
               <label className="label-form" htmlFor="users_id">
@@ -324,7 +379,7 @@ export default function FormImmobles() {
                     type="search"
                     className={`input-form ${errors.users_id && "invalid"}`}
                     placeholder="Pesquisar..."
-                    {...register("users_id", { required: true })}
+                    {...register("users_id", { required: false })}
                   />
                 </span>
               </div>
@@ -353,7 +408,7 @@ export default function FormImmobles() {
             </div>
           </div>
           <div className="flex flex-wrap -mx-3">
-            <div className="basis-full md:basis-3/12 px-3">
+            <div className="basis-full md:basis-3/12 px-3 mb-6">
               <Input
                 type="text"
                 label="Área de Construção (m²)"
@@ -367,7 +422,7 @@ export default function FormImmobles() {
                 })}
               />
             </div>
-            <div className="basis-full md:basis-3/12 px-3">
+            <div className="basis-full md:basis-3/12 px-3  mb-6">
               <Input
                 type="text"
                 label="Área Terrea (m²)"
@@ -381,7 +436,7 @@ export default function FormImmobles() {
                 })}
               />
             </div>
-            <div className="basis-full md:basis-2/12 px-3">
+            <div className="basis-full md:basis-2/12 px-3  mb-6">
               <Input
                 type="tel"
                 mask={maskCurrency}
@@ -396,7 +451,7 @@ export default function FormImmobles() {
                 })}
               />
             </div>
-            <div className="basis-full md:basis-2/12 px-3">
+            <div className="basis-full md:basis-2/12 px-3  mb-6">
               <Input
                 type="tel"
                 mask={maskCurrency}
@@ -411,36 +466,7 @@ export default function FormImmobles() {
                 })}
               />
             </div>
-            <div className="basis-full md:basis-2/12 px-3 mb-6">
-              <label className="label-form" htmlFor="situation">
-                Situação
-              </label>
-              <div className="relative">
-                <select
-                  className="input-form"
-                  {...register("situation", { required: false })}
-                >
-                  <option value="sale">Venda</option>
-                  <option value="location">Locação</option>
-                  <option value="exchange">Permuta</option>
-                  <option value="purchase">Compra</option>
-                </select>
-              </div>
-            </div>
-            <div className="basis-full md:basis-2/12 px-3 mb-6">
-              <label className="label-form" htmlFor="published">
-                Web
-              </label>
-              <div className="relative">
-                <select
-                  className="input-form"
-                  {...register("published", { required: false })}
-                >
-                  <option value={"true"}>Publicar</option>
-                  <option value={"false"}>Congelar</option>
-                </select>
-              </div>
-            </div>
+
             <div className="basis-full md:basis-4/12 px-3 mb-6">
               <label className="label-form" htmlFor="categories_id">
                 Categoria
@@ -676,8 +702,14 @@ export default function FormImmobles() {
                       {label.icon === "faBath" && (
                         <FontAwesomeIcon icon={faBath} />
                       )}
-                      {label.icon === "faStarOfLife" && (
-                        <FontAwesomeIcon icon={faStarOfLife} />
+                      {label.icon === "faKitchenSet" && (
+                        <FontAwesomeIcon icon={faKitchenSet} />
+                      )}
+                      {label.icon === "faWarehouse" && (
+                        <FontAwesomeIcon icon={faWarehouse} />
+                      )}
+                      {label.icon === "faWind" && (
+                        <FontAwesomeIcon icon={faWind} />
                       )}
                       {label.icon === "faSink" && (
                         <FontAwesomeIcon icon={faSink} />
@@ -691,11 +723,29 @@ export default function FormImmobles() {
                       {label.icon === "faFan" && (
                         <FontAwesomeIcon icon={faFan} />
                       )}
-                      {label.icon === "faPhoneVolume" && (
-                        <FontAwesomeIcon icon={faPhoneVolume} />
+                      {label.icon === "faSnowflake" && (
+                        <FontAwesomeIcon icon={faSnowflake} />
+                      )}
+                      {label.icon === "faJugDetergent" && (
+                        <FontAwesomeIcon icon={faJugDetergent} />
+                      )}
+                      {label.icon === "faBowlFood" && (
+                        <FontAwesomeIcon icon={faBowlFood} />
+                      )}
+                      {label.icon === "faDoorOpen" && (
+                        <FontAwesomeIcon icon={faDoorOpen} />
+                      )}
+                      {label.icon === "faWaterLadder" && (
+                        <FontAwesomeIcon icon={faWaterLadder} />
+                      )}
+                      {label.icon === "faUtensils" && (
+                        <FontAwesomeIcon icon={faUtensils} />
                       )}
                       {label.icon === "faShower" && (
                         <FontAwesomeIcon icon={faShower} />
+                      )}{" "}
+                      {label.icon === "faPhoneVolume" && (
+                        <FontAwesomeIcon icon={faPhoneVolume} />
                       )}{" "}
                       {label.tag}
                     </span>

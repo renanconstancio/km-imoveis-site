@@ -7,21 +7,17 @@ import {
   PropsImmobles,
   PropsPagination,
 } from "../../global/types/types";
-import { Filters } from "../../components/filters";
 import { useLocation } from "react-router-dom";
 import { parse, stringify } from "query-string";
 import { Loading } from "../../components/loading";
-import { useGeolocation } from "../../hooks/use-geolocation";
 import { Pagination } from "../../components/pagination";
 
 export function SiteHome() {
   const [loading, setLoading] = useState(true);
-  const [banners, setBanners] = useState<PropsBanners[]>([]);
   const [immobiles, setImmobiles] = useState<PropsPagination<PropsImmobles[]>>(
     {} as PropsPagination<PropsImmobles[]>,
   );
 
-  const { geolocation } = useGeolocation();
   const location = useLocation();
 
   const query = parse(location.search);
@@ -51,43 +47,12 @@ export function SiteHome() {
       .finally(() => setLoading(false));
   }
 
-  async function loadBanners() {
-    await api
-      .get("/immobiles/sort/banner")
-      .then(async resp => setBanners(await resp.data));
-  }
-
-  useEffect(() => {
-    loadBanners();
-  }, []);
-
   useEffect(() => {
     loadImmobiles();
   }, [locationDecodUri]);
 
   return (
     <>
-      {location.pathname === "/" && (
-        <div className="bg-slate-100">
-          <section className="container px-4 flex flex-wrap items-center">
-            <div className="w-full md:w-1/3 mt-4 md:mt-0">
-              <Filters />
-            </div>
-            <div className="w-full md:w-2/3 mb-5 mt-5 md:m-0">
-              {banners.length ? <CarouselIndex banners={banners} /> : ""}
-            </div>
-          </section>
-        </div>
-      )}
-
-      {location.pathname !== "/" && (
-        <div className="bg-slate-100 -mt-2 mb-5">
-          <section className="container p-5">
-            <Filters variant="row" />
-          </section>
-        </div>
-      )}
-
       <div className="border-b border-gray-200 py-2">
         <section className="container px-4 uppercase font-play font-bold mb-7">
           {immobiles?.total} encotrado(s)
@@ -120,11 +85,12 @@ export function SiteHome() {
                 terrainArea={item.terrain_area}
                 rentPrice={item.rent_price}
                 salePrice={item.sale_price}
+                city={item.city}
                 address={[
                   item.district?.district,
                   `${item.city?.city}/${item.city?.state.state}`,
                 ].join(", ")}
-                tag={item.tags}
+                tag={item.tags || ""}
                 tags={tags}
                 images={item?.photos?.map(f => f.image_xs) || []}
               />

@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { GeolocationType } from "../../context/geolocation";
 import { useGeolocation } from "../../hooks/use-geolocation";
@@ -7,6 +7,10 @@ import { Header } from "../header";
 
 import iconFace from "../../assets/facebook.svg";
 import iconInsta from "../../assets/instagram.svg";
+import { Filters } from "../filters";
+import { CarouselIndex } from "../carousel";
+import { PropsBanners } from "../../global/types/types";
+import { api } from "../../services/api";
 
 // type PropsGeolocationStates = {
 //   codigo_uf: number;
@@ -36,39 +40,14 @@ type PropsGeolocation = {
 };
 
 export default function Site() {
-  // const [states, setStates] = useState<PropsGeolocationStates[]>([]);
+  const [banners, setBanners] = useState<PropsBanners[]>([]);
   const [geolocation, setGeolocation] = useState<PropsGeolocation>(
     {} as PropsGeolocation,
   );
   const [cities, setCities] = useState<GeolocationType[]>([]);
 
+  const location = useLocation();
   const { addGeolocation } = useGeolocation();
-
-  // async function loadStates() {
-  //   fetch(
-  //     "https://raw.githubusercontent.com/kelvins/Municipios-Brasileiros/main/json/estados.json",
-  //   )
-  //     .then(resp => resp.json())
-  //     .then(async (resp: PropsGeolocationStates[]) => setStates(resp));
-  // }
-
-  // async function loadCities() {
-  //   fetch(
-  //     "https://raw.githubusercontent.com/kelvins/Municipios-Brasileiros/main/json/municipios.json",
-  //   )
-  //     .then(resp => resp.json())
-  //     .then(async (resp: PropsGeolocationCity[]) => {
-  //       const respAll = resp.map((rws: PropsGeolocationCity) => {
-  //         const state = states.find(s => s.codigo_uf === rws.codigo_uf);
-  //         return {
-  //           ...rws,
-  //           nome: `${rws.nome}/${state?.uf}`,
-  //         };
-  //       });
-
-  //       setCities(respAll);
-  //     });
-  // }
 
   async function loadCities() {
     fetch(
@@ -77,6 +56,16 @@ export default function Site() {
       .then(resp => resp.json())
       .then(async (resp: GeolocationType[]) => setCities(resp));
   }
+
+  async function loadBanners() {
+    await api
+      .get("/immobiles/sort/banner")
+      .then(async resp => setBanners(await resp.data));
+  }
+
+  useEffect(() => {
+    loadBanners();
+  }, []);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -97,34 +86,44 @@ export default function Site() {
     if (!cities.length) loadCities();
   }, [cities]);
 
-  useEffect(() => {
-    addGeolocation(
-      cities?.filter(
-        ({ latitude, longitude }) =>
-          `${geolocation.latitude}`.includes(`${latitude}`) ||
-          `${geolocation.longitude}`.includes(`${longitude}`),
-      )[0],
-    );
-  }, [cities, geolocation.latitude, geolocation.longitude]);
+  // useEffect(() => {
+  //   addGeolocation(
+  //     cities?.filter(
+  //       ({ latitude, longitude }) =>
+  //         `${geolocation.latitude}`.includes(`${latitude}`) ||
+  //         `${geolocation.longitude}`.includes(`${longitude}`),
+  //     )[0],
+  //   );
+  // }, [cities, geolocation.latitude, geolocation.longitude]);
 
   return (
     <div className="bg-gray-200 flex flex-1 flex-col relative">
       <Header />
-      <Outlet />
-      <Footer />
 
-      {/* <span className="fixed inset-y-0 left-0 w-0 z-50 flex flex-col justify-center gap-1">
-        <img
-          src={iconFace}
-          alt="Facebook"
-          style={{ width: 45, maxWidth: "auto!important" }}
-        />
-        <img
-          src={iconInsta}
-          alt="Instagram"
-          style={{ width: 45, maxWidth: "auto!important" }}
-        />
-      </span> */}
+      {location.pathname === "/" && (
+        <div className="bg-slate-100">
+          <section className="container px-4 flex flex-wrap items-center">
+            <div className="w-full md:w-1/3 mt-4 md:mt-0">
+              <Filters />
+            </div>
+            <div className="w-full md:w-2/3 mb-5 mt-5 md:m-0">
+              {banners.length ? <CarouselIndex banners={banners} /> : ""}
+            </div>
+          </section>
+        </div>
+      )}
+
+      {location.pathname !== "/" && (
+        <div className="bg-slate-100 -mt-2 mb-5">
+          <section className="container p-5">
+            <Filters variant="row" />
+          </section>
+        </div>
+      )}
+
+      <Outlet />
+
+      <Footer />
     </div>
   );
 }
