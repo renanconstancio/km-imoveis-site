@@ -14,27 +14,27 @@ export function Header() {
   return (
     <header className="border-b border-gray-200 py-4 bg-white">
       <nav className="flex justify-between items-center container mx-auto px-4">
-        <Link to="/" className="w-24 sm:w-44">
+        <Link to="/" className="w-24 sm:w-52">
           <img src={logoSite} alt="Logo" className="max-w-full" />
         </Link>
-        <ul className="flex flex-1 justify-end gap-2 mx-auto px-4 uppercase text-sm">
+        <ul className="flex flex-1 justify-end gap-3 mx-auto px-4 uppercase text-xs sm:text-sm">
           <li>
             <Link
               to="/"
-              className="p-2 sm:p-3 bg-slate-100 rounded-lg hidden md:inline"
+              className="p-2 sm:p-4 bg-slate-100 rounded-lg hidden md:inline"
             >
               <FontAwesomeIcon icon={faHome} /> Inicio
             </Link>
           </li>
           <li>
-            <Link to="/search" className="p-2 sm:p-3 bg-slate-100 rounded-lg">
+            <Link to="/search" className="p-2 sm:p-4 bg-slate-100 rounded-lg">
               <FontAwesomeIcon icon={faSearch} /> Imovéis
             </Link>
-          </li>{" "}
+          </li>
           <li>
             <Link
               to="/"
-              className="p-2 sm:p-3 bg-slate-100 rounded-lg hidden md:inline"
+              className="p-2 sm:p-4 bg-slate-100 rounded-lg hidden md:inline"
             >
               <FontAwesomeIcon icon={faInfo} /> Quem Somos
             </Link>
@@ -46,7 +46,7 @@ export function Header() {
               )}&text=Olá, gostaria de saber mais infomações sobre casa para locação`}
               target="_blank"
               rel="noreferrer"
-              className="p-2 sm:p-3 bg-slate-100 rounded-lg"
+              className="p-2 sm:p-4 bg-slate-100 rounded-lg"
             >
               <FontAwesomeIcon icon={faEnvelope} /> Contato
             </a>

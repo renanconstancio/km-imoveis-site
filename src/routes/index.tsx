@@ -17,6 +17,7 @@ import { FormOwners, Owners } from "../pages/admin-owners";
 import { FormUsers, Users } from "../pages/admin-users";
 import { Logs } from "../pages/admin-logs";
 import { Dashboard } from "../pages/admin-dashborad";
+import { SiteSearch } from "../pages/site-search";
 
 export const router = createBrowserRouter([
   {
@@ -44,7 +45,7 @@ export const router = createBrowserRouter([
               <title>{import.meta.env.VITE_REACT_TITLE}</title>
               <link rel="canonical" href={window.location.href} />
             </Helmet>
-            <SiteHome />
+            <SiteSearch />
           </>
         ),
       },

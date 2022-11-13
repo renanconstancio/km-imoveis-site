@@ -1,13 +1,18 @@
 import { Link, useLocation } from "react-router-dom";
 import { parse, stringify } from "query-string";
 
-type Props = {
+type PropsPagination = React.InputHTMLAttributes<HTMLUListElement> & {
   total: number;
   currentPage: number;
   perPage: number;
 };
 
-export function Pagination({ total, currentPage, perPage }: Props) {
+export function Pagination({
+  total,
+  currentPage,
+  perPage,
+  ...rest
+}: PropsPagination) {
   // Logic for displaying page numbers
   const pageNumbers = [];
   for (let i = 1; i <= Math.ceil(total / perPage); i++) {
@@ -17,7 +22,7 @@ export function Pagination({ total, currentPage, perPage }: Props) {
   const location = useLocation();
 
   return (
-    <ul className="flex flex-1 gap-0.5">
+    <ul className="flex flex-1 gap-0.5" {...rest}>
       {pageNumbers.map((number, index) => {
         const parsed = parse(location.search);
 

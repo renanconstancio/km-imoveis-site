@@ -1,12 +1,17 @@
 import { parse, stringify } from "query-string";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { PropsCategories, PropsNeighborhoods } from "../../global/types/types";
+import {
+  PropsCategories,
+  PropsCities,
+  PropsNeighborhoods,
+} from "../../global/types/types";
 import { Input } from "../inputs";
 import { api } from "../../services/api";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { useGeolocation } from "../../hooks/use-geolocation";
 
 type PropsFiltersComp = {
   variant?: "row" | "col";
@@ -23,9 +28,15 @@ type PropsFilters = {
 export function Filters({ variant = "col" }: PropsFiltersComp) {
   const [openClose, setOpenClose] = useState<boolean>(false);
   const [categories, setCategories] = useState<PropsCategories[]>([]);
-  const [neighborhoods, setNeighborhoods] = useState<PropsNeighborhoods[]>([]);
-  // const [cities, setCities] = useState<PropsCities[]>([]);
+  const [cities, setCities] = useState<
+    { city: string; state: string; neighborhoods: { district: string }[] }[]
+  >([]);
+  const [citiesDefault, setCitiesDefault] = useState<string>("");
+  const [neighborhoods, setNeighborhoods] = useState<{ district: string }[]>(
+    [],
+  );
 
+  const { geolocation } = useGeolocation();
   const { handleSubmit, register } = useForm<PropsFilters>();
 
   const navigate = useNavigate();
@@ -33,15 +44,32 @@ export function Filters({ variant = "col" }: PropsFiltersComp) {
   const parsed = parse(location.search);
 
   function onSubmit(data: PropsFilters) {
+    if (data.situation === "Venda") data = { ...data, situation: "sale" };
     if (data.situation === "Locação") data = { ...data, situation: "location" };
     if (data.situation === "Compra") data = { ...data, situation: "purchase" };
-    if (data.situation === "Venda") data = { ...data, situation: "sale" };
     if (data.situation === "Permuta") data = { ...data, situation: "exchange" };
+    // if (geolocation?.city) data = { ...data, city: geolocation?.city };
+    if (geolocation?.city !== data.city)
+      data = { ...data, city: data.city.split("/")[0] };
 
     navigate({
       pathname: "/search",
       search: stringify({ ...parsed, ...data }),
     });
+  }
+
+  function handleChangeCity(search: string) {
+    setNeighborhoods(
+      cities.filter(
+        ({ city, state }) => [city, state].join("/") === search,
+      )?.[0]?.neighborhoods || [],
+    );
+  }
+
+  async function loadFilters() {
+    await api
+      .get("/immobiles/website/filter")
+      .then(async res => setCities(await res.data));
   }
 
   async function loadCategories() {
@@ -50,39 +78,17 @@ export function Filters({ variant = "col" }: PropsFiltersComp) {
       .then(async res => setCategories(await res.data));
   }
 
-  // async function loadCities() {
-  //   await api.get("/cities").then(async res =>
-  //     setCities(
-  //       await res.data.filter((f: any) => {
-  //         return [f.city, f.state.state].join("/") === geolocation?.nome;
-  //       }),
-  //     ),
-  //   );
-  // }
-
-  async function loadNeighborhoods() {
-    await api
-      .get("/neighborhoods")
-      .then(async res => setNeighborhoods(await res.data));
-  }
+  useEffect(() => {
+    setCitiesDefault(`${geolocation?.city}`);
+  }, []);
 
   useEffect(() => {
-    (async () => {
-      if (!categories.length) loadCategories();
-    })();
+    if (!categories.length) loadCategories();
   }, [categories]);
 
-  // useEffect(() => {
-  //   (async () => {
-  //     if (!cities) loadCities();
-  //   })();
-  // }, [cities]);
-
   useEffect(() => {
-    (async () => {
-      if (!neighborhoods.length) loadNeighborhoods();
-    })();
-  }, [neighborhoods]);
+    loadFilters();
+  }, []);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -97,7 +103,7 @@ export function Filters({ variant = "col" }: PropsFiltersComp) {
           !openClose ? "hidden mt-3 md:m-0 md:flex" : "flex mt-3 md:m-0"
         } ${
           variant === "col" ? "flex-col" : "flex-col md:flex-row"
-        } gap-5 md:mr-5 aling-end`}
+        } gap-3 md:mr-5 aling-end`}
       >
         <li>
           <Input
@@ -132,6 +138,23 @@ export function Filters({ variant = "col" }: PropsFiltersComp) {
         </li>
         <li>
           <Input
+            list="cities"
+            type="search"
+            label="Cidade"
+            className={`input-form`}
+            placeholder={"Busca por código"}
+            register={register("city")}
+            onChange={e => handleChangeCity(e.target.value)}
+            defaultValue=""
+          />
+          <datalist id="cities">
+            {cities.map(({ city, state }, id) => (
+              <option value={[city, state].join("/")} key={id} />
+            ))}
+          </datalist>
+        </li>
+        <li>
+          <Input
             list="district"
             type="search"
             label="Bairro"
@@ -140,32 +163,17 @@ export function Filters({ variant = "col" }: PropsFiltersComp) {
             register={register("district")}
           />
           <datalist id="district">
-            {neighborhoods.map(({ id, district }) => (
+            {neighborhoods.map(({ district }, id) => (
               <option value={district} key={id} />
             ))}
           </datalist>
         </li>
-        {/* <li>
-          <Input
-            list="cities"
-            type="search"
-            label="Cidade"
-            className={`input-form`}
-            placeholder={"Busca por código"}
-            register={register("city")}
-          />
-          <datalist id="cities">
-            {cities.map(({ id, city, state }) => (
-              <option value={[city, state.state].join("/")} key={id} />
-            ))}
-          </datalist>
-        </li> */}
         <li>
           <Input
             type="text"
             label="Código do Imovél"
             className={`input-form`}
-            placeholder={"C0011"}
+            placeholder={""}
             register={register("reference")}
           />
         </li>

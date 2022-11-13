@@ -44,7 +44,9 @@ export function SiteImmoble() {
   return (
     <div className="border-b border-gray-200 py-2">
       {loading ? (
-        <Loading />
+        <section className="py-48">
+          <Loading />
+        </section>
       ) : (
         <>
           {immoble?.description && (
@@ -81,7 +83,7 @@ export function SiteImmoble() {
           )}
 
           <div className="container">
-            <ul className="divide-y divide-slate-200 bg-white mx-5 sm:mx-0 px-5 pb-7 flex flex-col flex-wrap sm:flex-row">
+            <ul className="divide-y divide-slate-200 bg-white mx-4 sm:mx-0 px-5 pb-7 flex flex-col flex-wrap sm:flex-row">
               <li className="w-full">
                 <H2 title={`${immoble?.description}`} />
 

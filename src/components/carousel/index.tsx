@@ -23,33 +23,12 @@ export function CarouselIndex({ banners }: { banners: PropsBanners[] }) {
           )}/imovel/${reference}/${slugiFy(`${description}`)}`}
           key={id}
           style={{
-            height: 430,
             backgroundImage: `url(${photos.image_lg})`,
             backgroundPosition: "center bottom",
             backgroundSize: "cover",
           }}
-          className="flex flex-row justify-start items-end px-7"
-        >
-          {/* <section className="text-start">
-              <h2
-                className={`font-play font-bold text-3xl mb-1 text-gray-700 ${situationTextClassName(
-                  situation,
-                )}`}
-                style={{
-                  textShadow:
-                    "1px 1px 2px white, 0 0 1em black, 0 0 0.2em white",
-                }}
-              >
-                {description}
-              </h2>
-              <small className="text-shadow[1px 1px 2px black]">
-                CÓD.: {reference}
-              </small>
-              <span className="font-play font-bold text-sm block mb-3">
-                R$: {maskCurrency(rent_price ?? sale_price)}
-              </span>
-            </section> */}
-        </Link>
+          className="flex flex-row h-[250px] md:h-[450px]"
+        ></Link>
       ))}
     </Carousel>
   );
