@@ -15,7 +15,7 @@ export function NavDropDown() {
   const [open, setOpen] = useState<boolean>(false);
   const { auth, logout } = useAuth();
   return (
-    <section className="bg-white -m-8 h-14 px-8 mb-5 flex justify-end items-center relative">
+    <section className="bg-white -mx-4 h-14 px-8 mb-5 flex justify-end items-center relative">
       <span className="uppercase text-xs px-4">
         {greetingMessage(auth?.name)}
       </span>

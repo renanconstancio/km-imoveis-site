@@ -19,7 +19,7 @@ export function Alert({ title, message }: Props) {
 
   return (
     <div
-      className="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 mb-3"
+      className="bg-green-100 border-l-8 border-green-500 text-green-700 p-4 mb-3 fixed inset-x-6 top-2"
       role="alert"
     >
       {title && <p className="font-bold">{title}</p>}

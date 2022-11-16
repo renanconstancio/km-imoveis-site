@@ -182,15 +182,22 @@ export default function FormImmobles() {
           categories_id: immoble.category?.category,
           neighborhoods_id: immoble?.district?.district,
           streets_id: immoble.street?.street,
-          cities_id: [immoble.city?.city, immoble.city?.state?.state]
-            .join("/")
-            .replace("/", ""),
-          owner_id: [immoble.owner?.first_name, immoble.owner?.last_name]
-            .join(" ")
-            .trim(),
-          tenant_id: [immoble.tenant?.first_name, immoble.tenant?.last_name]
-            .join(" ")
-            .trim(),
+          cities_id:
+            immoble.city?.city && immoble.city?.state?.state
+              ? [immoble.city?.city, immoble.city?.state?.state].join("/")
+              : "",
+          owner_id:
+            immoble.owner?.first_name && immoble.owner?.last_name
+              ? [immoble.owner?.first_name, immoble.owner?.last_name]
+                  .join(" ")
+                  .trim()
+              : "",
+          tenant_id:
+            immoble.tenant?.first_name && immoble.tenant?.last_name
+              ? [immoble.tenant?.first_name, immoble.tenant?.last_name]
+                  .join(" ")
+                  .trim()
+              : "",
         });
 
         setTagsSite(immoble?.tags?.split(",") || "");
