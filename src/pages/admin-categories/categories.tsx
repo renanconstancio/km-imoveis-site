@@ -41,20 +41,20 @@ export default function Categories() {
     setLoading(true);
     await api
       .delete(`/categories/${data.id}`)
+      .finally(() => setLoading(false))
       .then(() =>
         setCategories(
           categories?.filter((f: { id: string }) => f.id !== data.id),
         ),
-      )
-      .finally(() => setLoading(false));
+      );
   }
 
   async function loadCategories() {
     setLoading(true);
     await api
       .get(`/categories`)
-      .then(async resp => setCategories(await resp.data))
-      .finally(() => setLoading(false));
+      .finally(() => setLoading(false))
+      .then(async resp => setCategories(await resp.data));
   }
 
   useEffect(() => {

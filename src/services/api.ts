@@ -1,4 +1,5 @@
 import axios, { Axios } from "axios";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const api: Axios = axios.create({
   baseURL: import.meta.env.VITE_API_HOST,
@@ -23,28 +24,19 @@ api.interceptors.request.use(
   error => Promise.reject(error),
 );
 
-api.interceptors.response.use(
-  response => response,
-  async error => {
-    const config = error?.config;
+export const interceptorsResponse = (logout: { (): void; (): void }) => {
+  api.interceptors.response.use(
+    response => response,
+    async error => {
+      console.log(error.response.status);
+      if (error?.response?.status === 401) {
+        logout();
+      }
 
-    if (error?.response?.status === 401 && !config?.sent) {
-      config.sent = true;
-      console.log("sadfsd");
-      // const result = await memoizedRefreshToken();
-
-      // if (result?.accessToken) {
-      //   config.headers = {
-      //     ...config.headers,
-      //     authorization: `Bearer ${result?.accessToken}`,
-      //   };
-      // }
-
-      return axios(config);
-    }
-    return Promise.reject(error);
-  },
-);
+      return error;
+    },
+  );
+};
 
 export const tags = [
   { tag: "sala", icon: "faTv" },
@@ -60,8 +52,11 @@ export const tags = [
   { tag: "4 dormitórios", icon: "faBed" },
   { tag: "copa", icon: "faSink" },
   { tag: "sala de star", icon: "faTv" },
-  { tag: "sendo 1 suíte", icon: "faBath" },
-  { tag: "sendo 2 suíte", icon: "faBath" },
+  { tag: "sendo 1 suíte", icon: "faSpa" },
+  { tag: "sendo 2 suíte", icon: "faSpa" },
+  { tag: "sendo 3 suíte", icon: "faSpa" },
+  { tag: "sendo 4 suíte", icon: "faSpa" },
+  { tag: "sendo 5 suíte", icon: "faSpa" },
   { tag: "ventilador", icon: "faFan" },
   { tag: "ar condicionado", icon: "faWind" },
   { tag: "garagem 2 carros", icon: "faCar" },
@@ -75,6 +70,23 @@ export const tags = [
   { tag: "Área Churraqueira", icon: "faUtensils" },
   { tag: "Piscina", icon: "faWaterLadder" },
   { tag: "Quarto de despejo", icon: "faDoorOpen" },
-  { tag: "Cozinha americana c/ Copa", icon: "faKitchenSet" },
+  { tag: "Cozinha americana", icon: "faKitchenSet" },
   { tag: "Jardim de inverno", icon: "faSnowflake" },
+
+  { tag: "suíte com banheira", icon: "faSpa" },
+  { tag: "lavabo", icon: "faSink" },
+  { tag: "banheiro social", icon: "faShower" },
+  { tag: "dispensa", icon: "faCheck" },
+  { tag: "poço artesiano", icon: "faCheck" },
+  { tag: "piso porcelanato", icon: "faCheck" },
+  { tag: "piso cerâmica", icon: "faCheck" },
+
+  { tag: "cerca elétrica", icon: "faBolt" },
+  { tag: "aquecedor solar", icon: "faSolarPanel" },
+  { tag: "móveis planejados", icon: "faCheck" },
+  { tag: "cozinha planejados", icon: "faCheck" },
+  { tag: "banheiro planejados", icon: "faCheck" },
+  { tag: "lavanderia planejados", icon: "faJugDetergent" },
+  { tag: "quarto planejados", icon: "faCheck" },
+  { tag: "aréa de lazer", icon: "faCheck" },
 ];

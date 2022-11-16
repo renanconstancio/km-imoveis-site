@@ -29,7 +29,7 @@ export default function FormNeighborhoods() {
       ...data,
     };
 
-    if (data.id)
+    if (districtId) {
       await api
         .put(`/neighborhoods/${districtId}`, newPostData)
         .then(() =>
@@ -42,33 +42,34 @@ export default function FormNeighborhoods() {
             message: "Não foi possivel fazer um novo cadastro para o imovél.",
           }),
         );
-    else
-      await api
-        .post(`/neighborhoods`, newPostData)
-        .then(async resp => {
-          changeAlert({
-            message: "Dados salvos com sucesso.",
-          }),
-            navigate({
-              pathname: `/adm/neighborhoods/${(await resp.data).id}/edit`,
-            });
-        })
-        .catch(() =>
-          changeAlert({
-            message: "Não foi possivel fazer um novo cadastro.",
-          }),
-        );
+      return;
+    }
+
+    await api
+      .post(`/neighborhoods`, newPostData)
+      .then(async resp => {
+        changeAlert({
+          message: "Dados salvos com sucesso.",
+        }),
+          navigate({
+            pathname: `/adm/neighborhoods/${(await resp.data).id}/edit`,
+          });
+      })
+      .catch(() =>
+        changeAlert({
+          message: "Não foi possivel fazer um novo cadastro.",
+        }),
+      );
   }
 
   async function loadNeighborhoods() {
     api
       .get(`/neighborhoods/${districtId}`)
-      .then(async res => {
-        const resp = (await res.data) as PropsNeighborhoods;
+      .then(async res =>
         reset({
-          ...resp,
-        });
-      })
+          ...(await res.data),
+        }),
+      )
       .catch(() =>
         changeAlert({
           message: "Não foi possivel conectar ao servidor.",

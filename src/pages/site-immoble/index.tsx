@@ -18,6 +18,7 @@ export function SiteImmoble() {
   const [loading, setLoading] = useState(true);
   const [immoble, setImmoble] = useState<PropsImmobles>({} as PropsImmobles);
   const [photos, setPhotos] = useState<string[]>([]);
+  const sort: string[] = [];
 
   const { reference } = useParams<{ reference: string | undefined }>();
 
@@ -34,7 +35,6 @@ export function SiteImmoble() {
   }, [reference]);
 
   useEffect(() => {
-    const sort: string[] = [];
     immoble?.photos?.map((r, k) =>
       sort.push(immoble?.photos?.[k]?.image_lg || ""),
     );
@@ -52,33 +52,38 @@ export function SiteImmoble() {
           {immoble?.description && (
             <Helmet>
               <title>
-                {immoble?.description} - {import.meta.env.VITE_REACT_TITLE}
+                {`${immoble?.description} - ${import.meta.env.VITE_TITLE}`}
               </title>
 
-              <link rel="canonical" href={window.location.href} />
               <meta
                 name="description"
-                content={`${immoble?.description} - ${
-                  import.meta.env.VITE_REACT_TITLE
-                }`}
+                content={`${immoble?.description} Cód.: ${immoble?.reference}`}
               />
-              <meta property="og:url" content={`${location.href}`} />
+              <meta
+                name="keywords"
+                content={`${immoble?.description}, ${situationText(
+                  immoble?.situation,
+                )}, ${[
+                  immoble.district?.district,
+                  `${immoble.city?.city}/${immoble.city?.state.state}`,
+                ].join(", ")}`}
+              />
+              <meta property="og:url" content={window.location.href} />
               <meta
                 property="og:title"
                 content={`${immoble?.description} - ${
-                  import.meta.env.VITE_REACT_TITLE
+                  import.meta.env.VITE_TITLE
                 }`}
               />
               <meta
                 property="og:description"
-                content={`${immoble?.description} - ${
-                  import.meta.env.VITE_REACT_TITLE
-                }`}
+                content={`${immoble?.description} Cód.: ${immoble?.reference}`}
               />
               <meta
                 property="og:image"
                 content={immoble.photos?.[0]?.image_xs}
               />
+              <link rel="canonical" href={window.location.href} />
             </Helmet>
           )}
 
@@ -91,9 +96,10 @@ export function SiteImmoble() {
 
                 <Address
                   address={[
-                    immoble.district?.district,
-                    `${immoble.city?.city}/${immoble.city?.state.state}`,
-                  ].join(", ")}
+                    immoble.district?.district ?? "",
+                    immoble.city?.city ?? "",
+                    immoble.city?.state.state ?? "",
+                  ]}
                 />
               </li>
               <li className="pt-5 w-full sm:w-8/12 relative">
@@ -152,7 +158,6 @@ export function SiteImmoble() {
                 <li className="w-full sm:w-8/12 flex flex-col gap-3 pb-7">
                   <H2 title="Descrição do Imovél" />
                   <div
-                    className="flex flex-row flex-wrap gap-1"
                     dangerouslySetInnerHTML={{
                       __html: immoble?.description_text,
                     }}

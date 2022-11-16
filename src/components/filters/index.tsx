@@ -1,17 +1,14 @@
 import { parse, stringify } from "query-string";
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  PropsCategories,
-  PropsCities,
-  PropsNeighborhoods,
-} from "../../global/types/types";
+import { PropsCategories } from "../../global/types/types";
 import { Input } from "../inputs";
-import { api } from "../../services/api";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useGeolocation } from "../../hooks/use-geolocation";
+import { api } from "../../services/api";
+import { OptionSituationList } from "../situation-option";
 
 type PropsFiltersComp = {
   variant?: "row" | "col";
@@ -48,7 +45,13 @@ export function Filters({ variant = "col" }: PropsFiltersComp) {
     if (data.situation === "Locação") data = { ...data, situation: "location" };
     if (data.situation === "Compra") data = { ...data, situation: "purchase" };
     if (data.situation === "Permuta") data = { ...data, situation: "exchange" };
+    if (data.situation === "Venda e Locação")
+      data = { ...data, situation: "sale_lease" };
+    if (data.situation === "Venda e Permuta")
+      data = { ...data, situation: "sale_barter" };
+
     // if (geolocation?.city) data = { ...data, city: geolocation?.city };
+
     if (geolocation?.city !== data.city)
       data = { ...data, city: data.city.split("/")[0] };
 
@@ -130,10 +133,7 @@ export function Filters({ variant = "col" }: PropsFiltersComp) {
             register={register("situation")}
           />
           <datalist id="situation">
-            <option value="Locação" data-id="location" />
-            <option value="Compra" data-id="purchase" />
-            <option value="Permuta" data-id="exchange" />
-            <option value="Venda" data-id="sale" />
+            <OptionSituationList />
           </datalist>
         </li>
         <li>

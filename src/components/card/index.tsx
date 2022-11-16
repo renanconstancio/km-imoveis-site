@@ -16,11 +16,17 @@ type PropsCard = React.HTMLAttributes<HTMLLIElement> & {
   description: string;
   terrainArea: string;
   buildingArea: string;
-  address: string;
+  address: string[];
   salePrice: string;
   rentPrice: string;
   images: string[];
-  situation: "exchange" | "location" | "purchase" | "sale";
+  situation:
+    | "exchange"
+    | "location"
+    | "purchase"
+    | "sale"
+    | "sale_barter"
+    | "sale_lease";
   // city?: {
   //   city: string;
   //   state: {

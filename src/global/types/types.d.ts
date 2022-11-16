@@ -55,7 +55,13 @@ export type PropsImmobles = {
   sale_price: string;
   rent_price: string;
   published: true | false;
-  situation: "exchange" | "location" | "purchase" | "sale";
+  situation:
+    | "exchange"
+    | "location"
+    | "purchase"
+    | "sale"
+    | "sale_barter"
+    | "sale_lease";
   pickup: string;
   building_area: string;
   terrain_area: string;
@@ -180,24 +186,14 @@ export type PropsDistrict = {
 };
 
 export type PropsBanners = {
-  id: string;
   reference: string;
   description: string;
-  sale_price: string;
-  rent_price: string;
-  tags: string;
   situation: "exchange" | "location" | "purchase" | "sale";
-  city: {
-    city: string;
-    state: {
-      state: string;
-    };
-  };
-  photos: {
-    id: string;
+  state: string;
+  city: string;
+  photo: {
     image_lg: string;
     image_xs: string;
-    position: string;
   };
 };
 

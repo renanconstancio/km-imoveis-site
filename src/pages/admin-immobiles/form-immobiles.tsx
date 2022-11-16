@@ -34,7 +34,6 @@ import {
   faFan,
   faShower,
   faSink,
-  faStarOfLife,
   faTv,
   faPhoneVolume,
   faKitchenSet,
@@ -46,11 +45,17 @@ import {
   faDoorOpen,
   faWind,
   faWarehouse,
+  faSpa,
+  faCheck,
+  faBolt,
+  faSolarPanel,
 } from "@fortawesome/free-solid-svg-icons";
 import { Input } from "../../components/inputs";
 import { maskCurrency, maskCurrencyUs } from "../../utils/mask";
 import ModalTenant from "../../components/modal/modal-tenant";
 import ModalOwner from "../../components/modal/modal-owner";
+import { Editor } from "@tinymce/tinymce-react";
+import { OptionSituation } from "../../components/situation-option";
 
 export default function FormImmobles() {
   const [cities, setCities] = useState<PropsCities[]>([]);
@@ -62,7 +67,7 @@ export default function FormImmobles() {
   const [users, setUsers] = useState<PropsUsers[]>([]);
   const [tagsSite, setTagsSite] = useState<string[]>([]);
   const [onOff, setOnOff] = useState<boolean>(false);
-  const [descriptionText, setDescriptionText] = useState<string>();
+  const [descriptionText, setDescriptionText] = useState<string>("");
 
   const {
     openCategory,
@@ -81,9 +86,8 @@ export default function FormImmobles() {
     closeOwner,
   } = useModal();
 
-  const { changeAlert } = useAlert();
-
   const navigate = useNavigate();
+  const { changeAlert } = useAlert();
 
   const { immobleId } = useParams<{ immobleId: string | undefined }>();
 
@@ -124,13 +128,13 @@ export default function FormImmobles() {
       tags: existsTags,
       published: onOff,
       description_text: descriptionText,
-      cities_id: rwsCity?.id,
-      categories_id: rwsCategory?.id,
-      neighborhoods_id: rwsDistrict?.id,
-      streets_id: rwsStreet?.id,
-      tenant_id: rwsTenant?.id,
-      owner_id: rwsOwner?.id,
-      users_id: rwsUser?.id,
+      cities_id: rwsCity?.id || null,
+      categories_id: rwsCategory?.id || null,
+      neighborhoods_id: rwsDistrict?.id || null,
+      streets_id: rwsStreet?.id || null,
+      tenant_id: rwsTenant?.id || null,
+      owner_id: rwsOwner?.id || null,
+      users_id: rwsUser?.id || null,
     };
 
     if (immobleId) {
@@ -169,23 +173,26 @@ export default function FormImmobles() {
       .get(`/immobiles/${immobleId}`)
       .then(async res => {
         const immoble = (await res.data) as PropsImmobles;
+
         reset({
           ...immoble,
           sale_price: `${maskCurrency(immoble.sale_price)}`,
           rent_price: `${maskCurrency(immoble.rent_price)}`,
           users_id: immoble.user?.first_name,
-          cities_id: [immoble.city?.city, immoble.city?.state.state].join("/"),
           categories_id: immoble.category?.category,
           neighborhoods_id: immoble?.district?.district,
           streets_id: immoble.street?.street,
-          owner_id: [immoble.owner?.first_name, immoble.owner?.last_name].join(
-            " ",
-          ),
-          tenant_id: [
-            immoble.tenant?.first_name,
-            immoble.tenant?.last_name,
-          ].join(" "),
+          cities_id: [immoble.city?.city, immoble.city?.state?.state]
+            .join("/")
+            .replace("/", ""),
+          owner_id: [immoble.owner?.first_name, immoble.owner?.last_name]
+            .join(" ")
+            .trim(),
+          tenant_id: [immoble.tenant?.first_name, immoble.tenant?.last_name]
+            .join(" ")
+            .trim(),
         });
+
         setTagsSite(immoble?.tags?.split(",") || "");
         setDescriptionText(immoble?.description_text);
         setOnOff(immoble?.published);
@@ -337,7 +344,7 @@ export default function FormImmobles() {
                 })}
               />
             </div>
-            <div className="basis-full md:basis-2/12 px-3">
+            <div className="basis-full md:basis-3/12 px-3">
               <label className="label-form" htmlFor="situation">
                 Situação
               </label>
@@ -346,10 +353,7 @@ export default function FormImmobles() {
                   className="input-form"
                   {...register("situation", { required: false })}
                 >
-                  <option value="location">Locação</option>
-                  <option value="sale">Venda</option>
-                  <option value="exchange">Permuta</option>
-                  <option value="purchase">Compra</option>
+                  <OptionSituation />
                 </select>
               </div>
             </div>
@@ -558,7 +562,7 @@ export default function FormImmobles() {
                       errors.neighborhoods_id && "invalid"
                     }`}
                     placeholder="Pesquisar..."
-                    {...register("neighborhoods_id", { required: true })}
+                    {...register("neighborhoods_id", { required: false })}
                   />
                 </span>
                 <span
@@ -588,7 +592,7 @@ export default function FormImmobles() {
                     type="search"
                     className={`input-form ${errors.cities_id && "invalid"}`}
                     placeholder="Pesquisar..."
-                    {...register("cities_id", { required: true })}
+                    {...register("cities_id", { required: false })}
                   />
                 </span>
                 <span
@@ -652,7 +656,7 @@ export default function FormImmobles() {
                     type="search"
                     className={`input-form ${errors.owner_id && "invalid"}`}
                     placeholder="Pesquisar..."
-                    {...register("owner_id", { required: true })}
+                    {...register("owner_id", { required: false })}
                   />
                 </span>
                 <span
@@ -674,9 +678,9 @@ export default function FormImmobles() {
             <div className="basis-full px-3 mb-6">
               <label className="label-form">Outras Info</label>
               <hr className="mb-5" />
-              <div className="flex flex-wrap capitalize">
+              <div className="flex flex-wrap">
                 {tags.map((label, k) => (
-                  <div key={k} className="basis-1/4">
+                  <div key={k} className="basis-1/4 capitalize">
                     <span
                       className={`p-3 block m-1 ${
                         tagsSite?.includes(label.tag)
@@ -696,6 +700,18 @@ export default function FormImmobles() {
                       }}
                     >
                       {label.icon === "faTv" && <FontAwesomeIcon icon={faTv} />}
+                      {label.icon === "faSolarPanel" && (
+                        <FontAwesomeIcon icon={faSolarPanel} />
+                      )}
+                      {label.icon === "faCheck" && (
+                        <FontAwesomeIcon icon={faCheck} />
+                      )}
+                      {label.icon === "faSpa" && (
+                        <FontAwesomeIcon icon={faSpa} />
+                      )}
+                      {label.icon === "faBolt" && (
+                        <FontAwesomeIcon icon={faBolt} />
+                      )}
                       {label.icon === "faCar" && (
                         <FontAwesomeIcon icon={faCar} />
                       )}
@@ -743,7 +759,7 @@ export default function FormImmobles() {
                       )}
                       {label.icon === "faShower" && (
                         <FontAwesomeIcon icon={faShower} />
-                      )}{" "}
+                      )}
                       {label.icon === "faPhoneVolume" && (
                         <FontAwesomeIcon icon={faPhoneVolume} />
                       )}{" "}
@@ -756,7 +772,45 @@ export default function FormImmobles() {
             <div className="basis-full px-3 mb-6">
               <label className="label-form">Descrição/Info</label>
               <hr className="mb-5" />
-              <textarea
+              <Editor
+                apiKey="r4q2xe40kv9pzappwn634cnqv16hgasbpze5tz7ij53kdkc3"
+                value={descriptionText}
+                onEditorChange={(content: string) =>
+                  setDescriptionText(content)
+                }
+                init={{
+                  height: 500,
+                  menubar: false,
+                  plugins: [
+                    "advlist",
+                    "autolink",
+                    "lists",
+                    "link",
+                    "image",
+                    "charmap",
+                    "preview",
+                    "anchor",
+                    "searchreplace",
+                    "visualblocks",
+                    "code",
+                    "fullscreen",
+                    "insertdatetime",
+                    "media",
+                    "table",
+                    "code",
+                    "help",
+                    "wordcount",
+                  ],
+                  toolbar:
+                    "undo redo | blocks | " +
+                    "bold italic forecolor | alignleft aligncenter " +
+                    "alignright alignjustify | bullist numlist outdent indent | " +
+                    "removeformat | help",
+                  content_style:
+                    "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+                }}
+              />
+              {/* <textarea
                 cols={30}
                 rows={17}
                 className={`input-form`}
@@ -764,7 +818,7 @@ export default function FormImmobles() {
                 onChange={e => setDescriptionText(e.target.value)}
               >
                 {descriptionText}
-              </textarea>
+              </textarea> */}
             </div>
           </div>
         </form>

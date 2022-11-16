@@ -33,7 +33,7 @@ export default function FormCities() {
       states_id: rwsState?.id,
     };
 
-    if (data.id)
+    if (streetId) {
       await api
         .put(`/cities/${streetId}`, newPostData)
         .then(() =>
@@ -46,20 +46,22 @@ export default function FormCities() {
             message: "Não foi possivel fazer um novo cadastro para o imovél.",
           }),
         );
-    else
-      await api
-        .post(`/cities`, newPostData)
-        .then(async resp => {
-          changeAlert({
-            message: "Dados salvos com sucesso.",
-          });
-          navigate({ pathname: `/adm/cities/${(await resp.data).id}/edit` });
-        })
-        .catch(() =>
-          changeAlert({
-            message: "Não foi possivel fazer um novo cadastro para o imovél.",
-          }),
-        );
+      return;
+    }
+
+    await api
+      .post(`/cities`, newPostData)
+      .then(async resp => {
+        changeAlert({
+          message: "Dados salvos com sucesso.",
+        });
+        navigate({ pathname: `/adm/cities/${(await resp.data).id}/edit` });
+      })
+      .catch(() =>
+        changeAlert({
+          message: "Não foi possivel fazer um novo cadastro para o imovél.",
+        }),
+      );
   }
 
   useEffect(() => {
@@ -68,26 +70,26 @@ export default function FormCities() {
     })();
   }, []);
 
-  useEffect(() => {
-    (async () => {
-      if (!streetId) return;
+  async function loadCities() {
+    api
+      .get(`/cities/${streetId}`)
+      .then(async res => {
+        const resp = await res.data;
+        reset({
+          ...resp,
+          states_id: resp.state?.state,
+        });
+      })
+      .catch(() =>
+        changeAlert({
+          message: "Não foi possivel conectar ao servidor.",
+        }),
+      );
+  }
 
-      api
-        .get(`/cities/${streetId}`)
-        .then(async res => {
-          const resp: PropsCities = (await res.data) as PropsCities;
-          reset({
-            ...resp,
-            states_id: resp.state?.state,
-          });
-        })
-        .catch(() =>
-          changeAlert({
-            message: "Não foi possivel conectar ao servidor.",
-          }),
-        );
-    })();
-  }, [streetId, reset, changeAlert]);
+  useEffect(() => {
+    if (streetId) loadCities();
+  }, [streetId]);
 
   return (
     <>

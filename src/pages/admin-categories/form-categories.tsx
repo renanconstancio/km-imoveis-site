@@ -1,14 +1,12 @@
-import { PropsCategories } from "../../global/types/types";
-
-import { api } from "../../services/api";
+import { useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
-
+import { PropsCategories } from "../../global/types/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
 import { Input } from "../../components/inputs";
+import { api } from "../../services/api";
 
 export default function FormCategories() {
   const { changeAlert } = useAlert();
@@ -29,7 +27,7 @@ export default function FormCategories() {
       ...data,
     };
 
-    if (data.id)
+    if (categoryId) {
       await api
         .put(`/categories/${categoryId}`, newPostData)
         .then(() =>
@@ -42,33 +40,34 @@ export default function FormCategories() {
             message: "Não foi possivel fazer um novo cadastro para o imovél.",
           }),
         );
-    else
-      await api
-        .post(`/categories`, newPostData)
-        .then(async resp => {
-          changeAlert({
-            message: "Dados salvos com sucesso.",
-          });
-          navigate({
-            pathname: `/adm/categories/${(await resp.data).id}/edit`,
-          });
-        })
-        .catch(() =>
-          changeAlert({
-            message: "Não foi possivel fazer um novo cadastro.",
-          }),
-        );
+      return;
+    }
+
+    await api
+      .post(`/categories`, newPostData)
+      .then(async resp => {
+        changeAlert({
+          message: "Dados salvos com sucesso.",
+        });
+        navigate({
+          pathname: `/adm/categories/${(await resp.data).id}/edit`,
+        });
+      })
+      .catch(() =>
+        changeAlert({
+          message: "Não foi possivel fazer um novo cadastro.",
+        }),
+      );
   }
 
   async function loadCategories() {
     await api
       .get(`/categories/${categoryId}`)
-      .then(async res => {
-        const resp = (await res.data) as PropsCategories;
+      .then(async res =>
         reset({
-          ...resp,
-        });
-      })
+          ...(await res.data),
+        }),
+      )
       .catch(() =>
         changeAlert({
           message: "Não foi possivel conectar ao servidor.",
@@ -77,9 +76,7 @@ export default function FormCategories() {
   }
 
   useEffect(() => {
-    (async () => {
-      if (categoryId) loadCategories();
-    })();
+    if (categoryId) loadCategories();
   }, [categoryId]);
 
   return (

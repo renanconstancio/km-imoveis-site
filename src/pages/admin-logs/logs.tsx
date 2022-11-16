@@ -3,7 +3,7 @@ import { KeyboardEvent, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Loading } from "../../components/loading";
 import { PropsLogs, PropsPagination } from "../../global/types/types";
-import { faEdit, faEye, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { addClassName } from "../../utils/functions";
 import { useModal } from "../../hooks/use-modal";
@@ -13,7 +13,6 @@ import ModalLog from "../../components/modal/modal-log";
 import { Pagination } from "../../components/pagination";
 
 export default function Logs() {
-  const [clear, setClear] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [log, addLogs] = useState();
   const [logs, setLogs] = useState<PropsPagination<PropsLogs[]>>(

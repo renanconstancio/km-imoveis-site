@@ -16,14 +16,14 @@ export function CarouselIndex({ banners }: { banners: PropsBanners[] }) {
       centerSlidePercentage={100}
       width={"100%"}
     >
-      {banners.map(({ id, photos, reference, description, situation }) => (
+      {banners.map(({ photo, reference, description, situation }, id) => (
         <Link
           to={`/${slugiFy(
             `${situationText(situation)}`,
           )}/imovel/${reference}/${slugiFy(`${description}`)}`}
           key={id}
           style={{
-            backgroundImage: `url(${photos.image_lg})`,
+            backgroundImage: `url(${photo.image_lg})`,
             backgroundPosition: "center bottom",
             backgroundSize: "cover",
           }}

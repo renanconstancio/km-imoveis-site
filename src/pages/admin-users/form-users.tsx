@@ -37,7 +37,7 @@ export default function FormUsers() {
       newPostData.password = data.password;
     }
 
-    if (data.id)
+    if (userId) {
       await api
         .put(`/users/${userId}`, newPostData)
         .then(() =>
@@ -50,20 +50,22 @@ export default function FormUsers() {
             message: "Não foi possivel fazer um novo cadastro para o imovél.",
           }),
         );
-    else
-      await api
-        .post(`/users`, newPostData)
-        .then(async resp => {
-          changeAlert({
-            message: "Dados salvos com sucesso.",
-          }),
-            navigate({ pathname: `/adm/users/${(await resp.data).id}/edit` });
-        })
-        .catch(() =>
-          changeAlert({
-            message: "Não foi possivel fazer um novo cadastro para o imovél.",
-          }),
-        );
+      return;
+    }
+
+    await api
+      .post(`/users`, newPostData)
+      .then(async resp => {
+        changeAlert({
+          message: "Dados salvos com sucesso.",
+        }),
+          navigate({ pathname: `/adm/users/${(await resp.data).id}/edit` });
+      })
+      .catch(() =>
+        changeAlert({
+          message: "Não foi possivel fazer um novo cadastro para o imovél.",
+        }),
+      );
   }
 
   async function loadStreets() {
@@ -83,9 +85,7 @@ export default function FormUsers() {
   }
 
   useEffect(() => {
-    (async () => {
-      if (userId) loadStreets();
-    })();
+    if (userId) loadStreets();
   }, [userId]);
 
   return (

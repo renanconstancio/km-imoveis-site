@@ -71,7 +71,7 @@ export default function FormCustomers() {
       email: "",
     };
 
-    if (data.id)
+    if (ownerId) {
       await api
         .put(`/customers/${ownerId}`, newPostData)
         .then(() =>
@@ -84,20 +84,22 @@ export default function FormCustomers() {
             message: "Não foi possivel fazer um novo cadastro para o imovél.",
           }),
         );
-    else
-      await api
-        .post(`/customers`, newPostData)
-        .then(async resp => {
-          changeAlert({
-            message: "Dados salvos com sucesso.",
-          });
-          navigate({ pathname: `/adm/owners/${(await resp.data).id}/edit` });
-        })
-        .catch(() =>
-          changeAlert({
-            message: "Não foi possivel fazer um novo cadastro para o imovél.",
-          }),
-        );
+      return;
+    }
+
+    await api
+      .post(`/customers`, newPostData)
+      .then(async resp => {
+        changeAlert({
+          message: "Dados salvos com sucesso.",
+        });
+        navigate({ pathname: `/adm/owners/${(await resp.data).id}/edit` });
+      })
+      .catch(() =>
+        changeAlert({
+          message: "Não foi possivel fazer um novo cadastro para o imovél.",
+        }),
+      );
   }
 
   async function loadCustomers() {

@@ -80,9 +80,10 @@ export function SiteSearch() {
                   rentPrice={item.rent_price}
                   salePrice={item.sale_price}
                   address={[
-                    item.district?.district,
-                    `${item.city?.city}/${item.city?.state.state}`,
-                  ].join(", ")}
+                    item.district?.district ?? "",
+                    item.city?.city ?? "",
+                    item.city?.state.state ?? "",
+                  ]}
                   tag={item.tags || ""}
                   tags={tags}
                   images={item?.photos?.map(f => f.image_xs) || []}
@@ -93,7 +94,7 @@ export function SiteSearch() {
         )}
 
         {!loading && location.pathname !== "/" && (
-          <section className="container px-4 uppercase font-play mb-7">
+          <section className="container px-4 uppercase font-play mt-7">
             <div className="flex flex-row bg-white p-4 items-center justify-between">
               <span>{immobiles?.total} encotrado(s)</span>
               <Pagination

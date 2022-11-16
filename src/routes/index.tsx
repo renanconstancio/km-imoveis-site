@@ -30,7 +30,7 @@ export const router = createBrowserRouter([
         element: (
           <>
             <Helmet>
-              <title>{import.meta.env.VITE_REACT_TITLE}</title>
+              <title>{import.meta.env.VITE_TITLE}</title>
               <link rel="canonical" href={window.location.href} />
             </Helmet>
             <SiteHome />
@@ -42,7 +42,7 @@ export const router = createBrowserRouter([
         element: (
           <>
             <Helmet>
-              <title>{import.meta.env.VITE_REACT_TITLE}</title>
+              <title>{import.meta.env.VITE_TITLE}</title>
               <link rel="canonical" href={window.location.href} />
             </Helmet>
             <SiteSearch />
@@ -72,9 +72,7 @@ export const router = createBrowserRouter([
             element: (
               <>
                 <Helmet>
-                  <title>
-                    Lista de Imóveis - {import.meta.env.VITE_REACT_TITLE}
-                  </title>
+                  <title>Lista de Imóveis - {import.meta.env.VITE_TITLE}</title>
                 </Helmet>
                 <Immobiles />
               </>
@@ -86,7 +84,7 @@ export const router = createBrowserRouter([
               <>
                 <Helmet>
                   <title>
-                    Cadastrar Imóveis - {import.meta.env.VITE_REACT_TITLE}
+                    Cadastrar Imóveis - {import.meta.env.VITE_TITLE}
                   </title>
                 </Helmet>
                 <FormImmobiles />
@@ -98,9 +96,7 @@ export const router = createBrowserRouter([
             element: (
               <>
                 <Helmet>
-                  <title>
-                    Editar Imóveis - {import.meta.env.VITE_REACT_TITLE}
-                  </title>
+                  <title>Editar Imóveis - {import.meta.env.VITE_TITLE}</title>
                 </Helmet>
                 <FormImmobiles />
               </>
@@ -116,9 +112,7 @@ export const router = createBrowserRouter([
             element: (
               <>
                 <Helmet>
-                  <title>
-                    Lista de Ruas - {import.meta.env.VITE_REACT_TITLE}
-                  </title>
+                  <title>Lista de Ruas - {import.meta.env.VITE_TITLE}</title>
                 </Helmet>
                 <Streets />
               </>
@@ -129,9 +123,7 @@ export const router = createBrowserRouter([
             element: (
               <>
                 <Helmet>
-                  <title>
-                    Cadastrar Ruas - {import.meta.env.VITE_REACT_TITLE}
-                  </title>
+                  <title>Cadastrar Ruas - {import.meta.env.VITE_TITLE}</title>
                 </Helmet>
                 <FormStreets />
               </>
@@ -142,9 +134,7 @@ export const router = createBrowserRouter([
             element: (
               <>
                 <Helmet>
-                  <title>
-                    Editar Ruas - {import.meta.env.VITE_REACT_TITLE}
-                  </title>
+                  <title>Editar Ruas - {import.meta.env.VITE_TITLE}</title>
                 </Helmet>
                 <FormStreets />
               </>
@@ -160,9 +150,7 @@ export const router = createBrowserRouter([
             element: (
               <>
                 <Helmet>
-                  <title>
-                    Lista de Ruas - {import.meta.env.VITE_REACT_TITLE}
-                  </title>
+                  <title>Lista de Ruas - {import.meta.env.VITE_TITLE}</title>
                 </Helmet>
                 <Cities />
               </>
@@ -174,7 +162,7 @@ export const router = createBrowserRouter([
               <>
                 <Helmet>
                   <title>
-                    Cadastrar Cidades - {import.meta.env.VITE_REACT_TITLE}
+                    Cadastrar Cidades - {import.meta.env.VITE_TITLE}
                   </title>
                 </Helmet>
                 <FormCities />
@@ -186,9 +174,7 @@ export const router = createBrowserRouter([
             element: (
               <>
                 <Helmet>
-                  <title>
-                    Editar Cidades - {import.meta.env.VITE_REACT_TITLE}
-                  </title>
+                  <title>Editar Cidades - {import.meta.env.VITE_TITLE}</title>
                 </Helmet>
                 <FormCities />
               </>
@@ -204,9 +190,7 @@ export const router = createBrowserRouter([
             element: (
               <>
                 <Helmet>
-                  <title>
-                    Lista de Estados - {import.meta.env.VITE_REACT_TITLE}
-                  </title>
+                  <title>Lista de Estados - {import.meta.env.VITE_TITLE}</title>
                 </Helmet>
                 <States />
               </>
@@ -218,7 +202,7 @@ export const router = createBrowserRouter([
               <>
                 <Helmet>
                   <title>
-                    Cadastrar Estados - {import.meta.env.VITE_REACT_TITLE}
+                    Cadastrar Estados - {import.meta.env.VITE_TITLE}
                   </title>
                 </Helmet>
                 <FormStates />
@@ -230,9 +214,7 @@ export const router = createBrowserRouter([
             element: (
               <>
                 <Helmet>
-                  <title>
-                    Editar Estados - {import.meta.env.VITE_REACT_TITLE}
-                  </title>
+                  <title>Editar Estados - {import.meta.env.VITE_TITLE}</title>
                 </Helmet>
                 <FormStates />
               </>
@@ -249,7 +231,7 @@ export const router = createBrowserRouter([
               <>
                 <Helmet>
                   <title>
-                    Lista de Categorias - {import.meta.env.VITE_REACT_TITLE}
+                    Lista de Categorias - {import.meta.env.VITE_TITLE}
                   </title>
                 </Helmet>
                 <Categories />
@@ -262,7 +244,7 @@ export const router = createBrowserRouter([
               <>
                 <Helmet>
                   <title>
-                    Cadastrar Categorias - {import.meta.env.VITE_REACT_TITLE}
+                    Cadastrar Categorias - {import.meta.env.VITE_TITLE}
                   </title>
                 </Helmet>
                 <FormCategories />
@@ -275,7 +257,7 @@ export const router = createBrowserRouter([
               <>
                 <Helmet>
                   <title>
-                    Editar Categorias - {import.meta.env.VITE_REACT_TITLE}
+                    Editar Categorias - {import.meta.env.VITE_TITLE}
                   </title>
                 </Helmet>
                 <FormCategories />
@@ -292,9 +274,7 @@ export const router = createBrowserRouter([
             element: (
               <>
                 <Helmet>
-                  <title>
-                    Lista de Bairros - {import.meta.env.VITE_REACT_TITLE}
-                  </title>
+                  <title>Lista de Bairros - {import.meta.env.VITE_TITLE}</title>
                 </Helmet>
                 <Neighborhoods />
               </>
@@ -306,7 +286,7 @@ export const router = createBrowserRouter([
               <>
                 <Helmet>
                   <title>
-                    Cadastrar Bairros - {import.meta.env.VITE_REACT_TITLE}
+                    Cadastrar Bairros - {import.meta.env.VITE_TITLE}
                   </title>
                 </Helmet>
                 <FormNeighborhoods />
@@ -318,9 +298,7 @@ export const router = createBrowserRouter([
             element: (
               <>
                 <Helmet>
-                  <title>
-                    Editar Bairros - {import.meta.env.VITE_REACT_TITLE}
-                  </title>
+                  <title>Editar Bairros - {import.meta.env.VITE_TITLE}</title>
                 </Helmet>
                 <FormNeighborhoods />
               </>
@@ -337,7 +315,7 @@ export const router = createBrowserRouter([
               <>
                 <Helmet>
                   <title>
-                    Lista de Clientes - {import.meta.env.VITE_REACT_TITLE}
+                    Lista de Clientes - {import.meta.env.VITE_TITLE}
                   </title>
                 </Helmet>
                 <Customers />
@@ -350,7 +328,7 @@ export const router = createBrowserRouter([
               <>
                 <Helmet>
                   <title>
-                    Cadastrar Clientes - {import.meta.env.VITE_REACT_TITLE}
+                    Cadastrar Clientes - {import.meta.env.VITE_TITLE}
                   </title>
                 </Helmet>
                 <FormCustomers />
@@ -362,9 +340,7 @@ export const router = createBrowserRouter([
             element: (
               <>
                 <Helmet>
-                  <title>
-                    Editar Clientes - {import.meta.env.VITE_REACT_TITLE}
-                  </title>
+                  <title>Editar Clientes - {import.meta.env.VITE_TITLE}</title>
                 </Helmet>
                 <FormCustomers />
               </>
@@ -381,7 +357,7 @@ export const router = createBrowserRouter([
               <>
                 <Helmet>
                   <title>
-                    Lista de Proprietários - {import.meta.env.VITE_REACT_TITLE}
+                    Lista de Proprietários - {import.meta.env.VITE_TITLE}
                   </title>
                 </Helmet>
                 <Owners />
@@ -394,7 +370,7 @@ export const router = createBrowserRouter([
               <>
                 <Helmet>
                   <title>
-                    Cadastrar Proprietários - {import.meta.env.VITE_REACT_TITLE}
+                    Cadastrar Proprietários - {import.meta.env.VITE_TITLE}
                   </title>
                 </Helmet>
                 <FormOwners />
@@ -407,7 +383,7 @@ export const router = createBrowserRouter([
               <>
                 <Helmet>
                   <title>
-                    Editar Proprietários - {import.meta.env.VITE_REACT_TITLE}
+                    Editar Proprietários - {import.meta.env.VITE_TITLE}
                   </title>
                 </Helmet>
                 <FormOwners />
@@ -425,7 +401,7 @@ export const router = createBrowserRouter([
               <>
                 <Helmet>
                   <title>
-                    Lista de Usuários - {import.meta.env.VITE_REACT_TITLE}
+                    Lista de Usuários - {import.meta.env.VITE_TITLE}
                   </title>
                 </Helmet>
                 <Users />
@@ -438,7 +414,7 @@ export const router = createBrowserRouter([
               <>
                 <Helmet>
                   <title>
-                    Cadastrar Usuários - {import.meta.env.VITE_REACT_TITLE}
+                    Cadastrar Usuários - {import.meta.env.VITE_TITLE}
                   </title>
                 </Helmet>
                 <FormUsers />
@@ -450,9 +426,7 @@ export const router = createBrowserRouter([
             element: (
               <>
                 <Helmet>
-                  <title>
-                    Editar Usuários - {import.meta.env.VITE_REACT_TITLE}
-                  </title>
+                  <title>Editar Usuários - {import.meta.env.VITE_TITLE}</title>
                 </Helmet>
                 <FormUsers />
               </>
@@ -465,7 +439,7 @@ export const router = createBrowserRouter([
         element: (
           <>
             <Helmet>
-              <title>Logs - {import.meta.env.VITE_REACT_TITLE}</title>
+              <title>Logs - {import.meta.env.VITE_TITLE}</title>
             </Helmet>
             <Logs />
           </>

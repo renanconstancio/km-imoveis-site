@@ -1,14 +1,23 @@
-import { Outlet } from "react-router-dom";
+import { useEffect } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAlert } from "../../hooks/use-alert";
 import { useAuth } from "../../hooks/use-auth";
 import { Login } from "../../pages/admin-login";
+import { interceptorsResponse } from "../../services/api";
 import { Alert } from "../alert";
 import { NavDropDown } from "../nav-dropdown";
 import { NavLeft } from "../nav-left";
 
 export default function Admin() {
   const { alert } = useAlert();
-  const { auth } = useAuth();
+
+  const { auth, logout } = useAuth();
+
+  const location = useLocation();
+
+  useEffect(() => {
+    interceptorsResponse(logout);
+  }, [location.pathname]);
 
   return !auth?.id ? (
     <Login />

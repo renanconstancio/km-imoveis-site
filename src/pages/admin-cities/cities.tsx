@@ -40,18 +40,18 @@ export default function Cities() {
     setLoading(true);
     await api
       .delete(`/cities/${data.id}`)
+      .finally(() => setLoading(false))
       .then(() =>
         setCities(cities?.filter((f: { id: string }) => f.id !== data.id)),
-      )
-      .finally(() => setLoading(false));
+      );
   }
 
   async function loadCities() {
     setLoading(true);
     await api
       .get(`/cities`)
-      .then(async resp => setCities(await resp.data))
-      .finally(() => setLoading(false));
+      .finally(() => setLoading(false))
+      .then(async resp => setCities(await resp.data));
   }
 
   useEffect(() => {

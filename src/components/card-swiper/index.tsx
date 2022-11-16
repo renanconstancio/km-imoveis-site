@@ -5,14 +5,10 @@ import {
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { Navigation } from "swiper";
-import { PropsImmobles } from "../../global/types/types";
+// import { PropsImmobles } from "../../global/types/types";
 import { Card } from "../../components/card";
 import { tags } from "../../services/api";
-
-type PropsCardSwiper = {
-  mapping: PropsImmobles[];
-  id: string;
-};
+import { PropsCardSwiper } from "./types";
 
 export function CadSwiper({ mapping, id }: PropsCardSwiper) {
   return (
@@ -66,9 +62,10 @@ export function CadSwiper({ mapping, id }: PropsCardSwiper) {
               rentPrice={item.rent_price}
               salePrice={item.sale_price}
               address={[
-                item.district?.district,
-                `${item.city?.city}/${item.city?.state.state}`,
-              ].join(", ")}
+                item.district?.district ?? "",
+                item.city?.city ?? "",
+                item.city?.state.state ?? "",
+              ]}
               tag={item.tags || ""}
               tags={tags}
               images={item?.photos?.map(f => f.image_xs) || []}

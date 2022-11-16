@@ -12,6 +12,8 @@ export function situationText(text: any) {
     exchange: "Permuta",
     purchase: "Compra",
     sale: "Venda",
+    sale_lease: "Venda e Locação",
+    sale_barter: "Venda e Permuta",
   })[text];
 }
 
@@ -21,6 +23,8 @@ export function situationTextClassName(text: any) {
     exchange: "bg-km-orange",
     purchase: "bg-emerald-500",
     sale: "bg-km-red",
+    sale_lease: "bg-emerald-500",
+    sale_barter: "bg-km-red ",
   })[text];
 }
 

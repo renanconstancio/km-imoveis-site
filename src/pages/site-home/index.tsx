@@ -26,60 +26,60 @@ export function SiteHome() {
   const query = parse(location.search);
   const city = (query.city || "") as string;
 
+  async function loadLocation() {
+    setLoading(true);
+    await api
+      .get(
+        `/immobiles/website/list?limit=20&search[situation]=location&search[city]=${city}`,
+      )
+      .then(async resp => setImmobilesLocation(await resp.data?.data))
+      .finally(() => setLoading(false));
+  }
+
+  async function loadPurchase() {
+    setLoading(true);
+    await api
+      .get(
+        `/immobiles/website/list?limit=20&search[situation]=purchase&search[city]=${city}`,
+      )
+      .then(async resp => setImmobilesPurchase(await resp.data?.data))
+      .finally(() => setLoading(false));
+  }
+
+  async function loadExchange() {
+    setLoading(true);
+    await api
+      .get(
+        `/immobiles/website/list?limit=20&search[situation]=exchange&search[city]=${city}`,
+      )
+      .then(async resp => setImmobilesExchange(await resp.data?.data))
+      .finally(() => setLoading(false));
+  }
+
+  async function loadSale() {
+    setLoading(true);
+    await api
+      .get(
+        `/immobiles/website/list?limit=20&search[situation]=sale&search[city]=${city}`,
+      )
+      .then(async resp => setImmobilesSales(await resp.data?.data))
+      .finally(() => setLoading(false));
+  }
+
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-      await api
-        .get(
-          `/immobiles/website/list?limit=20&search[situation]=location&search[city]=${city}`,
-        )
-        .then(async resp => {
-          setImmobilesLocation(await resp.data?.data);
-        })
-        .finally(() => setLoading(false));
-    })();
+    loadLocation();
   }, [city]);
 
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-      await api
-        .get(
-          `/immobiles/website/list?limit=20&search[situation]=purchase&search[city]=${city}`,
-        )
-        .then(async resp => {
-          setImmobilesPurchase(await resp.data?.data);
-        })
-        .finally(() => setLoading(false));
-    })();
+    loadPurchase();
   }, [city]);
 
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-      await api
-        .get(
-          `/immobiles/website/list?limit=20&search[situation]=exchange&search[city]=${city}`,
-        )
-        .then(async resp => {
-          setImmobilesExchange(await resp.data?.data);
-        })
-        .finally(() => setLoading(false));
-    })();
+    loadExchange();
   }, [city]);
 
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-      await api
-        .get(
-          `/immobiles/website/list?limit=20&search[situation]=sale&search[city]=${city}`,
-        )
-        .then(async resp => {
-          setImmobilesSales(await resp.data?.data);
-        })
-        .finally(() => setLoading(false));
-    })();
+    loadSale();
   }, [city]);
 
   return (

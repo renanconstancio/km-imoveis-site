@@ -3,7 +3,7 @@ import { PropsStates } from "../../global/types/types";
 import { api } from "../../services/api";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
@@ -29,7 +29,7 @@ export default function FormStates() {
       ...data,
     };
 
-    if (data.id)
+    if (stateId) {
       await api
         .put(`/states/${stateId}`, newPostData)
         .then(() =>
@@ -42,20 +42,22 @@ export default function FormStates() {
             message: "Não foi possivel fazer um novo cadastro para o imovél.",
           }),
         );
-    else
-      await api
-        .post(`/states`, newPostData)
-        .then(async resp => {
-          changeAlert({
-            message: "Dados salvos com sucesso.",
-          });
-          navigate({ pathname: `/adm/states/${(await resp.data).id}/edit` });
-        })
-        .catch(() =>
-          changeAlert({
-            message: "Não foi possivel fazer um novo cadastro.",
-          }),
-        );
+      return;
+    }
+
+    await api
+      .post(`/states`, newPostData)
+      .then(async resp => {
+        changeAlert({
+          message: "Dados salvos com sucesso.",
+        });
+        navigate({ pathname: `/adm/states/${(await resp.data).id}/edit` });
+      })
+      .catch(() =>
+        changeAlert({
+          message: "Não foi possivel fazer um novo cadastro.",
+        }),
+      );
   }
 
   async function loadStates() {

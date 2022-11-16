@@ -3,7 +3,7 @@ import { PropsStreets } from "../../global/types/types";
 import { api } from "../../services/api";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
@@ -12,8 +12,6 @@ import { Input } from "../../components/inputs";
 import { maskCep } from "../../utils/mask";
 
 export default function FormStreets() {
-  const [streets, setStreets] = useState<PropsStreets>({} as PropsStreets);
-
   const { changeAlert } = useAlert();
 
   const navigate = useNavigate();
@@ -32,7 +30,7 @@ export default function FormStreets() {
       ...data,
     };
 
-    if (data.id)
+    if (streetId) {
       await api
         .put(`/streets/${streetId}`, newPostData)
         .then(() =>
@@ -45,41 +43,42 @@ export default function FormStreets() {
             message: "Não foi possivel fazer um novo cadastro para o imovél.",
           }),
         );
-    else
-      await api
-        .post(`/streets`, newPostData)
-        .then(async resp => {
-          changeAlert({
-            message: "Dados salvos com sucesso.",
-          }),
-            navigate({ pathname: `/adm/streets/${(await resp.data).id}/edit` });
-        })
-        .catch(() =>
-          changeAlert({
-            message: "Não foi possivel fazer um novo cadastro para o imovél.",
-          }),
-        );
+      return;
+    }
+
+    await api
+      .post(`/streets`, newPostData)
+      .then(async resp => {
+        changeAlert({
+          message: "Dados salvos com sucesso.",
+        }),
+          navigate({ pathname: `/adm/streets/${(await resp.data).id}/edit` });
+      })
+      .catch(() =>
+        changeAlert({
+          message: "Não foi possivel fazer um novo cadastro para o imovél.",
+        }),
+      );
+  }
+
+  async function loadStreets() {
+    await api
+      .get(`/streets/${streetId}`)
+      .then(async res =>
+        reset({
+          ...(await res.data),
+        }),
+      )
+      .catch(() =>
+        changeAlert({
+          message: "Não foi possivel conectar ao servidor.",
+        }),
+      );
   }
 
   useEffect(() => {
-    (async () => {
-      if (!streetId) return;
-
-      api
-        .get(`/streets/${streetId}`)
-        .then(async res => {
-          const resp = (await res.data) as PropsStreets;
-          reset({
-            ...resp,
-          });
-        })
-        .catch(() =>
-          changeAlert({
-            message: "Não foi possivel conectar ao servidor.",
-          }),
-        );
-    })();
-  }, [streetId, reset]);
+    if (streetId) loadStreets();
+  }, [streetId]);
 
   return (
     <>

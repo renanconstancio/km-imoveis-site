@@ -118,7 +118,7 @@ export default function Immobiles() {
       </li>
 
       <li className="list-orders uppercase font-play font-bold bg-gray-200">
-        <span className="basis-1/12">ações</span>
+        <span className="basis-2/12 text-center">ações</span>
         <span
           className="basis-1/12 cursor-pointer"
           onClick={() => {
@@ -133,7 +133,7 @@ export default function Immobiles() {
           <FontAwesomeIcon icon={faSort} /> CÓD
         </span>
         <span
-          className="basis-4/12 cursor-pointer"
+          className="basis-3/12 cursor-pointer"
           onClick={() => {
             const testReference = locationDecodURI.indexOf("[description]=asc");
             if (testReference !== -1) {
@@ -163,8 +163,19 @@ export default function Immobiles() {
       </li>
 
       {immobiles?.data?.map(
-        ({ id, reference, description, street, published, situation }) => (
+        ({
+          id,
+          photos,
+          reference,
+          description,
+          street,
+          published,
+          situation,
+        }) => (
           <li key={id} className="list-orders">
+            <span className="flex gap-1 basis-1/12">
+              <img src={photos?.[0]?.image_xs} alt="." className="w-full" />
+            </span>
             <span className="flex gap-1 basis-1/12">
               <Link
                 className="btn-primary btn-xs"

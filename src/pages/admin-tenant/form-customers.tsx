@@ -74,7 +74,7 @@ export default function FormCustomers() {
       email: "",
     };
 
-    if (data.id)
+    if (customerId) {
       await api
         .put(`/customers/${customerId}`, newPostData)
         .then(() =>
@@ -87,20 +87,22 @@ export default function FormCustomers() {
             message: "Não foi possivel fazer um novo cadastro para o imovél.",
           }),
         );
-    else
-      await api
-        .post(`/customers`, newPostData)
-        .then(async resp => {
-          changeAlert({
-            message: "Dados salvos com sucesso.",
-          });
-          navigate({ pathname: `/adm/customers/${(await resp.data).id}/edit` });
-        })
-        .catch(() =>
-          changeAlert({
-            message: "Não foi possivel fazer um novo cadastro para o imovél.",
-          }),
-        );
+      return;
+    }
+
+    await api
+      .post(`/customers`, newPostData)
+      .then(async resp => {
+        changeAlert({
+          message: "Dados salvos com sucesso.",
+        });
+        navigate({ pathname: `/adm/customers/${(await resp.data).id}/edit` });
+      })
+      .catch(() =>
+        changeAlert({
+          message: "Não foi possivel fazer um novo cadastro para o imovél.",
+        }),
+      );
   }
 
   async function loadCustomers() {
@@ -127,13 +129,13 @@ export default function FormCustomers() {
 
   useEffect(() => {
     (async () => {
-      api.get("/cities").then(async res => setCities(await res.data));
+      await api.get("/cities").then(async res => setCities(await res.data));
     })();
   }, []);
 
   useEffect(() => {
     (async () => {
-      api
+      await api
         .get("/neighborhoods")
         .then(async res => setNeighborhoods(await res.data));
     })();
@@ -141,7 +143,7 @@ export default function FormCustomers() {
 
   useEffect(() => {
     (async () => {
-      api.get("/streets").then(async res => setStreets(await res.data));
+      await api.get("/streets").then(async res => setStreets(await res.data));
     })();
   }, []);
 

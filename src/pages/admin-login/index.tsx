@@ -25,8 +25,8 @@ export function Login() {
   async function onHandleSubmit(data: PropsUserLogin) {
     await api
       .post(`/users/login`, data)
-      .then(async res => {
-        const { user, token } = await res.data;
+      .then(async resp => {
+        const { user, token } = await resp.data;
         login({
           id: user.id,
           name: user.first_name,
@@ -73,7 +73,6 @@ export function Login() {
                   })}
                 />
               </div>
-
               <div className="mb-6">
                 <Input
                   type="password"
@@ -95,6 +94,7 @@ export function Login() {
               >
                 Fazer Login
               </button>
+
               {alert.message && (
                 <div className="mt-7">
                   <Alert message={alert.message} title={alert.title} />

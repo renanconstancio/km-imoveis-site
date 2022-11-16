@@ -26,11 +26,13 @@
     "plugins": [
       "react",
       "@typescript-eslint",
-      "prettier"
+      "prettier",
+      "react-hooks"
     ],
     "rules": {
+      "@typescript-eslint/explicit-module-boundary-types": "off",
       "react/props-types": "off",
       "react/react-in-jsx-scope": "off",
-      "@typescript-eslint/explicit-module-boundary-types": "off"
+      "react-hooks/exhaustive-deps": "off"
     }
 }

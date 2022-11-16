@@ -21,7 +21,7 @@ export default function Site() {
 
   async function loadBanners() {
     await api
-      .get("/immobiles/sort/banner")
+      .get("/immobiles/banner/list")
       .then(async resp => setBanners(await resp.data));
   }
 

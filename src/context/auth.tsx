@@ -1,4 +1,4 @@
-import { createContext, ReactNode } from "react";
+import { createContext, ReactNode, useCallback } from "react";
 import { useLocalStorage } from "../hooks/use-local-storage";
 
 export type AuthType = {
@@ -23,13 +23,16 @@ export const AuthContext = createContext<AuthContextType>(
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [auth, setUser] = useLocalStorage("user", null);
 
-  const login = ({ ...obj }: AuthType) => {
-    setUser(obj);
-  };
+  const login = useCallback(
+    ({ ...obj }: AuthType) => {
+      setUser(obj);
+    },
+    [setUser],
+  );
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setUser(null);
-  };
+  }, [setUser]);
 
   return (
     <AuthContext.Provider value={{ auth, login, logout }}>
