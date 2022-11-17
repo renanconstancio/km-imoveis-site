@@ -1,8 +1,8 @@
 import "react-responsive-carousel/lib/styles/carousel.css";
 import { Carousel } from "react-responsive-carousel";
-import { PropsBanners } from "../../global/types/types";
 import { situationText, slugiFy } from "../../utils/functions";
 import { Link } from "react-router-dom";
+import { PropsBanners } from "./types";
 
 export function CarouselIndex({ banners }: { banners: PropsBanners[] }) {
   return (
@@ -17,18 +17,31 @@ export function CarouselIndex({ banners }: { banners: PropsBanners[] }) {
       width={"100%"}
     >
       {banners.map(({ photo, reference, description, situation }, id) => (
-        <Link
-          to={`/${slugiFy(
-            `${situationText(situation)}`,
-          )}/imovel/${reference}/${slugiFy(`${description}`)}`}
-          key={id}
-          style={{
-            backgroundImage: `url(${photo.image_lg})`,
-            backgroundPosition: "center bottom",
-            backgroundSize: "cover",
-          }}
-          className="flex flex-row h-[250px] md:h-[450px]"
-        ></Link>
+        <>
+          {reference ? (
+            <Link
+              to={`/${slugiFy(
+                `${situationText(situation)}`,
+              )}/imovel/${reference}/${slugiFy(`${description}`)}`}
+              key={id}
+              style={{
+                backgroundImage: `url(${photo.image_lg})`,
+                backgroundPosition: "center bottom",
+                backgroundSize: "cover",
+              }}
+              className="flex flex-row h-[250px] md:h-[475px]"
+            ></Link>
+          ) : (
+            <div
+              style={{
+                backgroundImage: `url(${photo.image_lg})`,
+                backgroundPosition: "center bottom",
+                backgroundSize: "cover",
+              }}
+              className="flex flex-row h-[250px] md:h-[475px]"
+            ></div>
+          )}
+        </>
       ))}
     </Carousel>
   );

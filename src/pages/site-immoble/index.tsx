@@ -13,9 +13,11 @@ import { situationText, situationTextClassName } from "../../utils/functions";
 import { ButtonWhatsapp } from "../../components/button-whatsapp";
 import { CardTags } from "../../components/card-tags";
 import { api, tags } from "../../services/api";
+import { CadSwiper } from "../../components/card-swiper";
 
 export function SiteImmoble() {
   const [loading, setLoading] = useState(true);
+  const [immobiles, setImmobiles] = useState<PropsImmobles[]>([]);
   const [immoble, setImmoble] = useState<PropsImmobles>({} as PropsImmobles);
   const [photos, setPhotos] = useState<string[]>([]);
   const sort: string[] = [];
@@ -30,6 +32,12 @@ export function SiteImmoble() {
       .finally(() => setLoading(false));
   }
 
+  async function loadImmobles() {
+    await api
+      .get(`/immobiles/website/list?limit=8`)
+      .then(async resp => setImmobiles(await resp.data?.data));
+  }
+
   useEffect(() => {
     if (reference) loadImmoble(reference);
   }, [reference]);
@@ -40,6 +48,26 @@ export function SiteImmoble() {
     );
     setPhotos(sort);
   }, [immoble]);
+
+  useEffect(() => {
+    loadImmobles();
+  }, []);
+
+  if (!immoble.id)
+    return (
+      <div className="container">
+        <div className="divide-y divide-slate-200 bg-white mx-4 sm:mx-0 p-5 pb-7">
+          <H2 title="Imóvel Indisponível" />
+          <p className="py-3">
+            Esse imóvel encontra-se Indisponível no momento, veja outras opções
+            abaixo
+          </p>
+          <div className="pt-5 relative">
+            <CadSwiper id="all" mapping={immobiles} />
+          </div>
+        </div>
+      </div>
+    );
 
   return (
     <div className="border-b border-gray-200 py-2">
@@ -180,6 +208,9 @@ export function SiteImmoble() {
                 </li>
               )}
             </ul>
+            <div className="mt-5 relative bg-white p-5">
+              <CadSwiper id="all" mapping={immobiles} />
+            </div>
           </div>
         </>
       )}

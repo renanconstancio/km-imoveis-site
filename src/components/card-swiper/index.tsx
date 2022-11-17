@@ -24,7 +24,7 @@ export function CadSwiper({ mapping, id }: PropsCardSwiper) {
         className={`${id}-next hidden sm:inline-block absolute top-1/2 -right-5 z-10 cursor-pointer`}
       />
       <Swiper
-        loop={true}
+        loop={false}
         modules={[Navigation]}
         breakpoints={{
           // when window width is >= 640px

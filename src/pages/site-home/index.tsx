@@ -21,6 +21,12 @@ export function SiteHome() {
   const [immobilesExchange, setImmobilesExchange] = useState<PropsImmobles[]>(
     [],
   );
+  const [immobilesSaleLease, setImmobilesSaleLease] = useState<PropsImmobles[]>(
+    [],
+  );
+  const [immobilesSaleBarter, setImmobilesSaleBarter] = useState<
+    PropsImmobles[]
+  >([]);
 
   const location = useLocation();
   const query = parse(location.search);
@@ -66,6 +72,26 @@ export function SiteHome() {
       .finally(() => setLoading(false));
   }
 
+  async function loadSaleLease() {
+    setLoading(true);
+    await api
+      .get(
+        `/immobiles/website/list?limit=20&search[situation]=sale_lease&search[city]=${city}`,
+      )
+      .then(async resp => setImmobilesSaleLease(await resp.data?.data))
+      .finally(() => setLoading(false));
+  }
+
+  async function loadSaleBarter() {
+    setLoading(true);
+    await api
+      .get(
+        `/immobiles/website/list?limit=20&search[situation]=sale_barter&search[city]=${city}`,
+      )
+      .then(async resp => setImmobilesSaleBarter(await resp.data?.data))
+      .finally(() => setLoading(false));
+  }
+
   useEffect(() => {
     loadLocation();
   }, [city]);
@@ -80,6 +106,14 @@ export function SiteHome() {
 
   useEffect(() => {
     loadSale();
+  }, [city]);
+
+  useEffect(() => {
+    loadSaleLease();
+  }, [city]);
+
+  useEffect(() => {
+    loadSaleBarter();
   }, [city]);
 
   return (
@@ -123,6 +157,24 @@ export function SiteHome() {
                 <div className="relative bg-white p-4">
                   <H2 title={`Imóveis com Permuta`} />
                   <CadSwiper id="exchange" mapping={immobilesExchange} />
+                </div>
+              </section>
+            )}
+
+            {immobilesSaleLease.length > 0 && (
+              <section className="container p-4 mb-7">
+                <div className="relative bg-white p-4">
+                  <H2 title={`Imóveis com Venda e Locação`} />
+                  <CadSwiper id="sale_lease" mapping={immobilesSaleLease} />
+                </div>
+              </section>
+            )}
+
+            {immobilesSaleBarter.length > 0 && (
+              <section className="container p-4 mb-7">
+                <div className="relative bg-white p-4">
+                  <H2 title={`Imóveis com Venda e Permuta`} />
+                  <CadSwiper id="sale_barter" mapping={immobilesSaleBarter} />
                 </div>
               </section>
             )}

@@ -1,28 +1,50 @@
 import { Outlet, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useGeolocation } from "../../hooks/use-geolocation";
 import { Footer } from "../footer";
 import { Header } from "../header";
-
 import { Filters } from "../filters";
 import { CarouselIndex } from "../carousel";
-import { PropsBanners } from "../../global/types/types";
+import { PropsBanners } from "../carousel/types";
 import { api } from "../../services/api";
 
-type PropsGeolocation = {
-  latitude: number;
-  longitude: number;
-};
+import banner01 from "../../assets/banners/banner-a.jpg";
+import banner02 from "../../assets/banners/banner-b.jpg";
+
+const bannerFix: PropsBanners[] = [
+  {
+    reference: "",
+    description: "",
+    situation: "purchase",
+    state: "",
+    city: "",
+    photo: {
+      image_lg: `${banner01}`,
+      image_xs: "",
+    },
+  },
+  {
+    reference: "",
+    description: "",
+    situation: "purchase",
+    state: "",
+    city: "",
+    photo: {
+      image_lg: `${banner02}`,
+      image_xs: "",
+    },
+  },
+];
 
 export default function Site() {
-  const [banners, setBanners] = useState<PropsBanners[]>([]);
+  const [banners, setBanners] = useState<PropsBanners[]>(bannerFix);
 
   const location = useLocation();
 
   async function loadBanners() {
-    await api
-      .get("/immobiles/banner/list")
-      .then(async resp => setBanners(await resp.data));
+    await api.get("/immobiles/banner/list").then(async resp => {
+      const banner = await resp.data;
+      setBanners(old => [...old, ...banner]);
+    });
   }
 
   useEffect(() => {

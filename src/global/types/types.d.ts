@@ -185,18 +185,6 @@ export type PropsDistrict = {
   deleted_at: string;
 };
 
-export type PropsBanners = {
-  reference: string;
-  description: string;
-  situation: "exchange" | "location" | "purchase" | "sale";
-  state: string;
-  city: string;
-  photo: {
-    image_lg: string;
-    image_xs: string;
-  };
-};
-
 export type PropsCustomers = {
   id: string;
   type: string | "owner" | "tenant";
