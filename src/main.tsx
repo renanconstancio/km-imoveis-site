@@ -1,4 +1,5 @@
 import "./global/styles/app.css";
+import "react-responsive-carousel/lib/styles/carousel.css";
 
 import ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router-dom";

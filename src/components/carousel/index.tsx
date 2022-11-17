@@ -1,4 +1,3 @@
-import "react-responsive-carousel/lib/styles/carousel.css";
 import { Carousel } from "react-responsive-carousel";
 import { situationText, slugiFy } from "../../utils/functions";
 import { Link } from "react-router-dom";

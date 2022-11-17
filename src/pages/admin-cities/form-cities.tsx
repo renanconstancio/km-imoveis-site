@@ -1,14 +1,12 @@
-import { PropsCities } from "../../global/types/types";
-
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
-import { api } from "../../services/api";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
 import { findSearch } from "../../utils/functions";
+import { PropsCities } from "./types";
+import { api } from "../../services/api";
 
 export default function FormCities() {
   const [states, setSates] = useState([]);
@@ -70,7 +68,7 @@ export default function FormCities() {
     })();
   }, []);
 
-  async function loadCities() {
+  const loadCities = useCallback(async () => {
     api
       .get(`/cities/${streetId}`)
       .then(async res => {
@@ -85,7 +83,7 @@ export default function FormCities() {
           message: "Não foi possivel conectar ao servidor.",
         }),
       );
-  }
+  }, []);
 
   useEffect(() => {
     if (streetId) loadCities();

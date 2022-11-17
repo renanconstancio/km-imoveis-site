@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { PropsCategories } from "../../global/types/types";
+import { PropsCategories } from "./types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
@@ -60,7 +60,7 @@ export default function FormCategories() {
       );
   }
 
-  async function loadCategories() {
+  const loadCategories = useCallback(async () => {
     await api
       .get(`/categories/${categoryId}`)
       .then(async res =>
@@ -73,7 +73,7 @@ export default function FormCategories() {
           message: "Não foi possivel conectar ao servidor.",
         }),
       );
-  }
+  }, [categoryId]);
 
   useEffect(() => {
     if (categoryId) loadCategories();

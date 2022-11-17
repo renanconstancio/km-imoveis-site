@@ -2,25 +2,14 @@ import { parse, stringify } from "query-string";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PropsCategories } from "../../global/types/types";
-import { Input } from "../inputs";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useGeolocation } from "../../hooks/use-geolocation";
-import { api } from "../../services/api";
 import { OptionSituationList } from "../situation-option";
-
-type PropsFiltersComp = {
-  variant?: "row" | "col";
-};
-
-type PropsFilters = {
-  category: string;
-  district: string;
-  city: string;
-  reference: string;
-  situation: string | "location" | "purchase" | "sale" | "exchange";
-};
+import { PropsFilters, PropsFiltersComp } from "./types";
+import { Input } from "../inputs";
+import { api } from "../../services/api";
 
 export function Filters({ variant = "col" }: PropsFiltersComp) {
   const [openClose, setOpenClose] = useState<boolean>(false);

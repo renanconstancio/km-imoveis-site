@@ -6,7 +6,7 @@ import {
   faSackDollar,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { api } from "../../services/api";
 
 export function Dashboard() {
@@ -20,76 +20,94 @@ export function Dashboard() {
   const [totalOnline, setTotalOnline] = useState<number>(0);
   const [totalOffline, setTotalOffline] = useState<number>(0);
 
-  useEffect(() => {
-    (async () => {
-      await api
-        .get("/immobiles")
-        .then(async resp => setTotal((await resp.data)?.total));
-    })();
+  const loadImmobilesTotal = useCallback(async () => {
+    await api
+      .get("/immobiles")
+      .then(async resp => setTotal((await resp.data)?.total));
   }, []);
 
   useEffect(() => {
-    (async () => {
-      await api
-        .get("/immobiles?search[situation]=location")
-        .then(async resp => setTotalLocation((await resp.data)?.total));
-    })();
+    loadImmobilesTotal();
+  }, []);
+
+  const loadTotalLocation = useCallback(async () => {
+    await api
+      .get("/immobiles?search[situation]=location")
+      .then(async resp => setTotalLocation((await resp.data)?.total));
   }, []);
 
   useEffect(() => {
-    (async () => {
-      await api
-        .get("/immobiles?search[published]=false")
-        .then(async resp => setTotalOffline((await resp.data)?.total));
-    })();
+    loadTotalLocation();
+  }, []);
+
+  const loadTotalOffline = useCallback(async () => {
+    await api
+      .get("/immobiles?search[published]=false")
+      .then(async resp => setTotalOffline((await resp.data)?.total));
   }, []);
 
   useEffect(() => {
-    (async () => {
-      await api
-        .get("/immobiles?search[published]=true")
-        .then(async resp => setTotalOnline((await resp.data)?.total));
-    })();
+    loadTotalOffline();
+  }, []);
+
+  const loadTotalOnline = useCallback(async () => {
+    await api
+      .get("/immobiles?search[published]=true")
+      .then(async resp => setTotalOnline((await resp.data)?.total));
   }, []);
 
   useEffect(() => {
-    (async () => {
-      await api
-        .get("/immobiles?search[situation]=purchase&search[published]=true")
-        .then(async resp => setTotalPurchase((await resp.data)?.total));
-    })();
+    loadTotalOnline();
+  }, []);
+
+  const loadTotalPurchase = useCallback(async () => {
+    await api
+      .get("/immobiles?search[situation]=purchase&search[published]=true")
+      .then(async resp => setTotalPurchase((await resp.data)?.total));
   }, []);
 
   useEffect(() => {
-    (async () => {
-      await api
-        .get("/immobiles?search[situation]=exchange&search[published]=true")
-        .then(async resp => setTotalExchange((await resp.data)?.total));
-    })();
+    loadTotalPurchase();
+  }, []);
+
+  const loadTotalExchange = useCallback(async () => {
+    await api
+      .get("/immobiles?search[situation]=exchange&search[published]=true")
+      .then(async resp => setTotalExchange((await resp.data)?.total));
   }, []);
 
   useEffect(() => {
-    (async () => {
-      await api
-        .get("/immobiles?search[situation]=sale&search[published]=true")
-        .then(async resp => setTotalSale((await resp.data)?.total));
-    })();
+    loadTotalExchange();
+  }, []);
+
+  const loadTotalSale = useCallback(async () => {
+    await api
+      .get("/immobiles?search[situation]=sale&search[published]=true")
+      .then(async resp => setTotalSale((await resp.data)?.total));
   }, []);
 
   useEffect(() => {
-    (async () => {
-      await api
-        .get("/immobiles?search[published]=true&search[situation]=sale_lease")
-        .then(async resp => setTotalSaleLease((await resp.data)?.total));
-    })();
+    loadTotalSale();
+  }, []);
+
+  const loadTotalSaleLease = useCallback(async () => {
+    await api
+      .get("/immobiles?search[published]=true&search[situation]=sale_lease")
+      .then(async resp => setTotalSaleLease((await resp.data)?.total));
   }, []);
 
   useEffect(() => {
-    (async () => {
-      await api
-        .get("/immobiles?search[published]=true&search[situation]=sale_barter")
-        .then(async resp => setTotalSaleBarter((await resp.data)?.total));
-    })();
+    loadTotalSaleLease();
+  }, []);
+
+  const loadTotalSaleBarter = useCallback(async () => {
+    await api
+      .get("/immobiles?search[published]=true&search[situation]=sale_barter")
+      .then(async resp => setTotalSaleBarter((await resp.data)?.total));
+  }, []);
+
+  useEffect(() => {
+    loadTotalSaleBarter();
   }, []);
 
   return (

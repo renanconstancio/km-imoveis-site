@@ -1,8 +1,8 @@
+import { PropsCities } from "./types";
 import { parse } from "query-string";
-import { KeyboardEvent, useEffect, useState } from "react";
+import { KeyboardEvent, useCallback, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Loading } from "../../components/loading";
-import { PropsCities } from "../../global/types/types";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { api } from "../../services/api";
@@ -46,13 +46,13 @@ export default function Cities() {
       );
   }
 
-  async function loadCities() {
+  const loadCities = useCallback(async () => {
     setLoading(true);
     await api
       .get(`/cities`)
       .finally(() => setLoading(false))
       .then(async resp => setCities(await resp.data));
-  }
+  }, []);
 
   useEffect(() => {
     loadCities();

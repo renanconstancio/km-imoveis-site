@@ -1,10 +1,10 @@
-import { parse } from "query-string";
-import { KeyboardEvent, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { KeyboardEvent, useCallback, useEffect, useState } from "react";
 import { Loading } from "../../components/loading";
-import { PropsCategories } from "../../global/types/types";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { PropsCategories } from "./types";
+import { parse } from "query-string";
 import { api } from "../../services/api";
 
 export default function Categories() {
@@ -49,13 +49,13 @@ export default function Categories() {
       );
   }
 
-  async function loadCategories() {
+  const loadCategories = useCallback(async () => {
     setLoading(true);
     await api
       .get(`/categories`)
       .finally(() => setLoading(false))
       .then(async resp => setCategories(await resp.data));
-  }
+  }, []);
 
   useEffect(() => {
     loadCategories();
