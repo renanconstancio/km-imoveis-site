@@ -1,3 +1,3 @@
-export type PropsPrice = React.HTMLAttributes<HTMLSpanElement> & {
+export type TPrice = React.HTMLAttributes<HTMLSpanElement> & {
   price: string;
 };

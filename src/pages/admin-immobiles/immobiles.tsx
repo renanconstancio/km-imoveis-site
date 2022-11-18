@@ -12,13 +12,13 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { situationText } from "../../utils/functions";
 import { api } from "../../services/api";
-import { PropsPagination } from "../../global/types";
-import { PropsImmobles } from "./types";
+import { TPagination } from "../../global/types";
+import { TImmobles } from "./types";
 
 export default function Immobiles() {
   const [loading, setLoading] = useState<boolean>(true);
-  const [immobiles, setImmobiles] = useState<PropsPagination<PropsImmobles[]>>(
-    {} as PropsPagination<PropsImmobles[]>,
+  const [immobiles, setImmobiles] = useState<TPagination<TImmobles[]>>(
+    {} as TPagination<TImmobles[]>,
   );
 
   const navigate = useNavigate();

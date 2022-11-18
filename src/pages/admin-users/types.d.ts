@@ -1,4 +1,4 @@
-export type PropsUsers = {
+export type TUsers = {
   id: string;
   type: string;
   email: string;

@@ -12,13 +12,13 @@ import { situationText, situationTextClassName } from "../../utils/functions";
 import { ButtonWhatsapp } from "../../components/button-whatsapp";
 import { CardTags } from "../../components/card-tags";
 import { CadSwiper } from "../../components/card-swiper";
-import { PropsImmobles } from "../admin-immobiles/types";
+import { TImmobles } from "../admin-immobiles/types";
 import { api, tags } from "../../services/api";
 
 export function SiteImmoble() {
   const [loading, setLoading] = useState(true);
-  const [immobiles, setImmobiles] = useState<PropsImmobles[]>([]);
-  const [immoble, setImmoble] = useState<PropsImmobles>({} as PropsImmobles);
+  const [immobiles, setImmobiles] = useState<TImmobles[]>([]);
+  const [immoble, setImmoble] = useState<TImmobles>({} as TImmobles);
   const [photos, setPhotos] = useState<string[]>([]);
   const sort: string[] = [];
 

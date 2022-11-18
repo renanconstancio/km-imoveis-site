@@ -43,30 +43,30 @@ import { findSearch } from "../../utils/functions";
 import { maskCurrency, maskCurrencyUs } from "../../utils/mask";
 import { Editor } from "@tinymce/tinymce-react";
 import { OptionSituation } from "../../components/option-situation";
-import { PropsCategories } from "../admin-categories/types";
-import { PropsCities } from "../admin-cities/types";
+import { TCategories } from "../admin-categories/types";
+import { TCities } from "../admin-cities/types";
 import { Input } from "../../components/inputs";
 
 import ModalPhoto from "../../components/modal/modal-photos";
 import ModalTenant from "../../components/modal/modal-tenant";
 import ModalOwner from "../../components/modal/modal-owner";
 
-import { PropsNeighborhoods } from "../admin-neighborhoods/types";
-import { PropsStreets } from "../admin-streets/types";
-import { PropsTenant } from "../admin-tenant/types";
-import { PropsOwners } from "../admin-owners/types";
-import { PropsUsers } from "../admin-users/types";
+import { TNeighborhoods } from "../admin-neighborhoods/types";
+import { TStreets } from "../admin-streets/types";
+import { TTenant } from "../admin-tenant/types";
+import { TOwners } from "../admin-owners/types";
+import { TUsers } from "../admin-users/types";
 import { api, tags } from "../../services/api";
-import { PropsImmobles } from "./types";
+import { TImmobles } from "./types";
 
 export default function FormImmobles() {
-  const [cities, setCities] = useState<PropsCities[]>([]);
-  const [neighborhoods, setNeighborhoods] = useState<PropsNeighborhoods[]>([]);
-  const [streets, setStreets] = useState<PropsStreets[]>([]);
-  const [categories, setCategories] = useState<PropsCategories[]>([]);
-  const [tenants, setTenant] = useState<PropsTenant[]>([]);
-  const [owners, setOwner] = useState<PropsOwners[]>([]);
-  const [users, setUsers] = useState<PropsUsers[]>([]);
+  const [cities, setCities] = useState<TCities[]>([]);
+  const [neighborhoods, setNeighborhoods] = useState<TNeighborhoods[]>([]);
+  const [streets, setStreets] = useState<TStreets[]>([]);
+  const [categories, setCategories] = useState<TCategories[]>([]);
+  const [tenants, setTenant] = useState<TTenant[]>([]);
+  const [owners, setOwner] = useState<TOwners[]>([]);
+  const [users, setUsers] = useState<TUsers[]>([]);
   const [tagsSite, setTagsSite] = useState<string[]>([]);
   const [onOff, setOnOff] = useState<boolean>(false);
   const [descriptionText, setDescriptionText] = useState<string>("");
@@ -99,9 +99,9 @@ export default function FormImmobles() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsImmobles>();
+  } = useForm<TImmobles>();
 
-  const onSubmit = useCallback(async (data: PropsImmobles) => {
+  const onSubmit = useCallback(async (data: TImmobles) => {
     const rwsUser = users.find(
       item => [item.first_name].join(" ") === data.users_id,
     );
@@ -174,7 +174,7 @@ export default function FormImmobles() {
     await api
       .get(`/immobiles/${immobleId}`)
       .then(async res => {
-        const immoble = (await res.data) as PropsImmobles;
+        const immoble = (await res.data) as TImmobles;
 
         reset({
           ...immoble,

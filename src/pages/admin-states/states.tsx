@@ -5,12 +5,12 @@ import { Link, useLocation } from "react-router-dom";
 import { Loading } from "../../components/loading";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PropsStates } from "./types";
+import { TStates } from "./types";
 
 export default function States() {
   const [clear, setClear] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [states, setStates] = useState<PropsStates[]>([]);
+  const [states, setStates] = useState<TStates[]>([]);
 
   const location = useLocation();
 
@@ -34,7 +34,7 @@ export default function States() {
     }
   }
 
-  const handleDelete = useCallback(async (data: PropsStates) => {
+  const handleDelete = useCallback(async (data: TStates) => {
     if (!confirm(`Você deseja excluir ${data.street}?`)) return;
     setLoading(true);
     await api

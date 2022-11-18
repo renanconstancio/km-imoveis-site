@@ -5,12 +5,12 @@ import { Link, useLocation } from "react-router-dom";
 import { Loading } from "../../components/loading";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PropsNeighborhoods } from "./types";
+import { TNeighborhoods } from "./types";
 
 export default function Neighborhoods() {
   const [clear, setClear] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [neighborhoods, setNeighborhoods] = useState<PropsNeighborhoods[]>([]);
+  const [neighborhoods, setNeighborhoods] = useState<TNeighborhoods[]>([]);
 
   const location = useLocation();
 
@@ -34,7 +34,7 @@ export default function Neighborhoods() {
     }
   }
 
-  const handleDelete = useCallback(async (data: PropsNeighborhoods) => {
+  const handleDelete = useCallback(async (data: TNeighborhoods) => {
     if (!confirm(`Você deseja excluir ${data.district}?`)) return;
     setLoading(true);
     await api

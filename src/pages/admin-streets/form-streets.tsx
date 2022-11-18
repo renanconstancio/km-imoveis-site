@@ -7,7 +7,7 @@ import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
 import { Input } from "../../components/inputs";
 import { maskCep } from "../../utils/mask";
-import { PropsStreets } from "./types";
+import { TStreets } from "./types";
 
 export default function FormStreets() {
   const { changeAlert } = useAlert();
@@ -21,9 +21,9 @@ export default function FormStreets() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsStreets>();
+  } = useForm<TStreets>();
 
-  const onSubmit = useCallback(async (data: PropsStreets) => {
+  const onSubmit = useCallback(async (data: TStreets) => {
     const newPostData = {
       ...data,
     };

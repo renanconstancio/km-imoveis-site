@@ -2,11 +2,11 @@ import { useModal } from "../../hooks/use-modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
-export type PropsModalLog = {
+export type TModalLog = {
   log: any;
 };
 
-export default function ModalLog({ log }: PropsModalLog) {
+export default function ModalLog({ log }: TModalLog) {
   const { open, closeModal } = useModal();
 
   return (

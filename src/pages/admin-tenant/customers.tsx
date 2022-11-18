@@ -11,13 +11,13 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PropsPagination } from "../../global/types";
-import { PropsTenant } from "./types";
+import { TPagination } from "../../global/types";
+import { TTenant } from "./types";
 
 export default function Customers() {
   const [loading, setLoading] = useState<boolean>(true);
-  const [customers, setCustomers] = useState<PropsPagination<PropsTenant[]>>(
-    {} as PropsPagination<PropsTenant[]>,
+  const [customers, setCustomers] = useState<TPagination<TTenant[]>>(
+    {} as TPagination<TTenant[]>,
   );
 
   const navigate = useNavigate();

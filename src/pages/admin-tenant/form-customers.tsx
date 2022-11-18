@@ -14,15 +14,15 @@ import { maskCPF, maskPhone } from "../../utils/mask";
 import { useModal } from "../../hooks/use-modal";
 import { ModalCity, ModalDistrict, ModalStreet } from "../../components/modal";
 import { findSearch } from "../../utils/functions";
-import { PropsCities } from "../admin-cities/types";
-import { PropsNeighborhoods } from "../admin-neighborhoods/types";
-import { PropsStreets } from "../admin-streets/types";
-import { PropsTenant } from "./types";
+import { TCities } from "../admin-cities/types";
+import { TNeighborhoods } from "../admin-neighborhoods/types";
+import { TStreets } from "../admin-streets/types";
+import { TTenant } from "./types";
 
 export default function FormCustomers() {
-  const [cities, setCities] = useState<PropsCities[]>([]);
-  const [neighborhoods, setNeighborhoods] = useState<PropsNeighborhoods[]>([]);
-  const [streets, setStreets] = useState<PropsStreets[]>([]);
+  const [cities, setCities] = useState<TCities[]>([]);
+  const [neighborhoods, setNeighborhoods] = useState<TNeighborhoods[]>([]);
+  const [streets, setStreets] = useState<TStreets[]>([]);
 
   const {
     openStreet,
@@ -44,9 +44,9 @@ export default function FormCustomers() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsTenant>();
+  } = useForm<TTenant>();
 
-  const onSubmit = useCallback(async (data: PropsTenant) => {
+  const onSubmit = useCallback(async (data: TTenant) => {
     const rwsStreet = findSearch(streets, data.streets_id, "street");
     const rwsDistrict = findSearch(
       neighborhoods,
@@ -106,7 +106,7 @@ export default function FormCustomers() {
     await api
       .get(`/customers/${customerId}`)
       .then(async res => {
-        const customer: PropsTenant = await res.data;
+        const customer: TTenant = await res.data;
         reset({
           ...customer,
           cities_id: [customer.city?.city, customer.city?.state.state].join(

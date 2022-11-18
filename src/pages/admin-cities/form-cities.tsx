@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
 import { findSearch } from "../../utils/functions";
-import { PropsCities } from "./types";
+import { TCities } from "./types";
 import { api } from "../../services/api";
 
 export default function FormCities() {
@@ -22,9 +22,9 @@ export default function FormCities() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsCities>();
+  } = useForm<TCities>();
 
-  const onSubmit = useCallback(async (data: PropsCities) => {
+  const onSubmit = useCallback(async (data: TCities) => {
     const rwsState = findSearch(states, data.states_id, "state");
     const newPostData = {
       ...data,

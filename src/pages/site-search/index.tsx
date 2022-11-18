@@ -5,13 +5,13 @@ import { parse, stringify } from "query-string";
 import { Loading } from "../../components/loading";
 import { Pagination } from "../../components/pagination";
 import { api, tags } from "../../services/api";
-import { PropsPagination } from "../../global/types";
-import { PropsImmobles } from "../admin-immobiles/types";
+import { TPagination } from "../../global/types";
+import { TImmobles } from "../admin-immobiles/types";
 
 export function SiteSearch() {
   const [loading, setLoading] = useState(true);
-  const [immobiles, setImmobiles] = useState<PropsPagination<PropsImmobles[]>>(
-    {} as PropsPagination<PropsImmobles[]>,
+  const [immobiles, setImmobiles] = useState<TPagination<TImmobles[]>>(
+    {} as TPagination<TImmobles[]>,
   );
 
   const location = useLocation();

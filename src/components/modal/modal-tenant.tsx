@@ -4,19 +4,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { maskCPF, maskPhone } from "../../utils/mask";
 import { findSearch } from "../../utils/functions";
-import { PropsStreets } from "../../pages/admin-streets/types";
-import { PropsNeighborhoods } from "../../pages/admin-neighborhoods/types";
-import { PropsCities } from "../../pages/admin-cities/types";
+import { TStreets } from "../../pages/admin-streets/types";
+import { TNeighborhoods } from "../../pages/admin-neighborhoods/types";
+import { TCities } from "../../pages/admin-cities/types";
 import { Input } from "../inputs";
 import { api } from "../../services/api";
-import { PropsTenant } from "../../pages/admin-tenant/types";
+import { TTenant } from "../../pages/admin-tenant/types";
 import { useCallback } from "react";
 
-type PropsModalTenant = {
+type TModalTenant = {
   addTenant: (data: any) => void;
-  streets: PropsStreets[];
-  neighborhoods: PropsNeighborhoods[];
-  cities: PropsCities[];
+  streets: TStreets[];
+  neighborhoods: TNeighborhoods[];
+  cities: TCities[];
 };
 
 export default function ModalTenant({
@@ -24,16 +24,16 @@ export default function ModalTenant({
   cities,
   neighborhoods,
   streets,
-}: PropsModalTenant) {
+}: TModalTenant) {
   const { openTenant, closeTenant } = useModal();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsTenant>();
+  } = useForm<TTenant>();
 
-  const onSubmit = useCallback(async (data: PropsTenant) => {
+  const onSubmit = useCallback(async (data: TTenant) => {
     const rwsStreet = findSearch(streets, data.streets_id, "street");
     const rwsDistrict = findSearch(
       neighborhoods,

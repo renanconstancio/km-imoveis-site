@@ -7,13 +7,13 @@ import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useGeolocation } from "../../hooks/use-geolocation";
 import { OptionSituationList } from "../option-situation";
 import { Input } from "../inputs";
-import { PropsFilters, PropsFiltersComp } from "./types";
-import { PropsCategories } from "../../pages/admin-categories/types";
+import { TFilters, TFiltersComp } from "./types";
+import { TCategories } from "../../pages/admin-categories/types";
 import { api } from "../../services/api";
 
-export function Filters({ variant = "col" }: PropsFiltersComp) {
+export function Filters({ variant = "col" }: TFiltersComp) {
   const [openClose, setOpenClose] = useState<boolean>(false);
-  const [categories, setCategories] = useState<PropsCategories[]>([]);
+  const [categories, setCategories] = useState<TCategories[]>([]);
   const [cities, setCities] = useState<
     { city: string; state: string; neighborhoods: { district: string }[] }[]
   >([]);
@@ -23,31 +23,31 @@ export function Filters({ variant = "col" }: PropsFiltersComp) {
   const [citiesDefault, setCitiesDefault] = useState<string>("");
 
   const { geolocation } = useGeolocation();
-  const { handleSubmit, register } = useForm<PropsFilters>();
+  const { handleSubmit, register } = useForm<TFilters>();
 
   const navigate = useNavigate();
   const location = useLocation();
   const parsed = parse(location.search);
 
-  function onSubmit(data: PropsFilters) {
+  function onSubmit(data: TFilters) {
     switch (data.situation as string) {
       case "Venda":
-        data = { ...data, situation: PropsEnumSituation.sale };
+        data = { ...data, situation: TEnumSituation.sale };
         break;
       case "Locação":
-        data = { ...data, situation: PropsEnumSituation.location };
+        data = { ...data, situation: TEnumSituation.location };
         break;
       case "Compra":
-        data = { ...data, situation: PropsEnumSituation.purchase };
+        data = { ...data, situation: TEnumSituation.purchase };
         break;
       case "Permuta":
-        data = { ...data, situation: PropsEnumSituation.exchange };
+        data = { ...data, situation: TEnumSituation.exchange };
         break;
       case "Venda e Locação":
-        data = { ...data, situation: PropsEnumSituation.sale_lease };
+        data = { ...data, situation: TEnumSituation.sale_lease };
         break;
       case "Venda e Permuta":
-        data = { ...data, situation: PropsEnumSituation.sale_barter };
+        data = { ...data, situation: TEnumSituation.sale_barter };
         break;
     }
 

@@ -4,19 +4,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { maskCPF, maskPhone } from "../../utils/mask";
 import { findSearch } from "../../utils/functions";
-import { PropsStreets } from "../../pages/admin-streets/types";
-import { PropsNeighborhoods } from "../../pages/admin-neighborhoods/types";
-import { PropsCities } from "../../pages/admin-cities/types";
+import { TStreets } from "../../pages/admin-streets/types";
+import { TNeighborhoods } from "../../pages/admin-neighborhoods/types";
+import { TCities } from "../../pages/admin-cities/types";
 import { Input } from "../inputs";
 import { api } from "../../services/api";
-import { PropsOwners } from "../../pages/admin-owners/types";
+import { TOwners } from "../../pages/admin-owners/types";
 import { useCallback } from "react";
 
-export type PropsModalOwner = {
+export type TModalOwner = {
   addOwner: (data: any) => void;
-  streets: PropsStreets[];
-  neighborhoods: PropsNeighborhoods[];
-  cities: PropsCities[];
+  streets: TStreets[];
+  neighborhoods: TNeighborhoods[];
+  cities: TCities[];
 };
 
 export default function ModalOwner({
@@ -24,16 +24,16 @@ export default function ModalOwner({
   cities,
   neighborhoods,
   streets,
-}: PropsModalOwner) {
+}: TModalOwner) {
   const { openOwner, closeOwner } = useModal();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsOwners>();
+  } = useForm<TOwners>();
 
-  const onSubmit = useCallback(async (data: PropsOwners) => {
+  const onSubmit = useCallback(async (data: TOwners) => {
     const rwsStreet = findSearch(streets, data.streets_id, "street");
     const rwsDistrict = findSearch(
       neighborhoods,

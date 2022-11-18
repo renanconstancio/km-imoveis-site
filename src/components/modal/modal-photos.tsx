@@ -6,24 +6,24 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { api } from "../../services/api";
 import { Loading } from "../loading";
-import { PropsImmoblesPhotos } from "../../pages/admin-immobiles/types";
+import { TImmoblesPhotos } from "../../pages/admin-immobiles/types";
 
-export type PropsModalPhoto = {
-  addPhotos: PropsImmoblesPhotos[];
+export type TModalPhoto = {
+  addPhotos: TImmoblesPhotos[];
   immobleId: string | null;
 };
 
-export default function ModalPhoto({ immobleId, addPhotos }: PropsModalPhoto) {
+export default function ModalPhoto({ immobleId, addPhotos }: TModalPhoto) {
   const { changeAlert } = useAlert();
   const { openPhoto, closePhoto } = useModal();
   const [loading, setLoading] = useState<boolean>(false);
-  const [photos, setPhotoModal] = useState<PropsImmoblesPhotos[]>([]);
+  const [photos, setPhotoModal] = useState<TImmoblesPhotos[]>([]);
   const [endEvent, setEndEvent] = useState<boolean>(false);
 
-  let tempSortPhotos: PropsImmoblesPhotos[] = [];
+  let tempSortPhotos: TImmoblesPhotos[] = [];
 
   const handleSortImage = useCallback(
-    async (listSort: PropsImmoblesPhotos[]) => {
+    async (listSort: TImmoblesPhotos[]) => {
       tempSortPhotos = listSort;
       setPhotoModal(listSort);
       console.log(tempSortPhotos);
@@ -34,7 +34,7 @@ export default function ModalPhoto({ immobleId, addPhotos }: PropsModalPhoto) {
     [],
   );
 
-  const handleDeleteImage = useCallback(async (item: PropsImmoblesPhotos) => {
+  const handleDeleteImage = useCallback(async (item: TImmoblesPhotos) => {
     if (!confirm(`Você deseja excluir?`)) return;
 
     await api

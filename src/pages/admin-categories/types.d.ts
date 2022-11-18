@@ -1,4 +1,4 @@
-export type PropsCategories = {
+export type TCategories = {
   id: string;
   category: string;
   filter: "yes" | "no";

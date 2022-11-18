@@ -3,23 +3,23 @@ import { useForm } from "react-hook-form";
 import { useModal } from "../../hooks/use-modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { PropsCategories } from "../../pages/admin-categories/types";
+import { TCategories } from "../../pages/admin-categories/types";
 import { api } from "../../services/api";
 
-export type PropsModalCategory = {
+export type TModalCategory = {
   addCategories: (data: any) => void;
 };
 
-export default function ModalCategory({ addCategories }: PropsModalCategory) {
+export default function ModalCategory({ addCategories }: TModalCategory) {
   const { openCategory, closeCategory } = useModal();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsCategories>();
+  } = useForm<TCategories>();
 
-  const onSubmit = useCallback(async (data: PropsCategories) => {
+  const onSubmit = useCallback(async (data: TCategories) => {
     await api
       .post(`/categories`, {
         ...data,

@@ -1,4 +1,4 @@
-export type PropsAlert = {
+export type TAlert = {
   title?: string;
   message: string;
 };

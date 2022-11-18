@@ -1,4 +1,4 @@
-export type PropsCities = {
+export type TCities = {
   id: string;
   city: string;
   states_id: string;

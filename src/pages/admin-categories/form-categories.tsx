@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { PropsCategories } from "./types";
+import { TCategories } from "./types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
@@ -20,9 +20,9 @@ export default function FormCategories() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsCategories>();
+  } = useForm<TCategories>();
 
-  const onSubmit = useCallback(async (data: PropsCategories) => {
+  async function onSubmit(data: TCategories) {
     const newPostData = {
       ...data,
     };
@@ -58,9 +58,9 @@ export default function FormCategories() {
           message: "Não foi possivel fazer um novo cadastro.",
         }),
       );
-  }, []);
+  }
 
-  const loadCategories = useCallback(async () => {
+  async function loadCategories() {
     await api
       .get(`/categories/${categoryId}`)
       .then(async res =>
@@ -73,7 +73,7 @@ export default function FormCategories() {
           message: "Não foi possivel conectar ao servidor.",
         }),
       );
-  }, [categoryId]);
+  }
 
   useEffect(() => {
     if (categoryId) loadCategories();

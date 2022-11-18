@@ -3,7 +3,7 @@ import "swiper/css/navigation";
 import { parse } from "query-string";
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { PropsImmobles } from "../admin-immobiles/types";
+import { TImmobles } from "../admin-immobiles/types";
 import { Loading } from "../../components/loading";
 import { CadSwiper } from "../../components/card-swiper";
 import { H2 } from "../../components/title";
@@ -11,21 +11,21 @@ import { api } from "../../services/api";
 
 export function SiteHome() {
   const [loading, setLoading] = useState(true);
-  const [immobilesSales, setImmobilesSales] = useState<PropsImmobles[]>([]);
-  const [immobilesLocation, setImmobilesLocation] = useState<PropsImmobles[]>(
+  const [immobilesSales, setImmobilesSales] = useState<TImmobles[]>([]);
+  const [immobilesLocation, setImmobilesLocation] = useState<TImmobles[]>(
     [],
   );
-  const [immobilesPurchase, setImmobilesPurchase] = useState<PropsImmobles[]>(
+  const [immobilesPurchase, setImmobilesPurchase] = useState<TImmobles[]>(
     [],
   );
-  const [immobilesExchange, setImmobilesExchange] = useState<PropsImmobles[]>(
+  const [immobilesExchange, setImmobilesExchange] = useState<TImmobles[]>(
     [],
   );
-  const [immobilesSaleLease, setImmobilesSaleLease] = useState<PropsImmobles[]>(
+  const [immobilesSaleLease, setImmobilesSaleLease] = useState<TImmobles[]>(
     [],
   );
   const [immobilesSaleBarter, setImmobilesSaleBarter] = useState<
-    PropsImmobles[]
+    TImmobles[]
   >([]);
 
   const location = useLocation();

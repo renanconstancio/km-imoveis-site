@@ -1,8 +1,8 @@
-import { PropsWhatsapp } from "./types";
+import { TWhatsapp } from "./types";
 import faWhatsapp from "../../assets/whatsapp-white.svg";
 import { toNumber } from "../../utils/functions";
 
-export default function ButtonWhatsapp(props: PropsWhatsapp) {
+export default function ButtonWhatsapp(props: TWhatsapp) {
   return (
     <a
       href={`https://api.whatsapp.com/send?phone=${toNumber(

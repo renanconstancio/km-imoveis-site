@@ -4,12 +4,12 @@ import { Footer } from "../footer";
 import { Header } from "../header";
 import { Filters } from "../filters";
 import { CarouselIndex } from "../carousel";
-import { PropsBanners } from "../carousel/types";
+import { TBanners } from "../carousel/types";
 
 import banner01 from "../../assets/banners/banner-a.jpg";
 import banner02 from "../../assets/banners/banner-b.jpg";
 
-const bannerFix: PropsBanners[] = [
+const bannerFix: TBanners[] = [
   {
     reference: "",
     description: "",
@@ -35,7 +35,7 @@ const bannerFix: PropsBanners[] = [
 ];
 
 export default function Site() {
-  const [banners] = useState<PropsBanners[]>(bannerFix);
+  const [banners] = useState<TBanners[]>(bannerFix);
 
   const location = useLocation();
 

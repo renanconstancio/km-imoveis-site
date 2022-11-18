@@ -1,4 +1,4 @@
-import { PropsBanners } from "./types";
+import { TBanners } from "./types";
 import { Carousel } from "react-responsive-carousel";
 import { situationText, slugiFy } from "../../utils/functions";
 import { Link } from "react-router-dom";
@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 export default function CarouselIndex({
   banners,
 }: {
-  banners: PropsBanners[];
+  banners: TBanners[];
 }) {
   return (
     <Carousel

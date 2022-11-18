@@ -5,12 +5,12 @@ import { Link, useLocation } from "react-router-dom";
 import { Loading } from "../../components/loading";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PropsStreets } from "./types";
+import { TStreets } from "./types";
 
 export default function Streets() {
   const [clear, setClear] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [streets, setStreets] = useState<PropsStreets[]>([]);
+  const [streets, setStreets] = useState<TStreets[]>([]);
 
   const location = useLocation();
 
@@ -34,7 +34,7 @@ export default function Streets() {
     }
   }
 
-  const handleDelete = useCallback(async (data: PropsStreets) => {
+  const handleDelete = useCallback(async (data: TStreets) => {
     if (!confirm(`Você deseja excluir ${data.street}?`)) return;
     setLoading(true);
     await api

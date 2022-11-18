@@ -2,7 +2,7 @@ import { parse, stringify } from "query-string";
 import { KeyboardEvent, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Loading } from "../../components/loading";
-import { PropsLogs, PropsPagination } from "../../global/types/indexd";
+import { TLogs, TPagination } from "../../global/types/indexd";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { addClassName } from "../../utils/functions";
@@ -15,8 +15,8 @@ import { Pagination } from "../../components/pagination";
 export default function Logs() {
   const [loading, setLoading] = useState<boolean>(true);
   const [log, addLogs] = useState();
-  const [logs, setLogs] = useState<PropsPagination<PropsLogs[]>>(
-    {} as PropsPagination<PropsLogs[]>,
+  const [logs, setLogs] = useState<TPagination<TLogs[]>>(
+    {} as TPagination<TLogs[]>,
   );
 
   const { closeModal, open } = useModal();

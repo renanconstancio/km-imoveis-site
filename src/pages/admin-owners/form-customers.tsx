@@ -14,15 +14,15 @@ import { Input } from "../../components/inputs";
 import { useModal } from "../../hooks/use-modal";
 import { ModalCity, ModalDistrict, ModalStreet } from "../../components/modal";
 import { findSearch } from "../../utils/functions";
-import { PropsOwners } from "./types";
-import { PropsCities } from "../admin-cities/types";
-import { PropsNeighborhoods } from "../admin-neighborhoods/types";
-import { PropsStreets } from "../admin-streets/types";
+import { TOwners } from "./types";
+import { TCities } from "../admin-cities/types";
+import { TNeighborhoods } from "../admin-neighborhoods/types";
+import { TStreets } from "../admin-streets/types";
 
 export default function FormCustomers() {
-  const [cities, setCities] = useState<PropsCities[]>([]);
-  const [neighborhoods, setNeighborhoods] = useState<PropsNeighborhoods[]>([]);
-  const [streets, setStreets] = useState<PropsStreets[]>([]);
+  const [cities, setCities] = useState<TCities[]>([]);
+  const [neighborhoods, setNeighborhoods] = useState<TNeighborhoods[]>([]);
+  const [streets, setStreets] = useState<TStreets[]>([]);
 
   const {
     openStreet,
@@ -44,9 +44,9 @@ export default function FormCustomers() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsOwners>();
+  } = useForm<TOwners>();
 
-  const onSubmit = useCallback(async (data: PropsOwners) => {
+  const onSubmit = useCallback(async (data: TOwners) => {
     const rwsStreet = findSearch(streets, data.streets_id, "street");
     const rwsDistrict = findSearch(
       neighborhoods,
@@ -103,7 +103,7 @@ export default function FormCustomers() {
     await api
       .get(`/customers/${ownerId}`)
       .then(async res => {
-        const customer: PropsOwners = await res.data;
+        const customer: TOwners = await res.data;
         reset({
           ...customer,
           neighborhoods_id: customer?.district?.district,

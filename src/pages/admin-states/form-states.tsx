@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
 import { Input } from "../../components/inputs";
-import { PropsStates } from "./types";
+import { TStates } from "./types";
 
 export default function FormStates() {
   const { changeAlert } = useAlert();
@@ -20,9 +20,9 @@ export default function FormStates() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsStates>();
+  } = useForm<TStates>();
 
-  const onSubmit = useCallback(async (data: PropsStates) => {
+  const onSubmit = useCallback(async (data: TStates) => {
     const newPostData = {
       ...data,
     };

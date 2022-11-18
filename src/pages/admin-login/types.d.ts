@@ -1,4 +1,4 @@
-export type PropsUserLogin = {
+export type TUserLogin = {
   email: string;
   password: string;
 };

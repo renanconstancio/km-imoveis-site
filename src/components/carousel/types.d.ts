@@ -1,4 +1,4 @@
-export type PropsBanners = {
+export type TBanners = {
   reference: string;
   description: string;
   situation:

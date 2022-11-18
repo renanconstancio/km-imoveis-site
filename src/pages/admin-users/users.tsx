@@ -5,12 +5,12 @@ import { Link, useLocation } from "react-router-dom";
 import { Loading } from "../../components/loading";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PropsUsers } from "./types";
+import { TUsers } from "./types";
 
 export default function Users() {
   const [clear, setClear] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [users, setUsers] = useState<PropsUsers[]>([]);
+  const [users, setUsers] = useState<TUsers[]>([]);
 
   const location = useLocation();
 
@@ -34,7 +34,7 @@ export default function Users() {
     }
   }
 
-  const handleDelete = useCallback(async (data: PropsUsers) => {
+  const handleDelete = useCallback(async (data: TUsers) => {
     if (!confirm(`Você deseja excluir ${data.first_name}?`)) return;
     setLoading(true);
     await api

@@ -6,11 +6,11 @@ import {
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper";
 
-import { PropsCardSwiper } from "./types";
+import { TCardSwiper } from "./types";
 import { Card } from "../../components/card";
 import { tags } from "../../services/api";
 
-export function CadSwiper({ mapping, id }: PropsCardSwiper) {
+export function CadSwiper({ mapping, id }: TCardSwiper) {
   return (
     <>
       <FontAwesomeIcon

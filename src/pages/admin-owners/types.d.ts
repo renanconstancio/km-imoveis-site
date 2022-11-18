@@ -1,4 +1,4 @@
-export type PropsOwners = {
+export type TOwners = {
   id: string;
   type: string | "owner" | "tenant";
   first_name: string;

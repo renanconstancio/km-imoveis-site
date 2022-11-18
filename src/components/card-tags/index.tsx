@@ -23,9 +23,9 @@ import {
   faBolt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PropsCardTags } from "./types";
+import { TCardTags } from "./types";
 
-export function CardTags({ cardTags, cardTag }: PropsCardTags) {
+export function CardTags({ cardTags, cardTag }: TCardTags) {
   const arrayString = cardTag?.split(",");
   return (
     <>

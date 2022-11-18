@@ -1,6 +1,6 @@
-import { PropsEnumSituation } from "../../global/types";
+import { TEnumSituation } from "../../global/types";
 
-export type PropsImmobles = {
+export type TImmobles = {
   id: string;
   users_id: string;
   cities_id: string;
@@ -17,24 +17,24 @@ export type PropsImmobles = {
   sale_price: string;
   rent_price: string;
   published: true | false;
-  situation: PropsEnumSituation;
+  situation: TEnumSituation;
   pickup: string;
   building_area: string;
   terrain_area: string;
   created_at: string;
   updated_at: string;
   deleted_at: string;
-  user?: PropsImmoblesUser;
-  tenant?: PropsImmoblesTenant;
-  owner?: PropsImmoblesOwner;
-  city?: PropsImmoblesCity;
-  street?: PropsImmoblesStreet;
-  district?: PropsImmoblesDistrict;
-  category?: PropsImmoblesCategory;
-  photos?: PropsImmoblesPhotos[];
+  user?: TImmoblesUser;
+  tenant?: TImmoblesTenant;
+  owner?: TImmoblesOwner;
+  city?: TImmoblesCity;
+  street?: TImmoblesStreet;
+  district?: TImmoblesDistrict;
+  category?: TImmoblesCategory;
+  photos?: TImmoblesPhotos[];
 };
 
-export type PropsImmoblesUser = {
+export type TImmoblesUser = {
   id: string;
   first_name: string;
   last_name: string;
@@ -42,19 +42,19 @@ export type PropsImmoblesUser = {
   creci: string;
 };
 
-export type PropsImmoblesTenant = {
+export type TImmoblesTenant = {
   id: string;
   first_name: string;
   last_name: string;
 };
 
-export type PropsImmoblesOwner = {
+export type TImmoblesOwner = {
   id: string;
   first_name: string;
   last_name: string;
 };
 
-export type PropsImmoblesCity = {
+export type TImmoblesCity = {
   id: string;
   city: string;
   state: {
@@ -63,22 +63,22 @@ export type PropsImmoblesCity = {
   };
 };
 
-export type PropsImmoblesStreet = {
+export type TImmoblesStreet = {
   id: string;
   street: string;
 };
 
-export type PropsImmoblesDistrict = {
+export type TImmoblesDistrict = {
   id: string;
   district: string;
 };
 
-export type PropsImmoblesCategory = {
+export type TImmoblesCategory = {
   id: string;
   category: string;
 };
 
-export type PropsImmoblesPhotos = {
+export type TImmoblesPhotos = {
   position: number;
   image_xs: string;
   image_lg: string;

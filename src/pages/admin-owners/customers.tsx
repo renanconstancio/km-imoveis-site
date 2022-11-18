@@ -11,13 +11,13 @@ import { KeyboardEvent, useCallback, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Loading } from "../../components/loading";
 import { Pagination } from "../../components/pagination";
-import { PropsOwners } from "./types";
-import { PropsPagination } from "../../global/types";
+import { TOwners } from "./types";
+import { TPagination } from "../../global/types";
 
 export default function Customers() {
   const [loading, setLoading] = useState<boolean>(true);
-  const [customers, setCustomers] = useState<PropsPagination<PropsOwners[]>>(
-    {} as PropsPagination<PropsOwners[]>,
+  const [customers, setCustomers] = useState<TPagination<TOwners[]>>(
+    {} as TPagination<TOwners[]>,
   );
 
   const navigate = useNavigate();

@@ -1,11 +1,11 @@
-export type PropsPagination<T = T> = {
+export type TPagination<T = T> = {
   limit: number;
   page: number;
   total: number;
   data: T;
 };
 
-export enum PropsEnumSituation {
+export enum TEnumSituation {
   location = "location",
   purchase = "purchase",
   sale = "sale",

@@ -8,7 +8,7 @@ import { useAlert } from "../../hooks/use-alert";
 import { Input } from "../../components/inputs";
 import { maskPhone } from "../../utils/mask";
 import { useAuth } from "../../hooks/use-auth";
-import { PropsUsers } from "./types";
+import { TUsers } from "./types";
 
 export default function FormUsers() {
   const navigate = useNavigate();
@@ -24,10 +24,10 @@ export default function FormUsers() {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<PropsUsers & { password: string }>();
+  } = useForm<TUsers & { password: string }>();
 
   const onSubmit = useCallback(
-    async (data: PropsUsers & { password: string }) => {
+    async (data: TUsers & { password: string }) => {
       const newPostData = {
         ...data,
       };
@@ -73,7 +73,7 @@ export default function FormUsers() {
     await api
       .get(`/users/${userId}`)
       .then(async res => {
-        const resp: PropsUsers = await res.data;
+        const resp: TUsers = await res.data;
         reset({
           ...resp,
         });

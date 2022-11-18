@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
 import { Input } from "../../components/inputs";
-import { PropsNeighborhoods } from "./types";
+import { TNeighborhoods } from "./types";
 
 export default function FormNeighborhoods() {
   const { changeAlert } = useAlert();
@@ -21,9 +21,9 @@ export default function FormNeighborhoods() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsNeighborhoods>();
+  } = useForm<TNeighborhoods>();
 
-  const onSubmit = useCallback(async (data: PropsNeighborhoods) => {
+  const onSubmit = useCallback(async (data: TNeighborhoods) => {
     const newPostData = {
       ...data,
     };

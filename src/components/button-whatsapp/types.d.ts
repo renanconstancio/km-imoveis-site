@@ -1,4 +1,4 @@
-export type PropsWhatsapp = {
+export type TWhatsapp = {
   text: string;
   phone: number;
 };

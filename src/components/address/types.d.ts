@@ -1,3 +1,3 @@
-export type PropsAddress = React.HTMLAttributes<HTMLHeadElement> & {
+export type TAddress = React.HTMLAttributes<HTMLHeadElement> & {
   address: string[];
 };
