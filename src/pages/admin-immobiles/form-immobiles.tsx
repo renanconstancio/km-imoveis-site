@@ -1,3 +1,4 @@
+import { api, tags } from "../../services/api";
 import {
   faFolderOpen,
   faImage,
@@ -56,7 +57,6 @@ import { PropsStreets } from "../admin-streets/types";
 import { PropsTenant } from "../admin-tenant/types";
 import { PropsOwners } from "../admin-owners/types";
 import { PropsUsers } from "../admin-users/types";
-import { api, tags } from "../../services/api";
 import { PropsImmobles } from "./types";
 
 export default function FormImmobles() {
@@ -101,7 +101,7 @@ export default function FormImmobles() {
     formState: { errors },
   } = useForm<PropsImmobles>();
 
-  const onSubmit = useCallback(async (data: PropsImmobles) => {
+  async function onSubmit(data: PropsImmobles) {
     const rwsUser = users.find(
       item => [item.first_name].join(" ") === data.users_id,
     );
@@ -130,14 +130,16 @@ export default function FormImmobles() {
       tags: existsTags,
       published: onOff,
       description_text: descriptionText,
-      cities_id: rwsCity?.id || null,
-      categories_id: rwsCategory?.id || null,
-      neighborhoods_id: rwsDistrict?.id || null,
-      streets_id: rwsStreet?.id || null,
-      tenant_id: rwsTenant?.id || null,
-      owner_id: rwsOwner?.id || null,
-      users_id: rwsUser?.id || null,
+      cities_id: rwsCity?.id ?? null,
+      categories_id: rwsCategory?.id ?? null,
+      neighborhoods_id: rwsDistrict?.id ?? null,
+      streets_id: rwsStreet?.id ?? null,
+      tenant_id: rwsTenant?.id ?? null,
+      owner_id: rwsOwner?.id ?? null,
+      users_id: rwsUser?.id ?? null,
     };
+
+    console.log(newPostData);
 
     if (immobleId) {
       await api
@@ -168,13 +170,13 @@ export default function FormImmobles() {
           message: "Não foi possivel fazer um novo cadastro para o imovél.",
         }),
       );
-  }, []);
+  }
 
   const loadImmoble = useCallback(async () => {
     await api
       .get(`/immobiles/${immobleId}`)
       .then(async res => {
-        const immoble = (await res.data) as PropsImmobles;
+        const immoble: PropsImmobles = await res.data;
 
         reset({
           ...immoble,

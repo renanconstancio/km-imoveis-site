@@ -76,7 +76,7 @@ export const tags = [
   { tag: "suíte com banheira", icon: "faSpa" },
   { tag: "lavabo", icon: "faSink" },
   { tag: "banheiro social", icon: "faShower" },
-  { tag: "dispensa", icon: "faCheck" },
+  { tag: "despensa", icon: "faCheck" },
   { tag: "poço artesiano", icon: "faCheck" },
   { tag: "piso porcelanato", icon: "faCheck" },
   { tag: "piso cerâmica", icon: "faCheck" },

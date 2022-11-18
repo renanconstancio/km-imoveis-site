@@ -1,3 +1,4 @@
+import { api } from "../../services/api";
 import { useForm } from "react-hook-form";
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -9,7 +10,6 @@ import { OptionSituationList } from "../option-situation";
 import { Input } from "../inputs";
 import { PropsFilters, PropsFiltersComp } from "./types";
 import { PropsCategories } from "../../pages/admin-categories/types";
-import { api } from "../../services/api";
 
 export function Filters({ variant = "col" }: PropsFiltersComp) {
   const [openClose, setOpenClose] = useState<boolean>(false);
@@ -32,22 +32,22 @@ export function Filters({ variant = "col" }: PropsFiltersComp) {
   function onSubmit(data: PropsFilters) {
     switch (data.situation as string) {
       case "Venda":
-        data = { ...data, situation: PropsEnumSituation.sale };
+        data = { ...data, situation: "sale" };
         break;
       case "Locação":
-        data = { ...data, situation: PropsEnumSituation.location };
+        data = { ...data, situation: "location" };
         break;
       case "Compra":
-        data = { ...data, situation: PropsEnumSituation.purchase };
+        data = { ...data, situation: "purchase" };
         break;
       case "Permuta":
-        data = { ...data, situation: PropsEnumSituation.exchange };
+        data = { ...data, situation: "exchange" };
         break;
       case "Venda e Locação":
-        data = { ...data, situation: PropsEnumSituation.sale_lease };
+        data = { ...data, situation: "sale_lease" };
         break;
       case "Venda e Permuta":
-        data = { ...data, situation: PropsEnumSituation.sale_barter };
+        data = { ...data, situation: "sale_barter" };
         break;
     }
 
@@ -141,14 +141,17 @@ export function Filters({ variant = "col" }: PropsFiltersComp) {
             type="search"
             label="Cidade"
             className={`input-form`}
-            placeholder={"Busca por código"}
+            placeholder={"Busca por cidades"}
             register={register("city")}
             onChange={e => handleChangeCity(e.target.value)}
             defaultValue=""
           />
           <datalist id="cities">
             {cities.map(({ city, state }, id) => (
-              <option value={[city, state].join("/")} key={id} />
+              <option
+                value={city && state ? [city, state].join("/") : ""}
+                key={id}
+              />
             ))}
           </datalist>
         </li>

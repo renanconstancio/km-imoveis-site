@@ -1,13 +1,12 @@
+import { api } from "../../services/api";
 import { useCallback, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
 import { Input } from "../../components/inputs";
 import { maskPhone } from "../../utils/mask";
-import { api } from "../../services/api";
 import { PropsUsers } from "../admin-users/types";
 
 export default function FormUsers() {

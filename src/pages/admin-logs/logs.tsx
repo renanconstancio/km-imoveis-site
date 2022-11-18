@@ -1,16 +1,17 @@
+import { api } from "../../services/api";
 import { parse, stringify } from "query-string";
-import { KeyboardEvent, useEffect, useState } from "react";
+import { KeyboardEvent, useCallback, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Loading } from "../../components/loading";
-import { PropsLogs, PropsPagination } from "../../global/types/indexd";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { addClassName } from "../../utils/functions";
 import { useModal } from "../../hooks/use-modal";
 import { format } from "date-fns";
-import { api } from "../../services/api";
-import ModalLog from "../../components/modal/modal-log";
 import { Pagination } from "../../components/pagination";
+import { PropsPagination } from "../../global/types";
+import { PropsLogs } from "./types";
+import ModalLog from "../../components/modal/modal-log";
 
 export default function Logs() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -26,7 +27,7 @@ export default function Logs() {
   const locationDecodUri = decodeURI(location.search);
 
   const query = parse(location.search);
-  const limit = (query.limit || "25") as string;
+  const limit = (query.limit || "100") as string;
   const page = (query.page || "1") as string;
   const qs = (query.q || "") as unknown as string;
 
@@ -40,17 +41,18 @@ export default function Logs() {
     }
   }
 
-  async function loadLogs() {
+  const loadLogs = useCallback(async () => {
+    setLoading(true);
+
     const urlParse = parse(
       `page=${page}&limit=${limit}&search[text]=${qs}&search[user]=${qs}`,
     );
 
-    setLoading(true);
     await api
       .get(`/logs?${decodeURI(stringify({ ...query, ...urlParse }))}`)
       .then(async resp => setLogs(await resp.data))
       .finally(() => setLoading(false));
-  }
+  }, []);
 
   useEffect(() => {
     loadLogs();
