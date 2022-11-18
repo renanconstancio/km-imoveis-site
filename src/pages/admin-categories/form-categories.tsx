@@ -22,7 +22,7 @@ export default function FormCategories() {
     formState: { errors },
   } = useForm<PropsCategories>();
 
-  async function onSubmit(data: PropsCategories) {
+  const onSubmit = useCallback(async (data: PropsCategories) => {
     const newPostData = {
       ...data,
     };
@@ -58,7 +58,7 @@ export default function FormCategories() {
           message: "Não foi possivel fazer um novo cadastro.",
         }),
       );
-  }
+  }, []);
 
   const loadCategories = useCallback(async () => {
     await api

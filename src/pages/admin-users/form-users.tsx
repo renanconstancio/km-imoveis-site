@@ -1,16 +1,14 @@
-import { PropsUsers } from "../../global/types/types";
-
 import { api } from "../../services/api";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
-
+import { useCallback, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
 import { Input } from "../../components/inputs";
 import { maskPhone } from "../../utils/mask";
 import { useAuth } from "../../hooks/use-auth";
+import { PropsUsers } from "./types";
 
 export default function FormUsers() {
   const navigate = useNavigate();
@@ -28,51 +26,54 @@ export default function FormUsers() {
     formState: { errors },
   } = useForm<PropsUsers & { password: string }>();
 
-  async function onSubmit(data: PropsUsers & { password: string }) {
-    const newPostData = {
-      ...data,
-    };
+  const onSubmit = useCallback(
+    async (data: PropsUsers & { password: string }) => {
+      const newPostData = {
+        ...data,
+      };
 
-    if (data.password) {
-      newPostData.password = data.password;
-    }
+      if (data.password) {
+        newPostData.password = data.password;
+      }
 
-    if (userId) {
+      if (userId) {
+        await api
+          .put(`/users/${userId}`, newPostData)
+          .then(() =>
+            changeAlert({
+              message: "Dados salvos com sucesso.",
+            }),
+          )
+          .catch(() =>
+            changeAlert({
+              message: "Não foi possivel fazer um novo cadastro para o imovél.",
+            }),
+          );
+        return;
+      }
+
       await api
-        .put(`/users/${userId}`, newPostData)
-        .then(() =>
+        .post(`/users`, newPostData)
+        .then(async resp => {
           changeAlert({
             message: "Dados salvos com sucesso.",
           }),
-        )
+            navigate({ pathname: `/adm/users/${(await resp.data).id}/edit` });
+        })
         .catch(() =>
           changeAlert({
             message: "Não foi possivel fazer um novo cadastro para o imovél.",
           }),
         );
-      return;
-    }
+    },
+    [],
+  );
 
-    await api
-      .post(`/users`, newPostData)
-      .then(async resp => {
-        changeAlert({
-          message: "Dados salvos com sucesso.",
-        }),
-          navigate({ pathname: `/adm/users/${(await resp.data).id}/edit` });
-      })
-      .catch(() =>
-        changeAlert({
-          message: "Não foi possivel fazer um novo cadastro para o imovél.",
-        }),
-      );
-  }
-
-  async function loadStreets() {
+  const loadStreets = useCallback(async () => {
     await api
       .get(`/users/${userId}`)
       .then(async res => {
-        const resp = (await res.data) as PropsUsers;
+        const resp: PropsUsers = await res.data;
         reset({
           ...resp,
         });
@@ -82,7 +83,7 @@ export default function FormUsers() {
           message: "Não foi possivel conectar ao servidor.",
         }),
       );
-  }
+  }, []);
 
   useEffect(() => {
     if (userId) loadStreets();

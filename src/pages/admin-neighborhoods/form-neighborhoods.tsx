@@ -1,14 +1,13 @@
-import { PropsNeighborhoods } from "../../global/types/types";
-
 import { api } from "../../services/api";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
 import { Input } from "../../components/inputs";
+import { PropsNeighborhoods } from "./types";
 
 export default function FormNeighborhoods() {
   const { changeAlert } = useAlert();
@@ -24,7 +23,7 @@ export default function FormNeighborhoods() {
     formState: { errors },
   } = useForm<PropsNeighborhoods>();
 
-  async function onSubmit(data: PropsNeighborhoods) {
+  const onSubmit = useCallback(async (data: PropsNeighborhoods) => {
     const newPostData = {
       ...data,
     };
@@ -60,10 +59,10 @@ export default function FormNeighborhoods() {
           message: "Não foi possivel fazer um novo cadastro.",
         }),
       );
-  }
+  }, []);
 
-  async function loadNeighborhoods() {
-    api
+  const loadNeighborhoods = useCallback(async () => {
+    await api
       .get(`/neighborhoods/${districtId}`)
       .then(async res =>
         reset({
@@ -75,7 +74,7 @@ export default function FormNeighborhoods() {
           message: "Não foi possivel conectar ao servidor.",
         }),
       );
-  }
+  }, []);
 
   useEffect(() => {
     if (districtId) loadNeighborhoods();

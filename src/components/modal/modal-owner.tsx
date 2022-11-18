@@ -1,21 +1,20 @@
 import { useForm } from "react-hook-form";
-import {
-  PropsCities,
-  PropsCustomers,
-  PropsNeighborhoods,
-  PropsStreet,
-} from "../../global/types/types";
 import { useModal } from "../../hooks/use-modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { Input } from "../inputs";
-import { api } from "../../services/api";
 import { maskCPF, maskPhone } from "../../utils/mask";
 import { findSearch } from "../../utils/functions";
+import { PropsStreets } from "../../pages/admin-streets/types";
+import { PropsNeighborhoods } from "../../pages/admin-neighborhoods/types";
+import { PropsCities } from "../../pages/admin-cities/types";
+import { Input } from "../inputs";
+import { api } from "../../services/api";
+import { PropsOwners } from "../../pages/admin-owners/types";
+import { useCallback } from "react";
 
-type PropsModal = {
+export type PropsModalOwner = {
   addOwner: (data: any) => void;
-  streets: PropsStreet[];
+  streets: PropsStreets[];
   neighborhoods: PropsNeighborhoods[];
   cities: PropsCities[];
 };
@@ -25,16 +24,16 @@ export default function ModalOwner({
   cities,
   neighborhoods,
   streets,
-}: PropsModal) {
+}: PropsModalOwner) {
   const { openOwner, closeOwner } = useModal();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsCustomers>();
+  } = useForm<PropsOwners>();
 
-  async function onSubmit(data: PropsCustomers) {
+  const onSubmit = useCallback(async (data: PropsOwners) => {
     const rwsStreet = findSearch(streets, data.streets_id, "street");
     const rwsDistrict = findSearch(
       neighborhoods,
@@ -60,7 +59,7 @@ export default function ModalOwner({
       addOwner((old: any) => [...old, customers]);
       closeOwner(!openOwner);
     });
-  }
+  }, []);
 
   return (
     <div className={`${openOwner ? "" : "hidden"} modal`}>

@@ -1,11 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { parse, stringify } from "query-string";
-
-type PropsPagination = React.InputHTMLAttributes<HTMLUListElement> & {
-  total: number;
-  currentPage: number;
-  perPage: number;
-};
+import { PropsPagination } from "./types";
 
 export function Pagination({
   total,

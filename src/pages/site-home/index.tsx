@@ -1,12 +1,12 @@
 import "swiper/css";
 import "swiper/css/navigation";
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { PropsImmobles } from "../../global/types/types";
 import { parse } from "query-string";
+import { useCallback, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { PropsImmobles } from "../admin-immobiles/types";
 import { Loading } from "../../components/loading";
-import { H2 } from "../../components/title";
 import { CadSwiper } from "../../components/card-swiper";
+import { H2 } from "../../components/title";
 import { api } from "../../services/api";
 
 export function SiteHome() {
@@ -32,7 +32,7 @@ export function SiteHome() {
   const query = parse(location.search);
   const city = (query.city || "") as string;
 
-  async function loadLocation() {
+  const loadLocation = useCallback(async () => {
     setLoading(true);
     await api
       .get(
@@ -40,9 +40,9 @@ export function SiteHome() {
       )
       .then(async resp => setImmobilesLocation(await resp.data?.data))
       .finally(() => setLoading(false));
-  }
+  }, []);
 
-  async function loadPurchase() {
+  const loadPurchase = useCallback(async () => {
     setLoading(true);
     await api
       .get(
@@ -50,9 +50,9 @@ export function SiteHome() {
       )
       .then(async resp => setImmobilesPurchase(await resp.data?.data))
       .finally(() => setLoading(false));
-  }
+  }, []);
 
-  async function loadExchange() {
+  const loadExchange = useCallback(async () => {
     setLoading(true);
     await api
       .get(
@@ -60,9 +60,9 @@ export function SiteHome() {
       )
       .then(async resp => setImmobilesExchange(await resp.data?.data))
       .finally(() => setLoading(false));
-  }
+  }, []);
 
-  async function loadSale() {
+  const loadSale = useCallback(async () => {
     setLoading(true);
     await api
       .get(
@@ -70,9 +70,9 @@ export function SiteHome() {
       )
       .then(async resp => setImmobilesSales(await resp.data?.data))
       .finally(() => setLoading(false));
-  }
+  }, []);
 
-  async function loadSaleLease() {
+  const loadSaleLease = useCallback(async () => {
     setLoading(true);
     await api
       .get(
@@ -80,9 +80,9 @@ export function SiteHome() {
       )
       .then(async resp => setImmobilesSaleLease(await resp.data?.data))
       .finally(() => setLoading(false));
-  }
+  }, []);
 
-  async function loadSaleBarter() {
+  const loadSaleBarter = useCallback(async () => {
     setLoading(true);
     await api
       .get(
@@ -90,7 +90,7 @@ export function SiteHome() {
       )
       .then(async resp => setImmobilesSaleBarter(await resp.data?.data))
       .finally(() => setLoading(false));
-  }
+  }, []);
 
   useEffect(() => {
     loadLocation();

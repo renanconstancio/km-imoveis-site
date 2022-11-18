@@ -1,9 +1,4 @@
-type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
-  label?: string;
-  mask?: (value: string) => string;
-  register?: any;
-  error?: any;
-};
+import { InputProps } from "./types";
 
 export default function Input({
   label,

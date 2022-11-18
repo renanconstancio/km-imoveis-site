@@ -1,14 +1,14 @@
-import { parse, stringify } from "query-string";
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { PropsCategories } from "../../global/types/types";
 import { useForm } from "react-hook-form";
+import { useCallback, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { parse, stringify } from "query-string";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useGeolocation } from "../../hooks/use-geolocation";
-import { OptionSituationList } from "../situation-option";
-import { PropsFilters, PropsFiltersComp } from "./types";
+import { OptionSituationList } from "../option-situation";
 import { Input } from "../inputs";
+import { PropsFilters, PropsFiltersComp } from "./types";
+import { PropsCategories } from "../../pages/admin-categories/types";
 import { api } from "../../services/api";
 
 export function Filters({ variant = "col" }: PropsFiltersComp) {
@@ -17,10 +17,10 @@ export function Filters({ variant = "col" }: PropsFiltersComp) {
   const [cities, setCities] = useState<
     { city: string; state: string; neighborhoods: { district: string }[] }[]
   >([]);
-  const [citiesDefault, setCitiesDefault] = useState<string>("");
   const [neighborhoods, setNeighborhoods] = useState<{ district: string }[]>(
     [],
   );
+  const [citiesDefault, setCitiesDefault] = useState<string>("");
 
   const { geolocation } = useGeolocation();
   const { handleSubmit, register } = useForm<PropsFilters>();
@@ -30,16 +30,26 @@ export function Filters({ variant = "col" }: PropsFiltersComp) {
   const parsed = parse(location.search);
 
   function onSubmit(data: PropsFilters) {
-    if (data.situation === "Venda") data = { ...data, situation: "sale" };
-    if (data.situation === "Locação") data = { ...data, situation: "location" };
-    if (data.situation === "Compra") data = { ...data, situation: "purchase" };
-    if (data.situation === "Permuta") data = { ...data, situation: "exchange" };
-    if (data.situation === "Venda e Locação")
-      data = { ...data, situation: "sale_lease" };
-    if (data.situation === "Venda e Permuta")
-      data = { ...data, situation: "sale_barter" };
-
-    // if (geolocation?.city) data = { ...data, city: geolocation?.city };
+    switch (data.situation as string) {
+      case "Venda":
+        data = { ...data, situation: PropsEnumSituation.sale };
+        break;
+      case "Locação":
+        data = { ...data, situation: PropsEnumSituation.location };
+        break;
+      case "Compra":
+        data = { ...data, situation: PropsEnumSituation.purchase };
+        break;
+      case "Permuta":
+        data = { ...data, situation: PropsEnumSituation.exchange };
+        break;
+      case "Venda e Locação":
+        data = { ...data, situation: PropsEnumSituation.sale_lease };
+        break;
+      case "Venda e Permuta":
+        data = { ...data, situation: PropsEnumSituation.sale_barter };
+        break;
+    }
 
     if (geolocation?.city !== data.city)
       data = { ...data, city: data.city.split("/")[0] };
@@ -58,17 +68,17 @@ export function Filters({ variant = "col" }: PropsFiltersComp) {
     );
   }
 
-  async function loadFilters() {
+  const loadFilters = useCallback(async () => {
     await api
       .get("/immobiles/website/filter")
       .then(async res => setCities(await res.data));
-  }
+  }, []);
 
-  async function loadCategories() {
+  const loadCategories = useCallback(async () => {
     await api
       .get("/categories")
       .then(async res => setCategories(await res.data));
-  }
+  }, []);
 
   useEffect(() => {
     setCitiesDefault(`${geolocation?.city}`);

@@ -1,15 +1,13 @@
-import { PropsStreets } from "../../global/types/types";
-
 import { api } from "../../services/api";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
-
+import { useCallback, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
 import { Input } from "../../components/inputs";
 import { maskCep } from "../../utils/mask";
+import { PropsStreets } from "./types";
 
 export default function FormStreets() {
   const { changeAlert } = useAlert();
@@ -25,7 +23,7 @@ export default function FormStreets() {
     formState: { errors },
   } = useForm<PropsStreets>();
 
-  async function onSubmit(data: PropsStreets) {
+  const onSubmit = useCallback(async (data: PropsStreets) => {
     const newPostData = {
       ...data,
     };
@@ -59,9 +57,9 @@ export default function FormStreets() {
           message: "Não foi possivel fazer um novo cadastro para o imovél.",
         }),
       );
-  }
+  }, []);
 
-  async function loadStreets() {
+  const loadStreets = useCallback(async () => {
     await api
       .get(`/streets/${streetId}`)
       .then(async res =>
@@ -74,7 +72,7 @@ export default function FormStreets() {
           message: "Não foi possivel conectar ao servidor.",
         }),
       );
-  }
+  }, []);
 
   useEffect(() => {
     if (streetId) loadStreets();

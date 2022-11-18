@@ -12,8 +12,9 @@ import { useAuth } from "../../hooks/use-auth";
 import { greetingMessage } from "../../utils/functions";
 
 export function NavDropDown() {
-  const [open, setOpen] = useState<boolean>(false);
   const { auth, logout } = useAuth();
+  const [open, setOpen] = useState<boolean>(false);
+
   return (
     <section className="bg-white -mx-4 h-14 px-8 mb-5 flex justify-end items-center relative">
       <span className="uppercase text-xs px-4">

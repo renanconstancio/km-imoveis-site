@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Card } from "../../components/card";
-import { PropsImmobles, PropsPagination } from "../../global/types/types";
 import { parse, stringify } from "query-string";
 import { Loading } from "../../components/loading";
 import { Pagination } from "../../components/pagination";
 import { api, tags } from "../../services/api";
+import { PropsPagination } from "../../global/types";
+import { PropsImmobles } from "../admin-immobiles/types";
 
 export function SiteSearch() {
   const [loading, setLoading] = useState(true);
@@ -25,7 +26,7 @@ export function SiteSearch() {
   const limit = (query.limit || "20") as string;
   const page = (query.page || "1") as string;
 
-  async function loadImmobiles() {
+  const loadImmobiles = useCallback(async () => {
     setLoading(true);
 
     const conveterParse = parse(
@@ -40,7 +41,7 @@ export function SiteSearch() {
       )
       .then(async resp => setImmobiles(await resp.data))
       .finally(() => setLoading(false));
-  }
+  }, []);
 
   useEffect(() => {
     loadImmobiles();

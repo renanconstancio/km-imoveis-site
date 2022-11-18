@@ -2,7 +2,7 @@ import { parse, stringify } from "query-string";
 import { KeyboardEvent, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Loading } from "../../components/loading";
-import { PropsLogs, PropsPagination } from "../../global/types/types";
+import { PropsLogs, PropsPagination } from "../../global/types/indexd";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { addClassName } from "../../utils/functions";

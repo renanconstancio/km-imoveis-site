@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBath,
   faBed,
@@ -23,16 +22,10 @@ import {
   faCheck,
   faBolt,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { PropsCardTags } from "./types";
 
-type PropsTags = {
-  cardTags: {
-    tag: string;
-    icon: string;
-  }[];
-  cardTag: string;
-};
-
-export function CardTags({ cardTags, cardTag }: PropsTags) {
+export function CardTags({ cardTags, cardTag }: PropsCardTags) {
   const arrayString = cardTag?.split(",");
   return (
     <>

@@ -1,11 +1,10 @@
+import { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
 import { Footer } from "../footer";
 import { Header } from "../header";
 import { Filters } from "../filters";
 import { CarouselIndex } from "../carousel";
 import { PropsBanners } from "../carousel/types";
-import { api } from "../../services/api";
 
 import banner01 from "../../assets/banners/banner-a.jpg";
 import banner02 from "../../assets/banners/banner-b.jpg";
@@ -36,20 +35,20 @@ const bannerFix: PropsBanners[] = [
 ];
 
 export default function Site() {
-  const [banners, setBanners] = useState<PropsBanners[]>(bannerFix);
+  const [banners] = useState<PropsBanners[]>(bannerFix);
 
   const location = useLocation();
 
-  async function loadBanners() {
-    await api.get("/immobiles/banner/list").then(async resp => {
-      const banner = await resp.data;
-      setBanners(old => [...old, ...banner]);
-    });
-  }
+  // async function loadBanners() {
+  //   await api.get("/immobiles/banner/list").then(async resp => {
+  //     const banner = await resp.data;
+  //     setBanners(old => [...old, ...banner]);
+  //   });
+  // }
 
-  useEffect(() => {
-    loadBanners();
-  }, []);
+  // useEffect(() => {
+  //   loadBanners();
+  // }, []);
 
   return (
     <div className="bg-gray-200 flex flex-1 flex-col relative">

@@ -1,13 +1,7 @@
-import {
-  PropsCities,
-  PropsCustomers,
-  PropsNeighborhoods,
-  PropsStreets,
-} from "../../global/types/types";
-
+import { api } from "../../services/api";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAlert } from "../../hooks/use-alert";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,7 +14,10 @@ import { maskCPF, maskPhone } from "../../utils/mask";
 import { useModal } from "../../hooks/use-modal";
 import { ModalCity, ModalDistrict, ModalStreet } from "../../components/modal";
 import { findSearch } from "../../utils/functions";
-import { api } from "../../services/api";
+import { PropsCities } from "../admin-cities/types";
+import { PropsNeighborhoods } from "../admin-neighborhoods/types";
+import { PropsStreets } from "../admin-streets/types";
+import { PropsTenant } from "./types";
 
 export default function FormCustomers() {
   const [cities, setCities] = useState<PropsCities[]>([]);
@@ -47,9 +44,9 @@ export default function FormCustomers() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsCustomers>();
+  } = useForm<PropsTenant>();
 
-  async function onSubmit(data: PropsCustomers) {
+  const onSubmit = useCallback(async (data: PropsTenant) => {
     const rwsStreet = findSearch(streets, data.streets_id, "street");
     const rwsDistrict = findSearch(
       neighborhoods,
@@ -103,13 +100,13 @@ export default function FormCustomers() {
           message: "Não foi possivel fazer um novo cadastro para o imovél.",
         }),
       );
-  }
+  }, []);
 
-  async function loadCustomers() {
+  const loadCustomers = useCallback(async () => {
     await api
       .get(`/customers/${customerId}`)
       .then(async res => {
-        const customer = (await res.data) as PropsCustomers;
+        const customer: PropsTenant = await res.data;
         reset({
           ...customer,
           cities_id: [customer.city?.city, customer.city?.state.state].join(
@@ -125,26 +122,32 @@ export default function FormCustomers() {
           message: "Não foi possivel conectar ao servidor.",
         });
       });
-  }
+  }, []);
 
-  useEffect(() => {
-    (async () => {
-      await api.get("/cities").then(async res => setCities(await res.data));
-    })();
+  const loadCities = useCallback(async () => {
+    await api.get("/cities").then(async res => setCities(await res.data));
   }, []);
 
   useEffect(() => {
-    (async () => {
-      await api
-        .get("/neighborhoods")
-        .then(async res => setNeighborhoods(await res.data));
-    })();
+    loadCities();
+  }, []);
+
+  const loadNeighborhoods = useCallback(async () => {
+    await api
+      .get("/neighborhoods")
+      .then(async res => setNeighborhoods(await res.data));
   }, []);
 
   useEffect(() => {
-    (async () => {
-      await api.get("/streets").then(async res => setStreets(await res.data));
-    })();
+    loadNeighborhoods();
+  }, []);
+
+  const loadStreets = useCallback(async () => {
+    await api.get("/streets").then(async res => setStreets(await res.data));
+  }, []);
+
+  useEffect(() => {
+    loadStreets();
   }, []);
 
   useEffect(() => {

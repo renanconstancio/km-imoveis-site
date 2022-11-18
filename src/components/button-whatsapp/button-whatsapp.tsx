@@ -1,4 +1,4 @@
-import { PropsWhatsapp } from "../../global/types/types";
+import { PropsWhatsapp } from "./types";
 import faWhatsapp from "../../assets/whatsapp-white.svg";
 import { toNumber } from "../../utils/functions";
 

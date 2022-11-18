@@ -1,3 +1,5 @@
+import { PropsEnumSituation } from "../../global/types";
+
 export type PropsFiltersComp = {
   variant?: "row" | "col";
 };
@@ -7,5 +9,5 @@ export type PropsFilters = {
   district: string;
   city: string;
   reference: string;
-  situation: string | "location" | "purchase" | "sale" | "exchange";
+  situation: PropsEnumSituation;
 };

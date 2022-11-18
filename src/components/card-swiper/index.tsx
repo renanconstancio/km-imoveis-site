@@ -1,14 +1,14 @@
-import { Swiper, SwiperSlide } from "swiper/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
+import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper";
-// import { PropsImmobles } from "../../global/types/types";
+
+import { PropsCardSwiper } from "./types";
 import { Card } from "../../components/card";
 import { tags } from "../../services/api";
-import { PropsCardSwiper } from "./types";
 
 export function CadSwiper({ mapping, id }: PropsCardSwiper) {
   return (

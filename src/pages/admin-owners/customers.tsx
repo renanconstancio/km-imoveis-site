@@ -1,9 +1,4 @@
-import { parse, stringify } from "query-string";
-import { KeyboardEvent, useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Loading } from "../../components/loading";
-import { PropsCustomers, PropsPagination } from "../../global/types/types";
-import { Pagination } from "../../components/pagination";
+import { api } from "../../services/api";
 import {
   faEdit,
   faSort,
@@ -11,12 +6,18 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { api } from "../../services/api";
+import { parse, stringify } from "query-string";
+import { KeyboardEvent, useCallback, useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Loading } from "../../components/loading";
+import { Pagination } from "../../components/pagination";
+import { PropsOwners } from "./types";
+import { PropsPagination } from "../../global/types";
 
 export default function Customers() {
   const [loading, setLoading] = useState<boolean>(true);
-  const [customers, setCustomers] = useState<PropsPagination<PropsCustomers[]>>(
-    {} as PropsPagination<PropsCustomers[]>,
+  const [customers, setCustomers] = useState<PropsPagination<PropsOwners[]>>(
+    {} as PropsPagination<PropsOwners[]>,
   );
 
   const navigate = useNavigate();
@@ -46,37 +47,35 @@ export default function Customers() {
     });
   }
 
-  async function handleDelete({
-    id,
-    first_name,
-  }: {
-    id: string;
-    first_name: string;
-  }) {
-    if (!confirm(`Você deseja excluir ${first_name}?`)) return;
-    setLoading(true);
-    await api
-      .delete(`/customers/${id}`)
-      .then(() =>
-        setCustomers({
-          ...customers,
-          data: customers?.data?.filter((f: { id: string }) => f.id !== id),
-        }),
-      )
-      .finally(() => setLoading(false));
-  }
+  const handleDelete = useCallback(
+    async ({ id, first_name }: { id: string; first_name: string }) => {
+      if (!confirm(`Você deseja excluir ${first_name}?`)) return;
+      setLoading(true);
+      await api
+        .delete(`/customers/${id}`)
+        .then(() =>
+          setCustomers({
+            ...customers,
+            data: customers?.data?.filter((f: { id: string }) => f.id !== id),
+          }),
+        )
+        .finally(() => setLoading(false));
+    },
+    [],
+  );
 
-  async function loadCustomers() {
+  const loadCustomers = useCallback(async () => {
+    setLoading(true);
+
     const conveterParse = parse(
       `page=${page}&limit=${limit}&search[type]=owner&search[last_name]=${qs}&search[first_name]=${qs}&search[cpf]=${qs}`,
     );
 
-    setLoading(true);
     await api
       .get(`/customers?${decodeURI(stringify({ ...query, ...conveterParse }))}`)
       .then(async resp => setCustomers(await resp.data))
       .finally(() => setLoading(false));
-  }
+  }, []);
 
   useEffect(() => {
     loadCustomers();

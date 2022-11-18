@@ -1,8 +1,7 @@
 import { parse, stringify } from "query-string";
-import { KeyboardEvent, useEffect, useState } from "react";
+import { KeyboardEvent, useCallback, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Loading } from "../../components/loading";
-import { PropsImmobles, PropsPagination } from "../../global/types/types";
 import { Pagination } from "../../components/pagination";
 import {
   faEdit,
@@ -13,6 +12,8 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { situationText } from "../../utils/functions";
 import { api } from "../../services/api";
+import { PropsPagination } from "../../global/types";
+import { PropsImmobles } from "./types";
 
 export default function Immobiles() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -28,26 +29,6 @@ export default function Immobiles() {
   const qs = (query.q || "") as unknown as string;
   const limit = (query.limit || "25") as string;
   const page = (query.page || "1") as string;
-
-  async function handleDelete({
-    id,
-    description,
-  }: {
-    id: string;
-    description: string;
-  }) {
-    if (!confirm(`Você deseja excluir ${description}?`)) return;
-    setLoading(true);
-    await api
-      .delete(`/immobiles/${id}`)
-      .then(() =>
-        setImmobiles({
-          ...immobiles,
-          data: immobiles?.data?.filter((f: { id: string }) => f.id !== id),
-        }),
-      )
-      .finally(() => setLoading(false));
-  }
 
   function handleSearch(event: KeyboardEvent<EventTarget & HTMLInputElement>) {
     if (event.currentTarget.value) {
@@ -67,17 +48,35 @@ export default function Immobiles() {
     });
   }
 
-  async function loadImmobiles() {
+  const handleDelete = useCallback(
+    async ({ id, description }: { id: string; description: string }) => {
+      if (!confirm(`Você deseja excluir ${description}?`)) return;
+      setLoading(true);
+      await api
+        .delete(`/immobiles/${id}`)
+        .then(() =>
+          setImmobiles({
+            ...immobiles,
+            data: immobiles?.data?.filter((f: { id: string }) => f.id !== id),
+          }),
+        )
+        .finally(() => setLoading(false));
+    },
+    [],
+  );
+
+  const loadImmobiles = useCallback(async () => {
+    setLoading(true);
+
     const urlParse = parse(
       `page=${page}&limit=${limit}&search[reference]=${qs}&search[description]=${qs}&search[city]=${qs}&search[street]=${qs}&search[district]=${qs}`,
     );
 
-    setLoading(true);
     await api
       .get(`/immobiles?${decodeURI(stringify({ ...query, ...urlParse }))}`)
       .then(async resp => setImmobiles(await resp.data))
       .finally(() => setLoading(false));
-  }
+  }, []);
 
   useEffect(() => {
     loadImmobiles();

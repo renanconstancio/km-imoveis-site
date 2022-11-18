@@ -1,4 +1,4 @@
-import { PropsImmobles } from "../../global/types/types";
+import { PropsImmobles } from "../../pages/admin-immobiles/types";
 
 export type PropsCardSwiper = {
   mapping: PropsImmobles[];

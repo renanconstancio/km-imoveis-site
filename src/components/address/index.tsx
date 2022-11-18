@@ -1,11 +1,8 @@
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { PropsAddress } from "./types";
 
-type Props = React.HTMLAttributes<HTMLHeadElement> & {
-  address: string[];
-};
-
-export function Address({ address }: Props) {
+export function Address({ address }: PropsAddress) {
   return (
     <address className="text-sm mb-2">
       {address && (

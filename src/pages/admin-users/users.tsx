@@ -1,11 +1,11 @@
+import { api } from "../../services/api";
 import { parse } from "query-string";
-import { KeyboardEvent, useEffect, useState } from "react";
+import { KeyboardEvent, useCallback, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Loading } from "../../components/loading";
-import { PropsUsers } from "../../global/types/types";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { api } from "../../services/api";
+import { PropsUsers } from "./types";
 
 export default function Users() {
   const [clear, setClear] = useState<boolean>(false);
@@ -34,7 +34,7 @@ export default function Users() {
     }
   }
 
-  async function handleDelete(data: PropsUsers) {
+  const handleDelete = useCallback(async (data: PropsUsers) => {
     if (!confirm(`Você deseja excluir ${data.first_name}?`)) return;
     setLoading(true);
     await api
@@ -43,15 +43,15 @@ export default function Users() {
         setUsers(users?.filter((f: { id: string }) => f.id !== data.id)),
       )
       .finally(() => setLoading(false));
-  }
+  }, []);
 
-  async function loadUsers() {
+  const loadUsers = useCallback(async () => {
     setLoading(true);
     await api
       .get(`/users`)
       .then(async resp => setUsers(await resp.data))
       .finally(() => setLoading(false));
-  }
+  }, []);
 
   useEffect(() => {
     loadUsers();

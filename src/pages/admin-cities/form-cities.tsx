@@ -24,7 +24,7 @@ export default function FormCities() {
     formState: { errors },
   } = useForm<PropsCities>();
 
-  async function onSubmit(data: PropsCities) {
+  const onSubmit = useCallback(async (data: PropsCities) => {
     const rwsState = findSearch(states, data.states_id, "state");
     const newPostData = {
       ...data,
@@ -60,12 +60,14 @@ export default function FormCities() {
           message: "Não foi possivel fazer um novo cadastro para o imovél.",
         }),
       );
-  }
+  }, []);
+
+  const loadStates = useCallback(async () => {
+    await api.get("/states").then(async res => setSates(await res.data));
+  }, []);
 
   useEffect(() => {
-    (async () => {
-      api.get("/states").then(async res => setSates(await res.data));
-    })();
+    loadStates();
   }, []);
 
   const loadCities = useCallback(async () => {

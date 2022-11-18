@@ -1,5 +1,11 @@
 import axios from "axios";
-import { createContext, ReactNode, useEffect, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
 export type GeolocationType = {
   latitude: string;
@@ -22,7 +28,7 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
     {} as GeolocationType,
   );
 
-  async function loadCities(lat: string, lon: string) {
+  const loadCities = useCallback(async (lat: string, lon: string) => {
     console.log(lat);
     await axios
       .get(
@@ -36,7 +42,7 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
           city: address.city_district,
         });
       });
-  }
+  }, []);
 
   useEffect(() => {
     if (navigator.geolocation) {

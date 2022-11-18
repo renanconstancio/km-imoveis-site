@@ -1,16 +1,16 @@
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useModal } from "../../hooks/use-modal";
-import { PropsCities } from "../../global/types/types";
-import { api } from "../../services/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { api } from "../../services/api";
+import { PropsCities } from "../../pages/admin-cities/types";
 
-type PropsModal = {
+export type PropsModalCity = {
   addCities: (data: any) => void;
 };
 
-export default function ModalCity({ addCities }: PropsModal) {
+export default function ModalCity({ addCities }: PropsModalCity) {
   const [states, setSates] = useState([]);
   const [statesId, setSatesId] = useState();
   const { openCity, closeCity } = useModal();
@@ -29,7 +29,7 @@ export default function ModalCity({ addCities }: PropsModal) {
     setSatesId(id);
   };
 
-  async function onSubmit(data: PropsCities) {
+  const onSubmit = useCallback(async (data: PropsCities) => {
     await api
       .post(`/cities`, { city: data.city, states_id: statesId })
       .then(async res => {
@@ -37,12 +37,14 @@ export default function ModalCity({ addCities }: PropsModal) {
         addCities((old: any) => [...old, cities]);
         closeCity(!openCity);
       });
-  }
+  }, []);
+
+  const loadStates = useCallback(async () => {
+    await api.get("/states").then(async res => setSates(await res.data));
+  }, []);
 
   useEffect(() => {
-    (async () => {
-      api.get("/states").then(async res => setSates(await res.data));
-    })();
+    loadStates();
   }, []);
 
   return (

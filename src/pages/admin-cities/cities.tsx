@@ -18,9 +18,7 @@ export default function Cities() {
 
   const q = (query.q || "") as unknown as string;
 
-  function handleKeyPressSearch(
-    event: KeyboardEvent<EventTarget & HTMLInputElement>,
-  ) {
+  function handleSearch(event: KeyboardEvent<EventTarget & HTMLInputElement>) {
     if (event.currentTarget.value) {
       if (event.code === "Enter" || event.keyCode === 13) {
         setClear(!clear);
@@ -35,7 +33,7 @@ export default function Cities() {
     }
   }
 
-  async function handleDelete(data: PropsCities) {
+  const handleDelete = useCallback(async (data: PropsCities) => {
     if (!confirm(`Você deseja excluir ${data.city}?`)) return;
     setLoading(true);
     await api
@@ -44,7 +42,7 @@ export default function Cities() {
       .then(() =>
         setCities(cities?.filter((f: { id: string }) => f.id !== data.id)),
       );
-  }
+  }, []);
 
   const loadCities = useCallback(async () => {
     setLoading(true);
@@ -69,7 +67,7 @@ export default function Cities() {
               type="text"
               className="input-form"
               defaultValue={`${query.q || ""}`}
-              onKeyDown={handleKeyPressSearch}
+              onKeyDown={handleSearch}
             />
             {(q || clear) && (
               <button

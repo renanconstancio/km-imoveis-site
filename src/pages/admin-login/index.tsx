@@ -7,11 +7,8 @@ import { useForm } from "react-hook-form";
 import { Input } from "../../components/inputs";
 import { Alert } from "../../components/alert";
 import { api } from "../../services/api";
-
-type PropsUserLogin = {
-  email: string;
-  password: string;
-};
+import { PropsUserLogin } from "./types";
+import { useCallback } from "react";
 
 export function Login() {
   const { login } = useAuth();
@@ -22,7 +19,7 @@ export function Login() {
     formState: { errors },
   } = useForm<PropsUserLogin>();
 
-  async function onHandleSubmit(data: PropsUserLogin) {
+  const onHandleSubmit = useCallback(async (data: PropsUserLogin) => {
     await api
       .post(`/users/login`, data)
       .then(async resp => {
@@ -40,7 +37,7 @@ export function Login() {
           message: "E-mail/Senha incorreto!.",
         }),
       );
-  }
+  }, []);
 
   return (
     <section

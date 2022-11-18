@@ -1,14 +1,12 @@
-import { PropsStates } from "../../global/types/types";
-
 import { api } from "../../services/api";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
-
+import { useCallback, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
 import { Input } from "../../components/inputs";
+import { PropsStates } from "./types";
 
 export default function FormStates() {
   const { changeAlert } = useAlert();
@@ -24,7 +22,7 @@ export default function FormStates() {
     formState: { errors },
   } = useForm<PropsStates>();
 
-  async function onSubmit(data: PropsStates) {
+  const onSubmit = useCallback(async (data: PropsStates) => {
     const newPostData = {
       ...data,
     };
@@ -58,15 +56,15 @@ export default function FormStates() {
           message: "Não foi possivel fazer um novo cadastro.",
         }),
       );
-  }
+  }, []);
 
-  async function loadStates() {
+  const loadStates = useCallback(async () => {
     await api.get(`/states/${stateId}`).then(async res =>
       reset({
         ...(await res.data),
       }),
     );
-  }
+  }, []);
 
   useEffect(() => {
     if (stateId) loadStates();

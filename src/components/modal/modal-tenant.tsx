@@ -1,21 +1,20 @@
 import { useForm } from "react-hook-form";
-import {
-  PropsCities,
-  PropsCustomers,
-  PropsNeighborhoods,
-  PropsStreet,
-} from "../../global/types/types";
 import { useModal } from "../../hooks/use-modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { Input } from "../inputs";
-import { api } from "../../services/api";
 import { maskCPF, maskPhone } from "../../utils/mask";
 import { findSearch } from "../../utils/functions";
+import { PropsStreets } from "../../pages/admin-streets/types";
+import { PropsNeighborhoods } from "../../pages/admin-neighborhoods/types";
+import { PropsCities } from "../../pages/admin-cities/types";
+import { Input } from "../inputs";
+import { api } from "../../services/api";
+import { PropsTenant } from "../../pages/admin-tenant/types";
+import { useCallback } from "react";
 
-type PropsModal = {
+type PropsModalTenant = {
   addTenant: (data: any) => void;
-  streets: PropsStreet[];
+  streets: PropsStreets[];
   neighborhoods: PropsNeighborhoods[];
   cities: PropsCities[];
 };
@@ -25,16 +24,16 @@ export default function ModalTenant({
   cities,
   neighborhoods,
   streets,
-}: PropsModal) {
+}: PropsModalTenant) {
   const { openTenant, closeTenant } = useModal();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsCustomers>();
+  } = useForm<PropsTenant>();
 
-  async function onSubmit(data: PropsCustomers) {
+  const onSubmit = useCallback(async (data: PropsTenant) => {
     const rwsStreet = findSearch(streets, data.streets_id, "street");
     const rwsDistrict = findSearch(
       neighborhoods,
@@ -63,7 +62,7 @@ export default function ModalTenant({
       addTenant((old: any) => [...old, customers]);
       closeTenant(!openTenant);
     });
-  }
+  }, []);
 
   return (
     <div className={`${openTenant ? "" : "hidden"} modal`}>

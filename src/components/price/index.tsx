@@ -1,10 +1,7 @@
 import { maskCurrency } from "../../utils/mask";
+import { PropsPrice } from "./types";
 
-type Props = React.HTMLAttributes<HTMLSpanElement> & {
-  price: string;
-};
-
-export function Price({ price, ...rest }: Props) {
+export function Price({ price, ...rest }: PropsPrice) {
   return (
     <span
       className="font-play font-bold text-km-blue text-sm block mb-3"

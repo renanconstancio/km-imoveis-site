@@ -1,44 +1,15 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExpand } from "@fortawesome/free-solid-svg-icons";
-import { Address } from "../address";
-import { Price } from "../price";
-import { H2 } from "../title";
-import { Link } from "react-router-dom";
 import {
   situationText,
   situationTextClassName,
   slugiFy,
 } from "../../utils/functions";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link } from "react-router-dom";
+import { faExpand } from "@fortawesome/free-solid-svg-icons";
 import { CardTags } from "../card-tags";
-
-type PropsCard = React.HTMLAttributes<HTMLLIElement> & {
-  reference: string;
-  description: string;
-  terrainArea: string;
-  buildingArea: string;
-  address: string[];
-  salePrice: string;
-  rentPrice: string;
-  images: string[];
-  situation:
-    | "exchange"
-    | "location"
-    | "purchase"
-    | "sale"
-    | "sale_barter"
-    | "sale_lease";
-  // city?: {
-  //   city: string;
-  //   state: {
-  //     state: string;
-  //   };
-  // };
-  tags: {
-    tag: string;
-    icon: string;
-  }[];
-  tag: string;
-};
+import { Address } from "../address";
+import { Price } from "../price";
+import { H2 } from "../title";
 
 export function Card({
   situation,

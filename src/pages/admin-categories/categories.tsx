@@ -36,7 +36,7 @@ export default function Categories() {
     }
   }
 
-  async function handleDelete(data: PropsCategories) {
+  const handleDelete = useCallback(async (data: PropsCategories) => {
     if (!confirm(`Você deseja excluir ${data.category}?`)) return;
     setLoading(true);
     await api
@@ -47,7 +47,7 @@ export default function Categories() {
           categories?.filter((f: { id: string }) => f.id !== data.id),
         ),
       );
-  }
+  }, []);
 
   const loadCategories = useCallback(async () => {
     setLoading(true);

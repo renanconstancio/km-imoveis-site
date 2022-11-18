@@ -2,18 +2,14 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect } from "react";
 import { useAlert } from "../../hooks/use-alert";
+import { PropsAlert } from "./types";
 
-type Props = {
-  title?: string;
-  message: string;
-};
-
-export function Alert({ title, message }: Props) {
+export function Alert({ title, message }: PropsAlert) {
   const { changeAlert } = useAlert();
 
   useEffect(() => {
     setTimeout(() => {
-      changeAlert({} as Props);
+      changeAlert({} as PropsAlert);
     }, 2800);
   }, []);
 

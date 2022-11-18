@@ -1,11 +1,11 @@
+import { api } from "../../services/api";
 import { parse } from "query-string";
-import { KeyboardEvent, useEffect, useState } from "react";
+import { KeyboardEvent, useCallback, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Loading } from "../../components/loading";
-import { PropsNeighborhoods } from "../../global/types/types";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { api } from "../../services/api";
+import { PropsNeighborhoods } from "./types";
 
 export default function Neighborhoods() {
   const [clear, setClear] = useState<boolean>(false);
@@ -18,9 +18,7 @@ export default function Neighborhoods() {
 
   const q = (query.q || "") as unknown as string;
 
-  function handleKeyPressSearch(
-    event: KeyboardEvent<EventTarget & HTMLInputElement>,
-  ) {
+  function handleSearch(event: KeyboardEvent<EventTarget & HTMLInputElement>) {
     if (event.currentTarget.value) {
       if (event.code === "Enter" || event.keyCode === 13) {
         setClear(!clear);
@@ -36,7 +34,7 @@ export default function Neighborhoods() {
     }
   }
 
-  async function handleDelete(data: PropsNeighborhoods) {
+  const handleDelete = useCallback(async (data: PropsNeighborhoods) => {
     if (!confirm(`Você deseja excluir ${data.district}?`)) return;
     setLoading(true);
     await api
@@ -47,15 +45,15 @@ export default function Neighborhoods() {
         ),
       )
       .finally(() => setLoading(false));
-  }
+  }, []);
 
-  async function loadNeighborhoods() {
+  const loadNeighborhoods = useCallback(async () => {
     setLoading(true);
     await api
       .get(`/neighborhoods`)
       .then(async resp => setNeighborhoods(await resp.data))
       .finally(() => setLoading(false));
-  }
+  }, []);
 
   useEffect(() => {
     loadNeighborhoods();
@@ -72,7 +70,7 @@ export default function Neighborhoods() {
               type="text"
               className="input-form"
               defaultValue={`${query.q || ""}`}
-              onKeyDown={handleKeyPressSearch}
+              onKeyDown={handleSearch}
             />
             {(q || clear) && (
               <button

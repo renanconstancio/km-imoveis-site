@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { useAlert } from "../../hooks/use-alert";
 import { useAuth } from "../../hooks/use-auth";
 import { Login } from "../../pages/admin-login";

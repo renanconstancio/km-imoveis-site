@@ -1,11 +1,11 @@
+import { api } from "../../services/api";
 import { parse } from "query-string";
-import { KeyboardEvent, useEffect, useState } from "react";
+import { KeyboardEvent, useCallback, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Loading } from "../../components/loading";
-import { PropsStreets } from "../../global/types/types";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { api } from "../../services/api";
+import { PropsStreets } from "./types";
 
 export default function Streets() {
   const [clear, setClear] = useState<boolean>(false);
@@ -18,9 +18,7 @@ export default function Streets() {
 
   const q = (query.q || "") as unknown as string;
 
-  function handleKeyPressSearch(
-    event: KeyboardEvent<EventTarget & HTMLInputElement>,
-  ) {
+  function handleSearch(event: KeyboardEvent<EventTarget & HTMLInputElement>) {
     if (event.currentTarget.value) {
       if (event.code === "Enter" || event.keyCode === 13) {
         setClear(!clear);
@@ -36,7 +34,7 @@ export default function Streets() {
     }
   }
 
-  async function handleDelete(data: PropsStreets) {
+  const handleDelete = useCallback(async (data: PropsStreets) => {
     if (!confirm(`Você deseja excluir ${data.street}?`)) return;
     setLoading(true);
     await api
@@ -45,15 +43,15 @@ export default function Streets() {
         setStreets(streets?.filter((f: { id: string }) => f.id !== data.id)),
       )
       .finally(() => setLoading(false));
-  }
+  }, []);
 
-  async function loadStreets() {
+  const loadStreets = useCallback(async () => {
     setLoading(true);
     await api
       .get(`/streets`)
       .then(async resp => setStreets(await resp.data))
       .finally(() => setLoading(false));
-  }
+  }, []);
 
   useEffect(() => {
     loadStreets();
@@ -70,7 +68,7 @@ export default function Streets() {
               type="text"
               className="input-form"
               defaultValue={`${query.q || ""}`}
-              onKeyDown={handleKeyPressSearch}
+              onKeyDown={handleSearch}
             />
             {(q || clear) && (
               <button

@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { PropsImmobles } from "../../global/types/types";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { H2 } from "../../components/title";
@@ -12,8 +11,9 @@ import { faExpand } from "@fortawesome/free-solid-svg-icons";
 import { situationText, situationTextClassName } from "../../utils/functions";
 import { ButtonWhatsapp } from "../../components/button-whatsapp";
 import { CardTags } from "../../components/card-tags";
-import { api, tags } from "../../services/api";
 import { CadSwiper } from "../../components/card-swiper";
+import { PropsImmobles } from "../admin-immobiles/types";
+import { api, tags } from "../../services/api";
 
 export function SiteImmoble() {
   const [loading, setLoading] = useState(true);
@@ -24,19 +24,19 @@ export function SiteImmoble() {
 
   const { reference } = useParams<{ reference: string | undefined }>();
 
-  async function loadImmoble(reference: string) {
+  const loadImmoble = useCallback(async (reference: string) => {
     setLoading(true);
     await api
       .get(`/immobiles/${reference}/reference`)
       .then(async resp => setImmoble(await resp.data))
       .finally(() => setLoading(false));
-  }
+  }, []);
 
-  async function loadImmobles() {
+  const loadImmobles = useCallback(async () => {
     await api
       .get(`/immobiles/website/list?limit=8`)
       .then(async resp => setImmobiles(await resp.data?.data));
-  }
+  }, []);
 
   useEffect(() => {
     if (reference) loadImmoble(reference);

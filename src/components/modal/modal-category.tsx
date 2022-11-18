@@ -1,24 +1,25 @@
+import { useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { PropsCategory } from "../../global/types/types";
 import { useModal } from "../../hooks/use-modal";
-import { api } from "../../services/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { PropsCategories } from "../../pages/admin-categories/types";
+import { api } from "../../services/api";
 
-type PropsModal = {
+export type PropsModalCategory = {
   addCategories: (data: any) => void;
 };
 
-export default function ModalCategory({ addCategories }: PropsModal) {
+export default function ModalCategory({ addCategories }: PropsModalCategory) {
   const { openCategory, closeCategory } = useModal();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsCategory>();
+  } = useForm<PropsCategories>();
 
-  async function onSubmit(data: PropsCategory) {
+  const onSubmit = useCallback(async (data: PropsCategories) => {
     await api
       .post(`/categories`, {
         ...data,
@@ -26,10 +27,10 @@ export default function ModalCategory({ addCategories }: PropsModal) {
       })
       .then(async res => {
         const category = await res.data;
-        addCategories((old: PropsCategory[]) => [...old, category]);
+        addCategories((old: any) => [...old, category]);
         closeCategory(!openCategory);
       });
-  }
+  }, []);
 
   return (
     <div className={`${openCategory ? "" : "hidden"} modal`}>
