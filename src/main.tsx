@@ -2,25 +2,15 @@ import "./global/styles/app.css";
 import "react-responsive-carousel/lib/styles/carousel.css";
 
 import ReactDOM from "react-dom/client";
-import { RouterProvider } from "react-router-dom";
-import { HelmetProvider } from "react-helmet-async";
 
-import { router } from "./routes";
-import { AlertProvider } from "./context/alert";
-import { ModalProvider } from "./context/modal";
-import { AuthProvider } from "./context/auth";
-import { GeolocationProvider } from "./context/geolocation";
+import { RoutesAdm } from "./routes/routes-adm";
+import { BrowserRouter, Routes } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
+import { RoutesSite } from "./routes/routes-site";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <AuthProvider>
-    <GeolocationProvider>
-      <AlertProvider>
-        <ModalProvider>
-          <HelmetProvider>
-            <RouterProvider router={router} />
-          </HelmetProvider>
-        </ModalProvider>
-      </AlertProvider>
-    </GeolocationProvider>
-  </AuthProvider>,
+  <HelmetProvider>
+    <RoutesAdm />
+    <RoutesSite />
+  </HelmetProvider>,
 );

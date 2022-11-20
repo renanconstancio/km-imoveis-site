@@ -7,7 +7,7 @@ import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
 import { Input } from "../../components/inputs";
 import { maskPhone } from "../../utils/mask";
-import { PropsUsers } from "../admin-users/types";
+import { TUsers } from "../admin-users/types";
 
 export default function FormUsers() {
   const { changeAlert } = useAlert();
@@ -22,50 +22,47 @@ export default function FormUsers() {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<PropsUsers & { password: string }>();
+  } = useForm<TUsers & { password: string }>();
 
-  const onSubmit = useCallback(
-    async (data: PropsUsers & { password: string }) => {
-      const newPostData = {
-        ...data,
-      };
+  const onSubmit = useCallback(async (data: TUsers & { password: string }) => {
+    const newPostData = {
+      ...data,
+    };
 
-      if (data.password) {
-        newPostData.password = data.password;
-      }
+    if (data.password) {
+      newPostData.password = data.password;
+    }
 
-      if (userId) {
-        await api
-          .put(`/users/${userId}`, newPostData)
-          .then(() =>
-            changeAlert({
-              message: "Dados salvos com sucesso.",
-            }),
-          )
-          .catch(() =>
-            changeAlert({
-              message: "Não foi possivel fazer um novo cadastro para o imovél.",
-            }),
-          );
-        return;
-      }
-
+    if (userId) {
       await api
-        .post(`/users`, newPostData)
-        .then(async resp => {
+        .put(`/users/${userId}`, newPostData)
+        .then(() =>
           changeAlert({
             message: "Dados salvos com sucesso.",
           }),
-            navigate({ pathname: `/adm/users/${(await resp.data).id}/edit` });
-        })
+        )
         .catch(() =>
           changeAlert({
             message: "Não foi possivel fazer um novo cadastro para o imovél.",
           }),
         );
-    },
-    [],
-  );
+      return;
+    }
+
+    await api
+      .post(`/users`, newPostData)
+      .then(async resp => {
+        changeAlert({
+          message: "Dados salvos com sucesso.",
+        }),
+          navigate({ pathname: `/adm/users/${(await resp.data).id}/edit` });
+      })
+      .catch(() =>
+        changeAlert({
+          message: "Não foi possivel fazer um novo cadastro para o imovél.",
+        }),
+      );
+  }, []);
 
   const loadStreets = useCallback(async () => {
     await api

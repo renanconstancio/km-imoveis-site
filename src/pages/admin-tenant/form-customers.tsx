@@ -14,15 +14,15 @@ import { maskCPF, maskPhone } from "../../utils/mask";
 import { useModal } from "../../hooks/use-modal";
 import { ModalCity, ModalDistrict, ModalStreet } from "../../components/modal";
 import { findSearch } from "../../utils/functions";
-import { PropsCities } from "../admin-cities/types";
-import { PropsNeighborhoods } from "../admin-neighborhoods/types";
-import { PropsStreets } from "../admin-streets/types";
-import { PropsTenant } from "./types";
+import { TCities } from "../admin-cities/types";
+import { TNeighborhoods } from "../admin-neighborhoods/types";
+import { TStreets } from "../admin-streets/types";
+import { TTenant } from "./types";
 
 export default function FormCustomers() {
-  const [cities, setCities] = useState<PropsCities[]>([]);
-  const [neighborhoods, setNeighborhoods] = useState<PropsNeighborhoods[]>([]);
-  const [streets, setStreets] = useState<PropsStreets[]>([]);
+  const [cities, setCities] = useState<TCities[]>([]);
+  const [neighborhoods, setNeighborhoods] = useState<TNeighborhoods[]>([]);
+  const [streets, setStreets] = useState<TStreets[]>([]);
 
   const {
     openStreet,
@@ -37,16 +37,16 @@ export default function FormCustomers() {
 
   const navigate = useNavigate();
 
-  const { customerId } = useParams<{ customerId: string | undefined }>();
+  const { tenantId } = useParams<{ tenantId: string | undefined }>();
 
   const {
     reset,
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsTenant>();
+  } = useForm<TTenant>();
 
-  const onSubmit = useCallback(async (data: PropsTenant) => {
+  async function onSubmit(data: TTenant) {
     const rwsStreet = findSearch(streets, data.streets_id, "street");
     const rwsDistrict = findSearch(
       neighborhoods,
@@ -57,7 +57,7 @@ export default function FormCustomers() {
       item => [item.city, item.state.state].join("/") === data.cities_id,
     );
 
-    const newPostData = {
+    const newData = {
       ...data,
       type: "tenant",
       cities_id: rwsCity?.id,
@@ -71,88 +71,74 @@ export default function FormCustomers() {
       email: "",
     };
 
-    if (customerId) {
-      await api
-        .put(`/customers/${customerId}`, newPostData)
-        .then(() =>
-          changeAlert({
-            message: "Dados salvos com sucesso.",
-          }),
-        )
-        .catch(() =>
-          changeAlert({
-            message: "Não foi possivel fazer um novo cadastro para o imovél.",
-          }),
-        );
-      return;
-    }
-
     await api
-      .post(`/customers`, newPostData)
+      .patch(`/customers`, newData)
       .then(async resp => {
         changeAlert({
           message: "Dados salvos com sucesso.",
         });
-        navigate({ pathname: `/adm/customers/${(await resp.data).id}/edit` });
+        navigate({ pathname: `/adm/tenants/${(await resp.data).id}/edit` });
       })
-      .catch(() =>
+      .catch(error => {
         changeAlert({
-          message: "Não foi possivel fazer um novo cadastro para o imovél.",
-        }),
-      );
-  }, []);
+          title: "Atenção",
+          message: "Não foi possivel fazer o cadastro!",
+          variant: "danger",
+        });
 
-  const loadCustomers = useCallback(async () => {
+        if (error.response.status === 422)
+          changeAlert({
+            title: "Atenção",
+            variant: "danger",
+            message: `${error.response.data.message}`,
+          });
+      });
+  }
+
+  async function loadCustomers() {
     await api
-      .get(`/customers/${customerId}`)
+      .get(`/customers/${tenantId}`)
       .then(async res => {
-        const customer: PropsTenant = await res.data;
+        const customer: TTenant = await res.data;
         reset({
           ...customer,
-          cities_id: [customer.city?.city, customer.city?.state.state].join(
-            "/",
-          ),
           neighborhoods_id: customer?.district?.district,
           streets_id: customer.street?.street,
+          cities_id:
+            customer.city?.city && customer.city?.state.state
+              ? [customer.city?.city, customer.city?.state.state].join("/")
+              : "",
         });
       })
-      .catch(e => {
-        console.log(e);
+      .catch(() => {
         changeAlert({
           message: "Não foi possivel conectar ao servidor.",
         });
       });
-  }, []);
+  }
 
-  const loadCities = useCallback(async () => {
-    await api.get("/cities").then(async res => setCities(await res.data));
+  useEffect(() => {
+    (async () =>
+      await api.get("/cities").then(async res => setCities(await res.data)))();
   }, []);
 
   useEffect(() => {
-    loadCities();
-  }, []);
-
-  const loadNeighborhoods = useCallback(async () => {
-    await api
-      .get("/neighborhoods")
-      .then(async res => setNeighborhoods(await res.data));
+    (async () =>
+      await api
+        .get("/neighborhoods")
+        .then(async res => setNeighborhoods(await res.data)))();
   }, []);
 
   useEffect(() => {
-    loadNeighborhoods();
-  }, []);
-
-  const loadStreets = useCallback(async () => {
-    await api.get("/streets").then(async res => setStreets(await res.data));
-  }, []);
-
-  useEffect(() => {
-    loadStreets();
+    (async () =>
+      await api
+        .get("/streets")
+        .then(async res => setStreets(await res.data)))();
   }, []);
 
   useEffect(() => {
-    if (customerId) loadCustomers();
-  }, [customerId]);
+    if (tenantId) loadCustomers();
+  }, [tenantId]);
 
   return (
     <>
@@ -162,7 +148,7 @@ export default function FormCustomers() {
             <FontAwesomeIcon icon={faSave} />
             <span>Salvar</span>
           </button>
-          <Link className="btn-warning btn-ico" to="/adm/customers">
+          <Link className="btn-warning btn-ico" to="/adm/tenants">
             <FontAwesomeIcon icon={faUndo} />
             <span>Voltar</span>
           </Link>
@@ -196,6 +182,22 @@ export default function FormCustomers() {
                 register={register("last_name", {
                   required: {
                     value: true,
+                    message: "Campo é obrigatório",
+                  },
+                })}
+              />
+            </div>
+          </div>
+          <div className="flex flex-wrap -mx-3">
+            <div className="basis-full md:basis-6/12 px-3 mb-6">
+              <Input
+                type="text"
+                label="E-mail"
+                className={`input-form ${errors.email && "invalid"}`}
+                error={errors.email}
+                register={register("email", {
+                  required: {
+                    value: false,
                     message: "Campo é obrigatório",
                   },
                 })}

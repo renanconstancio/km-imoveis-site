@@ -1,12 +1,12 @@
 import { api } from "../../services/api";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
 import { Input } from "../../components/inputs";
-import { PropsStates } from "./types";
+import { TStates } from "./types";
 
 export default function FormStates() {
   const { changeAlert } = useAlert();
@@ -20,51 +20,44 @@ export default function FormStates() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsStates>();
+  } = useForm<TStates>();
 
-  const onSubmit = useCallback(async (data: PropsStates) => {
-    const newPostData = {
+  async function onSubmit(data: TStates) {
+    const newData = {
       ...data,
     };
 
-    if (stateId) {
-      await api
-        .put(`/states/${stateId}`, newPostData)
-        .then(() =>
-          changeAlert({
-            message: "Dados salvos com sucesso.",
-          }),
-        )
-        .catch(() =>
-          changeAlert({
-            message: "Não foi possivel fazer um novo cadastro para o imovél.",
-          }),
-        );
-      return;
-    }
-
     await api
-      .post(`/states`, newPostData)
+      .patch(`/states`, newData)
       .then(async resp => {
         changeAlert({
           message: "Dados salvos com sucesso.",
         });
         navigate({ pathname: `/adm/states/${(await resp.data).id}/edit` });
       })
-      .catch(() =>
+      .catch(error => {
         changeAlert({
-          message: "Não foi possivel fazer um novo cadastro.",
-        }),
-      );
-  }, []);
+          title: "Atenção",
+          message: "Não foi possivel fazer o cadastro!",
+          variant: "danger",
+        });
 
-  const loadStates = useCallback(async () => {
+        if (error.response.status === 422)
+          changeAlert({
+            title: "Atenção",
+            variant: "danger",
+            message: `${error.response.data.message}`,
+          });
+      });
+  }
+
+  async function loadStates() {
     await api.get(`/states/${stateId}`).then(async res =>
       reset({
         ...(await res.data),
       }),
     );
-  }, []);
+  }
 
   useEffect(() => {
     if (stateId) loadStates();

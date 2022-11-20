@@ -2,12 +2,11 @@ import { api } from "../../services/api";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useCallback, useEffect } from "react";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
 import { Input } from "../../components/inputs";
-import { PropsNeighborhoods } from "./types";
+import { TNeighborhoods } from "./types";
 
 export default function FormNeighborhoods() {
   const { changeAlert } = useAlert();
@@ -21,31 +20,15 @@ export default function FormNeighborhoods() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsNeighborhoods>();
+  } = useForm<TNeighborhoods>();
 
-  const onSubmit = useCallback(async (data: PropsNeighborhoods) => {
-    const newPostData = {
+  const onSubmit = useCallback(async (data: TNeighborhoods) => {
+    const newData = {
       ...data,
     };
 
-    if (districtId) {
-      await api
-        .put(`/neighborhoods/${districtId}`, newPostData)
-        .then(() =>
-          changeAlert({
-            message: "Dados salvos com sucesso.",
-          }),
-        )
-        .catch(() =>
-          changeAlert({
-            message: "Não foi possivel fazer um novo cadastro para o imovél.",
-          }),
-        );
-      return;
-    }
-
     await api
-      .post(`/neighborhoods`, newPostData)
+      .patch(`/neighborhoods`, newData)
       .then(async resp => {
         changeAlert({
           message: "Dados salvos com sucesso.",
@@ -54,14 +37,23 @@ export default function FormNeighborhoods() {
             pathname: `/adm/neighborhoods/${(await resp.data).id}/edit`,
           });
       })
-      .catch(() =>
+      .catch(error => {
         changeAlert({
-          message: "Não foi possivel fazer um novo cadastro.",
-        }),
-      );
+          title: "Atenção",
+          message: "Não foi possivel fazer o cadastro!",
+          variant: "danger",
+        });
+
+        if (error.response.status === 422)
+          changeAlert({
+            title: "Atenção",
+            variant: "danger",
+            message: `${error.response.data.message}`,
+          });
+      });
   }, []);
 
-  const loadNeighborhoods = useCallback(async () => {
+  async function loadNeighborhoods() {
     await api
       .get(`/neighborhoods/${districtId}`)
       .then(async res =>
@@ -74,7 +66,7 @@ export default function FormNeighborhoods() {
           message: "Não foi possivel conectar ao servidor.",
         }),
       );
-  }, []);
+  }
 
   useEffect(() => {
     if (districtId) loadNeighborhoods();

@@ -1,4 +1,4 @@
-export type PropsStates = {
+export type TStates = {
   id: string;
   state: string;
   street: string;

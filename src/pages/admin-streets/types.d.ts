@@ -1,4 +1,4 @@
-export type PropsStreets = {
+export type TStreets = {
   id: string;
   street: string;
   zip_code: string;

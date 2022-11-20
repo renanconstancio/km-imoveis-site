@@ -23,7 +23,7 @@ export function Card({
   images,
   tags,
   tag,
-}: PropsCard) {
+}: TCard) {
   return (
     // <li className="relative bg-white overflow-hidden">
     <Link

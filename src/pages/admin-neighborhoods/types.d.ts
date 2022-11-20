@@ -1,4 +1,4 @@
-export type PropsNeighborhoods = {
+export type TNeighborhoods = {
   id: string;
   district: string;
   created_at: string;

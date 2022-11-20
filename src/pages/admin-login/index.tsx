@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "../../components/inputs";
 import { Alert } from "../../components/alert";
 import { api } from "../../services/api";
-import { PropsUserLogin } from "./types";
+import { TUserLogin } from "./types";
 import { useCallback } from "react";
 
 export function Login() {
@@ -17,9 +17,9 @@ export function Login() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsUserLogin>();
+  } = useForm<TUserLogin>();
 
-  const onHandleSubmit = useCallback(async (data: PropsUserLogin) => {
+  async function onHandleSubmit(data: TUserLogin) {
     await api
       .post(`/users/login`, data)
       .then(async resp => {
@@ -37,7 +37,7 @@ export function Login() {
           message: "E-mail/Senha incorreto!.",
         }),
       );
-  }, []);
+  }
 
   return (
     <section

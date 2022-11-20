@@ -1,4 +1,4 @@
 import Customers from "./customers";
 import FormCustomers from "./form-customers";
 
-export { Customers, FormCustomers };
+export { Customers as Tenants, FormCustomers as FormTenants };

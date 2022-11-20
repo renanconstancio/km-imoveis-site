@@ -1,9 +1,9 @@
 import "swiper/css";
 import "swiper/css/navigation";
 import { parse } from "query-string";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { PropsImmobles } from "../admin-immobiles/types";
+import { TImmobles } from "../admin-immobiles/types";
 import { Loading } from "../../components/loading";
 import { CadSwiper } from "../../components/card-swiper";
 import { H2 } from "../../components/title";
@@ -11,28 +11,20 @@ import { api } from "../../services/api";
 
 export function SiteHome() {
   const [loading, setLoading] = useState(true);
-  const [immobilesSales, setImmobilesSales] = useState<PropsImmobles[]>([]);
-  const [immobilesLocation, setImmobilesLocation] = useState<PropsImmobles[]>(
+  const [immobilesSales, setImmobilesSales] = useState<TImmobles[]>([]);
+  const [immobilesLocation, setImmobilesLocation] = useState<TImmobles[]>([]);
+  const [immobilesPurchase, setImmobilesPurchase] = useState<TImmobles[]>([]);
+  const [immobilesExchange, setImmobilesExchange] = useState<TImmobles[]>([]);
+  const [immobilesSaleLease, setImmobilesSaleLease] = useState<TImmobles[]>([]);
+  const [immobilesSaleBarter, setImmobilesSaleBarter] = useState<TImmobles[]>(
     [],
   );
-  const [immobilesPurchase, setImmobilesPurchase] = useState<PropsImmobles[]>(
-    [],
-  );
-  const [immobilesExchange, setImmobilesExchange] = useState<PropsImmobles[]>(
-    [],
-  );
-  const [immobilesSaleLease, setImmobilesSaleLease] = useState<PropsImmobles[]>(
-    [],
-  );
-  const [immobilesSaleBarter, setImmobilesSaleBarter] = useState<
-    PropsImmobles[]
-  >([]);
 
   const location = useLocation();
   const query = parse(location.search);
   const city = (query.city || "") as string;
 
-  const loadLocation = useCallback(async () => {
+  async function loadLocation() {
     setLoading(true);
     await api
       .get(
@@ -40,9 +32,9 @@ export function SiteHome() {
       )
       .then(async resp => setImmobilesLocation(await resp.data?.data))
       .finally(() => setLoading(false));
-  }, []);
+  }
 
-  const loadPurchase = useCallback(async () => {
+  async function loadPurchase() {
     setLoading(true);
     await api
       .get(
@@ -50,9 +42,9 @@ export function SiteHome() {
       )
       .then(async resp => setImmobilesPurchase(await resp.data?.data))
       .finally(() => setLoading(false));
-  }, []);
+  }
 
-  const loadExchange = useCallback(async () => {
+  async function loadExchange() {
     setLoading(true);
     await api
       .get(
@@ -60,9 +52,9 @@ export function SiteHome() {
       )
       .then(async resp => setImmobilesExchange(await resp.data?.data))
       .finally(() => setLoading(false));
-  }, []);
+  }
 
-  const loadSale = useCallback(async () => {
+  async function loadSale() {
     setLoading(true);
     await api
       .get(
@@ -70,9 +62,9 @@ export function SiteHome() {
       )
       .then(async resp => setImmobilesSales(await resp.data?.data))
       .finally(() => setLoading(false));
-  }, []);
+  }
 
-  const loadSaleLease = useCallback(async () => {
+  async function loadSaleLease() {
     setLoading(true);
     await api
       .get(
@@ -80,9 +72,9 @@ export function SiteHome() {
       )
       .then(async resp => setImmobilesSaleLease(await resp.data?.data))
       .finally(() => setLoading(false));
-  }, []);
+  }
 
-  const loadSaleBarter = useCallback(async () => {
+  async function loadSaleBarter() {
     setLoading(true);
     await api
       .get(
@@ -90,7 +82,7 @@ export function SiteHome() {
       )
       .then(async resp => setImmobilesSaleBarter(await resp.data?.data))
       .finally(() => setLoading(false));
-  }, []);
+  }
 
   useEffect(() => {
     loadLocation();

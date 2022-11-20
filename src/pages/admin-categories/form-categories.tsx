@@ -1,12 +1,12 @@
-import { useCallback, useEffect } from "react";
+import { api } from "../../services/api";
+import { useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { PropsCategories } from "./types";
+import { TCategories } from "./types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
 import { Input } from "../../components/inputs";
-import { api } from "../../services/api";
 
 export default function FormCategories() {
   const { changeAlert } = useAlert();
@@ -20,47 +20,40 @@ export default function FormCategories() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsCategories>();
+  } = useForm<TCategories>();
 
-  const onSubmit = useCallback(async (data: PropsCategories) => {
-    const newPostData = {
+  async function onSubmit(data: TCategories) {
+    const newData = {
       ...data,
     };
 
-    if (categoryId) {
-      await api
-        .put(`/categories/${categoryId}`, newPostData)
-        .then(() =>
-          changeAlert({
-            message: "Dados salvos com sucesso.",
-          }),
-        )
-        .catch(() =>
-          changeAlert({
-            message: "Não foi possivel fazer um novo cadastro para o imovél.",
-          }),
-        );
-      return;
-    }
-
     await api
-      .post(`/categories`, newPostData)
+      .patch(`/categories`, newData)
       .then(async resp => {
         changeAlert({
-          message: "Dados salvos com sucesso.",
+          message: "Cadastro salvo com sucesso!",
         });
         navigate({
-          pathname: `/adm/categories/${(await resp.data).id}/edit`,
+          pathname: `/adm/categories/${await resp.data?.id}/edit`,
         });
       })
-      .catch(() =>
+      .catch(error => {
         changeAlert({
-          message: "Não foi possivel fazer um novo cadastro.",
-        }),
-      );
-  }, []);
+          title: "Atenção",
+          message: "Não foi possivel fazer o cadastro!",
+          variant: "danger",
+        });
 
-  const loadCategories = useCallback(async () => {
+        if (error.response.status === 422)
+          changeAlert({
+            title: "Atenção",
+            variant: "danger",
+            message: `${error.response.data.message}`,
+          });
+      });
+  }
+
+  async function loadCategories() {
     await api
       .get(`/categories/${categoryId}`)
       .then(async res =>
@@ -73,7 +66,7 @@ export default function FormCategories() {
           message: "Não foi possivel conectar ao servidor.",
         }),
       );
-  }, [categoryId]);
+  }
 
   useEffect(() => {
     if (categoryId) loadCategories();

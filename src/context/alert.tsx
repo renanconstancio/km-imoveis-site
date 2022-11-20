@@ -1,13 +1,14 @@
 import { createContext, ReactNode, useState } from "react";
 
-export type AlertType = {
+export type TAlert = {
   title?: string;
   message: string;
+  variant?: "success" | "danger";
 };
 
 export type AlertContextType = {
-  alert: AlertType;
-  changeAlert: (alert: AlertType) => void;
+  alert: TAlert;
+  changeAlert: (alert: TAlert) => void;
 };
 
 export const AlertContext = createContext<AlertContextType>(
@@ -15,7 +16,7 @@ export const AlertContext = createContext<AlertContextType>(
 );
 
 export function AlertProvider({ children }: { children: ReactNode }) {
-  const [mode, setMode] = useState<AlertType>({} as AlertType);
+  const [mode, setMode] = useState<TAlert>({} as TAlert);
 
   return (
     <AlertContext.Provider value={{ alert: mode, changeAlert: setMode }}>

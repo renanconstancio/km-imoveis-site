@@ -1,8 +1,8 @@
-export type PropsFiltersComp = {
+export type TFiltersComp = {
   variant?: "row" | "col";
 };
 
-export type PropsFilters = {
+export type TFilters = {
   category: string;
   district: string;
   city: string;

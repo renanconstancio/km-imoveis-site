@@ -1,4 +1,4 @@
-import { InputProps } from "./types";
+import { TInput } from "./types";
 
 export default function Input({
   label,
@@ -6,7 +6,7 @@ export default function Input({
   error,
   register,
   ...rest
-}: InputProps) {
+}: TInput) {
   return (
     <>
       {label && (

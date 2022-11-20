@@ -1,16 +1,16 @@
+import { api } from "../../services/api";
 import { useForm } from "react-hook-form";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useModal } from "../../hooks/use-modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { api } from "../../services/api";
-import { PropsCities } from "../../pages/admin-cities/types";
+import { TCities } from "../../pages/admin-cities/types";
 
-export type PropsModalCity = {
+export type TModalCity = {
   addCities: (data: any) => void;
 };
 
-export default function ModalCity({ addCities }: PropsModalCity) {
+export default function ModalCity({ addCities }: TModalCity) {
   const [states, setSates] = useState([]);
   const [statesId, setSatesId] = useState();
   const { openCity, closeCity } = useModal();
@@ -19,7 +19,7 @@ export default function ModalCity({ addCities }: PropsModalCity) {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsCities>();
+  } = useForm<TCities>();
 
   const handleChangeList = (event: any) => {
     const { id }: any = states.find(
@@ -29,19 +29,19 @@ export default function ModalCity({ addCities }: PropsModalCity) {
     setSatesId(id);
   };
 
-  const onSubmit = useCallback(async (data: PropsCities) => {
+  async function onSubmit(data: TCities) {
     await api
-      .post(`/cities`, { city: data.city, states_id: statesId })
+      .patch(`/cities`, { city: data.city, states_id: statesId })
       .then(async res => {
         const cities = await res.data;
         addCities((old: any) => [...old, cities]);
         closeCity(!openCity);
       });
-  }, []);
+  }
 
-  const loadStates = useCallback(async () => {
+  async function loadStates() {
     await api.get("/states").then(async res => setSates(await res.data));
-  }, []);
+  }
 
   useEffect(() => {
     loadStates();

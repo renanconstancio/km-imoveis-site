@@ -1,7 +1,7 @@
 import { maskCurrency } from "../../utils/mask";
-import { PropsPrice } from "./types";
+import { TPrice } from "./types";
 
-export function Price({ price, ...rest }: PropsPrice) {
+export function Price({ price, ...rest }: TPrice) {
   return (
     <span
       className="font-play font-bold text-km-blue text-sm block mb-3"

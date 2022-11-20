@@ -1,13 +1,13 @@
 import { api } from "../../services/api";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
 import { Input } from "../../components/inputs";
 import { maskCep } from "../../utils/mask";
-import { PropsStreets } from "./types";
+import { TStreets } from "./types";
 
 export default function FormStreets() {
   const { changeAlert } = useAlert();
@@ -21,45 +21,38 @@ export default function FormStreets() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsStreets>();
+  } = useForm<TStreets>();
 
-  const onSubmit = useCallback(async (data: PropsStreets) => {
-    const newPostData = {
+  async function onSubmit(data: TStreets) {
+    const newData = {
       ...data,
     };
 
-    if (streetId) {
-      await api
-        .put(`/streets/${streetId}`, newPostData)
-        .then(() =>
-          changeAlert({
-            message: "Dados salvos com sucesso.",
-          }),
-        )
-        .catch(() =>
-          changeAlert({
-            message: "Não foi possivel fazer um novo cadastro para o imovél.",
-          }),
-        );
-      return;
-    }
-
     await api
-      .post(`/streets`, newPostData)
+      .patch(`/streets`, newData)
       .then(async resp => {
         changeAlert({
           message: "Dados salvos com sucesso.",
-        }),
-          navigate({ pathname: `/adm/streets/${(await resp.data).id}/edit` });
+        });
+        navigate({ pathname: `/adm/streets/${(await resp.data).id}/edit` });
       })
-      .catch(() =>
+      .catch(error => {
         changeAlert({
-          message: "Não foi possivel fazer um novo cadastro para o imovél.",
-        }),
-      );
-  }, []);
+          title: "Atenção",
+          message: "Não foi possivel fazer o cadastro!",
+          variant: "danger",
+        });
 
-  const loadStreets = useCallback(async () => {
+        if (error.response.status === 422)
+          changeAlert({
+            title: "Atenção",
+            variant: "danger",
+            message: `${error.response.data.message}`,
+          });
+      });
+  }
+
+  async function loadStreets() {
     await api
       .get(`/streets/${streetId}`)
       .then(async res =>
@@ -72,7 +65,7 @@ export default function FormStreets() {
           message: "Não foi possivel conectar ao servidor.",
         }),
       );
-  }, []);
+  }
 
   useEffect(() => {
     if (streetId) loadStreets();

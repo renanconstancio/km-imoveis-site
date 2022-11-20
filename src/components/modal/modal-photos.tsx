@@ -1,40 +1,37 @@
+import { api } from "../../services/api";
 import { useModal } from "../../hooks/use-modal";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { useAlert } from "../../hooks/use-alert";
 import { ReactSortable } from "react-sortablejs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { api } from "../../services/api";
 import { Loading } from "../loading";
-import { PropsImmoblesPhotos } from "../../pages/admin-immobiles/types";
+import { TImmoblesPhotos } from "../../pages/admin-immobiles/types";
 
-export type PropsModalPhoto = {
-  addPhotos: PropsImmoblesPhotos[];
+export type TModalPhoto = {
+  addPhotos: TImmoblesPhotos[];
   immobleId: string | null;
 };
 
-export default function ModalPhoto({ immobleId, addPhotos }: PropsModalPhoto) {
+export default function ModalPhoto({ immobleId, addPhotos }: TModalPhoto) {
   const { changeAlert } = useAlert();
   const { openPhoto, closePhoto } = useModal();
   const [loading, setLoading] = useState<boolean>(false);
-  const [photos, setPhotoModal] = useState<PropsImmoblesPhotos[]>([]);
+  const [photos, setPhotoModal] = useState<TImmoblesPhotos[]>([]);
   const [endEvent, setEndEvent] = useState<boolean>(false);
 
-  let tempSortPhotos: PropsImmoblesPhotos[] = [];
+  let tempSortPhotos: TImmoblesPhotos[] = [];
 
-  const handleSortImage = useCallback(
-    async (listSort: PropsImmoblesPhotos[]) => {
-      tempSortPhotos = listSort;
-      setPhotoModal(listSort);
-      console.log(tempSortPhotos);
-      if (endEvent) {
-        await api.put(`/immobiles/photos/sort`, tempSortPhotos);
-      }
-    },
-    [],
-  );
+  async function handleSortImage(listSort: TImmoblesPhotos[]) {
+    tempSortPhotos = listSort;
+    setPhotoModal(listSort);
+    console.log(tempSortPhotos);
+    if (endEvent) {
+      await api.put(`/immobiles/photos/sort`, tempSortPhotos);
+    }
+  }
 
-  const handleDeleteImage = useCallback(async (item: PropsImmoblesPhotos) => {
+  async function handleDeleteImage(item: TImmoblesPhotos) {
     if (!confirm(`Você deseja excluir?`)) return;
 
     await api
@@ -42,9 +39,9 @@ export default function ModalPhoto({ immobleId, addPhotos }: PropsModalPhoto) {
       .then(() =>
         setPhotoModal(photos.filter((f: { id: string }) => f.id !== item.id)),
       );
-  }, []);
+  }
 
-  const handleUploadFile = useCallback(async (event: ChangeEvent) => {
+  async function handleUploadFile(event: ChangeEvent) {
     const formData = new FormData();
     const target = event.target as HTMLInputElement;
     const files = target.files as FileList;
@@ -70,7 +67,7 @@ export default function ModalPhoto({ immobleId, addPhotos }: PropsModalPhoto) {
           message: "Não foi possivel conectar ao servidor.",
         }),
       );
-  }, []);
+  }
 
   useEffect(() => {
     setPhotoModal(addPhotos);

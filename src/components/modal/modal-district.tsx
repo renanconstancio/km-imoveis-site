@@ -1,31 +1,30 @@
+import { api } from "../../services/api";
 import { useForm } from "react-hook-form";
 import { useModal } from "../../hooks/use-modal";
-import { useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PropsNeighborhoods } from "../../pages/admin-neighborhoods/types";
+import { TNeighborhoods } from "../../pages/admin-neighborhoods/types";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { api } from "../../services/api";
 
-export type PropsModalDistrict = {
+export type TModalDistrict = {
   addDistricts: (data: any) => void;
 };
 
-export default function ModalDistrict({ addDistricts }: PropsModalDistrict) {
+export default function ModalDistrict({ addDistricts }: TModalDistrict) {
   const { openNeighborhoods, closeNeighborhoods } = useModal();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsNeighborhoods>();
+  } = useForm<TNeighborhoods>();
 
-  const onSubmit = useCallback(async (data: PropsNeighborhoods) => {
-    await api.post(`/neighborhoods`, data).then(async res => {
+  async function onSubmit(data: TNeighborhoods) {
+    await api.patch(`/neighborhoods`, data).then(async res => {
       const category = await res.data;
       addDistricts((old: any) => [...old, category]);
       closeNeighborhoods(!openNeighborhoods);
     });
-  }, []);
+  }
 
   return (
     <div className={`${openNeighborhoods ? "" : "hidden"} modal`}>

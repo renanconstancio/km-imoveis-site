@@ -1,33 +1,32 @@
+import { api } from "../../services/api";
 import { useForm } from "react-hook-form";
 import { useModal } from "../../hooks/use-modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Input } from "../inputs";
 import { maskCep } from "../../utils/mask";
-import { api } from "../../services/api";
-import { PropsStreets } from "../../pages/admin-streets/types";
-import { useCallback } from "react";
+import { TStreets } from "../../pages/admin-streets/types";
 
-type PropsModalStreet = {
+type TModalStreet = {
   addStreets: (data: any) => void;
 };
 
-export default function ModalStreet({ addStreets }: PropsModalStreet) {
+export default function ModalStreet({ addStreets }: TModalStreet) {
   const { openStreet, closeStreet } = useModal();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsStreets>();
+  } = useForm<TStreets>();
 
-  const onSubmit = useCallback(async (data: PropsStreets) => {
+  async function onSubmit(data: TStreets) {
     await api.post(`/streets`, data).then(async res => {
       const category = await res.data;
       addStreets((old: any) => [...old, category]);
       closeStreet(!openStreet);
     });
-  }, []);
+  }
 
   return (
     <div className={`${openStreet ? "" : "hidden"} modal`}>

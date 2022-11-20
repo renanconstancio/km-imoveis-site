@@ -1,6 +1,6 @@
-import { PropsCities } from "./types";
+import { TCities } from "./types";
 import { parse } from "query-string";
-import { KeyboardEvent, useCallback, useEffect, useState } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Loading } from "../../components/loading";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -10,7 +10,7 @@ import { api } from "../../services/api";
 export default function Cities() {
   const [clear, setClear] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [cities, setCities] = useState<PropsCities[]>([]);
+  const [cities, setCities] = useState<TCities[]>([]);
 
   const location = useLocation();
 
@@ -33,24 +33,21 @@ export default function Cities() {
     }
   }
 
-  const handleDelete = useCallback(async (data: PropsCities) => {
+  async function handleDelete(data: TCities) {
     if (!confirm(`Você deseja excluir ${data.city}?`)) return;
     setLoading(true);
     await api
       .delete(`/cities/${data.id}`)
       .finally(() => setLoading(false))
-      .then(() =>
-        setCities(cities?.filter((f: { id: string }) => f.id !== data.id)),
-      );
-  }, []);
+      .then(() => loadCities());
+  }
 
-  const loadCities = useCallback(async () => {
-    setLoading(true);
+  async function loadCities() {
     await api
       .get(`/cities`)
       .finally(() => setLoading(false))
       .then(async resp => setCities(await resp.data));
-  }, []);
+  }
 
   useEffect(() => {
     loadCities();

@@ -28,7 +28,6 @@ import {
   faSolarPanel,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import {
   ModalCategory,
   ModalStreet,
@@ -36,7 +35,7 @@ import {
   ModalCity,
 } from "../../components/modal";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAlert } from "../../hooks/use-alert";
 import { useModal } from "../../hooks/use-modal";
@@ -44,29 +43,29 @@ import { findSearch } from "../../utils/functions";
 import { maskCurrency, maskCurrencyUs } from "../../utils/mask";
 import { Editor } from "@tinymce/tinymce-react";
 import { OptionSituation } from "../../components/option-situation";
-import { PropsCategories } from "../admin-categories/types";
-import { PropsCities } from "../admin-cities/types";
+import { TCategories } from "../admin-categories/types";
+import { TCities } from "../admin-cities/types";
 import { Input } from "../../components/inputs";
 
 import ModalPhoto from "../../components/modal/modal-photos";
 import ModalTenant from "../../components/modal/modal-tenant";
 import ModalOwner from "../../components/modal/modal-owner";
 
-import { PropsNeighborhoods } from "../admin-neighborhoods/types";
-import { PropsStreets } from "../admin-streets/types";
-import { PropsTenant } from "../admin-tenant/types";
-import { PropsOwners } from "../admin-owners/types";
-import { PropsUsers } from "../admin-users/types";
-import { PropsImmobles } from "./types";
+import { TNeighborhoods } from "../admin-neighborhoods/types";
+import { TStreets } from "../admin-streets/types";
+import { TTenant } from "../admin-tenant/types";
+import { TOwners } from "../admin-owners/types";
+import { TUsers } from "../admin-users/types";
+import { TImmobles } from "./types";
 
 export default function FormImmobles() {
-  const [cities, setCities] = useState<PropsCities[]>([]);
-  const [neighborhoods, setNeighborhoods] = useState<PropsNeighborhoods[]>([]);
-  const [streets, setStreets] = useState<PropsStreets[]>([]);
-  const [categories, setCategories] = useState<PropsCategories[]>([]);
-  const [tenants, setTenant] = useState<PropsTenant[]>([]);
-  const [owners, setOwner] = useState<PropsOwners[]>([]);
-  const [users, setUsers] = useState<PropsUsers[]>([]);
+  const [cities, setCities] = useState<TCities[]>([]);
+  const [neighborhoods, setNeighborhoods] = useState<TNeighborhoods[]>([]);
+  const [streets, setStreets] = useState<TStreets[]>([]);
+  const [categories, setCategories] = useState<TCategories[]>([]);
+  const [tenants, setTenant] = useState<TTenant[]>([]);
+  const [owners, setOwner] = useState<TOwners[]>([]);
+  const [users, setUsers] = useState<TUsers[]>([]);
   const [tagsSite, setTagsSite] = useState<string[]>([]);
   const [onOff, setOnOff] = useState<boolean>(false);
   const [descriptionText, setDescriptionText] = useState<string>("");
@@ -99,9 +98,9 @@ export default function FormImmobles() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsImmobles>();
+  } = useForm<TImmobles>();
 
-  async function onSubmit(data: PropsImmobles) {
+  async function onSubmit(data: TImmobles) {
     const rwsUser = users.find(
       item => [item.first_name].join(" ") === data.users_id,
     );
@@ -123,7 +122,7 @@ export default function FormImmobles() {
     const rwsCategory = findSearch(categories, data.categories_id, "category");
     const existsTags = (tagsSite.length ? tagsSite : []).join(",");
 
-    const newPostData = {
+    const newData = {
       ...data,
       sale_price: maskCurrencyUs(`${data.sale_price || 0}`),
       rent_price: maskCurrencyUs(`${data.rent_price || 0}`),
@@ -139,44 +138,35 @@ export default function FormImmobles() {
       users_id: rwsUser?.id ?? null,
     };
 
-    console.log(newPostData);
-
-    if (immobleId) {
-      await api
-        .put(`/immobiles/${immobleId}`, newPostData)
-        .then(() =>
-          changeAlert({
-            message: "Dados salvos com sucesso.",
-          }),
-        )
-        .catch(() =>
-          changeAlert({
-            message: "Não foi possivel fazer um novo cadastro para o imovél.",
-          }),
-        );
-      return;
-    }
-
     await api
-      .post(`/immobiles`, newPostData)
+      .patch(`/immobiles`, newData)
       .then(async resp => {
         changeAlert({
           message: "Dados salvos com sucesso.",
         });
         navigate({ pathname: `/adm/immobiles/${(await resp.data).id}/edit` });
       })
-      .catch(() =>
+      .catch(error => {
         changeAlert({
-          message: "Não foi possivel fazer um novo cadastro para o imovél.",
-        }),
-      );
+          title: "Atenção",
+          message: "Não foi possivel fazer o cadastro!",
+          variant: "danger",
+        });
+
+        if (error.response.status === 422)
+          changeAlert({
+            title: "Atenção",
+            variant: "danger",
+            message: `${error.response.data.message}`,
+          });
+      });
   }
 
-  const loadImmoble = useCallback(async () => {
+  async function loadImmoble() {
     await api
       .get(`/immobiles/${immobleId}`)
       .then(async res => {
-        const immoble: PropsImmobles = await res.data;
+        const immoble: TImmobles = await res.data;
 
         reset({
           ...immoble,
@@ -209,48 +199,47 @@ export default function FormImmobles() {
         setOnOff(immoble?.published);
       })
       .catch(e => {
-        console.log(e);
         changeAlert({
           message: "Não foi possivel conectar ao servidor.",
         });
       });
-  }, []);
+  }
 
-  const loadCategories = useCallback(async () => {
+  async function loadCategories() {
     await api
       .get("/categories")
       .then(async res => setCategories(await res.data));
-  }, []);
+  }
 
-  const loadCities = useCallback(async () => {
+  async function loadCities() {
     await api.get("/cities").then(async res => setCities(await res.data));
-  }, []);
+  }
 
-  const loadNeighborhoods = useCallback(async () => {
+  async function loadNeighborhoods() {
     await api
       .get("/neighborhoods")
       .then(async res => setNeighborhoods(await res.data));
-  }, []);
+  }
 
-  const loadStreets = useCallback(async () => {
+  async function loadStreets() {
     await api.get("/streets").then(async res => setStreets(await res.data));
-  }, []);
+  }
 
-  const loadTenants = useCallback(async () => {
+  async function loadTenants() {
     await api
       .get("/customers?limit=10000&search[type]=tenant")
       .then(async res => setTenant(await res.data?.data));
-  }, []);
+  }
 
-  const loadOwners = useCallback(async () => {
+  async function loadOwners() {
     await api
       .get("/customers?limit=10000&search[type]=owner")
       .then(async res => setOwner(await res.data?.data));
-  }, []);
+  }
 
-  const loadUsers = useCallback(async () => {
+  async function loadUsers() {
     await api.get("/users").then(async res => setUsers(await res.data));
-  }, []);
+  }
 
   useEffect(() => {
     loadCategories();

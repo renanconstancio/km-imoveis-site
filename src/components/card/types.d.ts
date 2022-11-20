@@ -1,4 +1,4 @@
-type PropsCard = React.HTMLAttributes<HTMLLIElement> & {
+type TCard = React.HTMLAttributes<HTMLLIElement> & {
   reference: string;
   description: string;
   terrainArea: string;

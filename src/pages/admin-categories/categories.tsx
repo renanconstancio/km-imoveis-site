@@ -1,16 +1,16 @@
+import { api } from "../../services/api";
 import { Link, useLocation } from "react-router-dom";
-import { KeyboardEvent, useCallback, useEffect, useState } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
 import { Loading } from "../../components/loading";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PropsCategories } from "./types";
+import { TCategories } from "./types";
 import { parse } from "query-string";
-import { api } from "../../services/api";
 
 export default function Categories() {
   const [clear, setClear] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [categories, setCategories] = useState<PropsCategories[]>([]);
+  const [categories, setCategories] = useState<TCategories[]>([]);
 
   const location = useLocation();
 
@@ -18,44 +18,37 @@ export default function Categories() {
 
   const q = (query.q || "") as unknown as string;
 
-  function handleKeyPressSearch(
-    event: KeyboardEvent<EventTarget & HTMLInputElement>,
-  ) {
-    if (event.currentTarget.value) {
-      if (event.code === "Enter" || event.keyCode === 13) {
-        setClear(!clear);
-        setCategories(
-          categories?.filter(
-            (f: { category: string }) =>
-              f.category
-                .toLowerCase()
-                .includes(event.currentTarget.value.toLowerCase()), //f.category === event.currentTarget.value,
-          ),
-        );
-      }
+  function handleSearch(event: KeyboardEvent<EventTarget & HTMLInputElement>) {
+    if (
+      event.currentTarget.value &&
+      (event.code === "Enter" || event.keyCode === 13)
+    ) {
+      setClear(!clear);
+      setCategories(
+        categories?.filter((f: { category: string }) =>
+          f.category
+            .toLowerCase()
+            .includes(event.currentTarget.value.toLowerCase()),
+        ),
+      );
     }
   }
 
-  const handleDelete = useCallback(async (data: PropsCategories) => {
+  async function handleDelete(data: TCategories) {
     if (!confirm(`Você deseja excluir ${data.category}?`)) return;
-    setLoading(true);
     await api
       .delete(`/categories/${data.id}`)
       .finally(() => setLoading(false))
-      .then(() =>
-        setCategories(
-          categories?.filter((f: { id: string }) => f.id !== data.id),
-        ),
-      );
-  }, []);
+      .then(() => loadCategories());
+  }
 
-  const loadCategories = useCallback(async () => {
+  async function loadCategories() {
     setLoading(true);
     await api
       .get(`/categories`)
       .finally(() => setLoading(false))
       .then(async resp => setCategories(await resp.data));
-  }, []);
+  }
 
   useEffect(() => {
     loadCategories();
@@ -72,7 +65,7 @@ export default function Categories() {
               type="text"
               className="input-form"
               defaultValue={`${query.q || ""}`}
-              onKeyDown={handleKeyPressSearch}
+              onKeyDown={handleSearch}
             />
             {(q || clear) && (
               <button

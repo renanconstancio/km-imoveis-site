@@ -5,13 +5,13 @@ import { parse, stringify } from "query-string";
 import { Loading } from "../../components/loading";
 import { Pagination } from "../../components/pagination";
 import { api, tags } from "../../services/api";
-import { PropsPagination } from "../../global/types";
-import { PropsImmobles } from "../admin-immobiles/types";
+import { TPagination } from "../../global/types";
+import { TImmobles } from "../admin-immobiles/types";
 
 export function SiteSearch() {
   const [loading, setLoading] = useState(true);
-  const [immobiles, setImmobiles] = useState<PropsPagination<PropsImmobles[]>>(
-    {} as PropsPagination<PropsImmobles[]>,
+  const [immobiles, setImmobiles] = useState<TPagination<TImmobles[]>>(
+    {} as TPagination<TImmobles[]>,
   );
 
   const location = useLocation();
@@ -26,7 +26,7 @@ export function SiteSearch() {
   const limit = (query.limit || "20") as string;
   const page = (query.page || "1") as string;
 
-  const loadImmobiles = useCallback(async () => {
+  async function loadImmobiles() {
     setLoading(true);
 
     const conveterParse = parse(
@@ -41,7 +41,7 @@ export function SiteSearch() {
       )
       .then(async resp => setImmobiles(await resp.data))
       .finally(() => setLoading(false));
-  }, []);
+  }
 
   useEffect(() => {
     loadImmobiles();

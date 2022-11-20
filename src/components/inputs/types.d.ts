@@ -1,4 +1,4 @@
-export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+export type TInput = React.InputHTMLAttributes<HTMLInputElement> & {
   label?: string;
   mask?: (value: string) => string;
   register?: any;

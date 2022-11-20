@@ -38,12 +38,12 @@ export function NavLeft() {
         <FontAwesomeIcon icon={faUserTie} /> Proprietários
       </NavLink>
       <NavLink
-        to="/adm/customers"
+        to="/adm/tenants"
         className={({ isActive }) =>
           isActive ? activeClassName : classDefaultName
         }
       >
-        <FontAwesomeIcon icon={faUser} /> Inquilinos
+        <FontAwesomeIcon icon={faUser} /> Locatários
       </NavLink>
       <NavLink
         to="/adm/categories"

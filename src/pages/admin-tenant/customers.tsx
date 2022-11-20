@@ -1,9 +1,4 @@
 import { api } from "../../services/api";
-import { parse, stringify } from "query-string";
-import { KeyboardEvent, useCallback, useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Loading } from "../../components/loading";
-import { Pagination } from "../../components/pagination";
 import {
   faEdit,
   faSort,
@@ -11,13 +6,18 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PropsPagination } from "../../global/types";
-import { PropsTenant } from "./types";
+import { parse, stringify } from "query-string";
+import { KeyboardEvent, useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Loading } from "../../components/loading";
+import { Pagination } from "../../components/pagination";
+import { TPagination } from "../../global/types";
+import { TTenant } from "./types";
 
 export default function Customers() {
   const [loading, setLoading] = useState<boolean>(true);
-  const [customers, setCustomers] = useState<PropsPagination<PropsTenant[]>>(
-    {} as PropsPagination<PropsTenant[]>,
+  const [customers, setCustomers] = useState<TPagination<TTenant[]>>(
+    {} as TPagination<TTenant[]>,
   );
 
   const navigate = useNavigate();
@@ -47,26 +47,18 @@ export default function Customers() {
     });
   }
 
-  const handleDelete = useCallback(
-    async ({ id, first_name }: { id: string; first_name: string }) => {
-      if (!confirm(`Você deseja excluir ${first_name}?`)) return;
-      setLoading(true);
-      await api
-        .delete(`/customers/${id}`)
-        .then(() =>
-          setCustomers({
-            ...customers,
-            data: customers?.data?.filter((f: { id: string }) => f.id !== id),
-          }),
-        )
-        .finally(() => setLoading(false));
-    },
-    [],
-  );
+  async function handleDelete(data: TTenant) {
+    if (!confirm(`Você deseja excluir ${data.first_name}?`)) return;
 
-  const loadCustomers = useCallback(async () => {
     setLoading(true);
 
+    await api
+      .delete(`/customers/${data.id}`)
+      .then(() => loadCustomers())
+      .finally(() => setLoading(false));
+  }
+
+  async function loadCustomers() {
     const conveterParse = parse(
       `page=${page}&limit=${limit}&search[type]=tenant&search[last_name]=${qs}&search[first_name]=${qs}&search[cpf]=${qs}`,
     );
@@ -75,7 +67,7 @@ export default function Customers() {
       .get(`/customers?${decodeURI(stringify({ ...query, ...conveterParse }))}`)
       .then(async resp => setCustomers(await resp.data))
       .finally(() => setLoading(false));
-  }, []);
+  }
 
   useEffect(() => {
     loadCustomers();
@@ -95,13 +87,13 @@ export default function Customers() {
               onKeyDown={handleSearch}
             />
             {qs && (
-              <Link className="btn-default text-black" to="/adm/customers">
+              <Link className="btn-default text-black" to="/adm/tenants">
                 <FontAwesomeIcon icon={faTimes} />
               </Link>
             )}
           </aside>
           <nav>
-            <Link className="btn-success" to="/adm/customers/new">
+            <Link className="btn-success" to="/adm/tenants/new">
               <FontAwesomeIcon icon={faEdit} /> Criar
             </Link>
           </nav>
@@ -146,25 +138,25 @@ export default function Customers() {
         <span className="basis-3/12">Telefone.</span>
       </li>
 
-      {customers?.data?.map(({ id, first_name, last_name, phone }) => (
-        <li key={id} className="list-orders">
+      {customers?.data?.map(rws => (
+        <li key={rws.id} className="list-orders">
           <span className="flex gap-1 basis-1/12">
             <Link
               className="btn-primary btn-xs"
-              to={`/adm/customers/${id}/edit`}
+              to={`/adm/tenants/${rws.id}/edit`}
             >
               <FontAwesomeIcon icon={faEdit} />
             </Link>
             <span
               className="btn-danger btn-xs"
-              onClick={() => handleDelete({ id, first_name })}
+              onClick={() => handleDelete(rws)}
             >
               <FontAwesomeIcon icon={faTrash} />
             </span>
           </span>
-          <span className="basis-4/12">{first_name}</span>
-          <span className="basis-4/12">{last_name}</span>
-          <span className="basis-3/12">{phone}</span>
+          <span className="basis-4/12">{rws.first_name}</span>
+          <span className="basis-4/12">{rws.last_name}</span>
+          <span className="basis-3/12">{rws.phone}</span>
         </li>
       ))}
 

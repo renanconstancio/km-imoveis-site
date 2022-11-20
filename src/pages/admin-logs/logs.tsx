@@ -1,6 +1,6 @@
 import { api } from "../../services/api";
 import { parse, stringify } from "query-string";
-import { KeyboardEvent, useCallback, useEffect, useState } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Loading } from "../../components/loading";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -9,15 +9,15 @@ import { addClassName } from "../../utils/functions";
 import { useModal } from "../../hooks/use-modal";
 import { format } from "date-fns";
 import { Pagination } from "../../components/pagination";
-import { PropsPagination } from "../../global/types";
-import { PropsLogs } from "./types";
+import { TPagination } from "../../global/types";
+import { TLogs } from "./types";
 import ModalLog from "../../components/modal/modal-log";
 
 export default function Logs() {
   const [loading, setLoading] = useState<boolean>(true);
   const [log, addLogs] = useState();
-  const [logs, setLogs] = useState<PropsPagination<PropsLogs[]>>(
-    {} as PropsPagination<PropsLogs[]>,
+  const [logs, setLogs] = useState<TPagination<TLogs[]>>(
+    {} as TPagination<TLogs[]>,
   );
 
   const { closeModal, open } = useModal();
@@ -32,16 +32,17 @@ export default function Logs() {
   const qs = (query.q || "") as unknown as string;
 
   function handleSearch(event: KeyboardEvent<EventTarget & HTMLInputElement>) {
-    if (event.currentTarget.value) {
-      if (event.code === "Enter" || event.keyCode === 13) {
-        navigate({
-          search: `?q=${event.currentTarget.value}`,
-        });
-      }
+    if (
+      event.currentTarget.value &&
+      (event.code === "Enter" || event.keyCode === 13)
+    ) {
+      navigate({
+        search: `?q=${event.currentTarget.value}`,
+      });
     }
   }
 
-  const loadLogs = useCallback(async () => {
+  async function loadLogs() {
     setLoading(true);
 
     const urlParse = parse(
@@ -52,7 +53,7 @@ export default function Logs() {
       .get(`/logs?${decodeURI(stringify({ ...query, ...urlParse }))}`)
       .then(async resp => setLogs(await resp.data))
       .finally(() => setLoading(false));
-  }, []);
+  }
 
   useEffect(() => {
     loadLogs();

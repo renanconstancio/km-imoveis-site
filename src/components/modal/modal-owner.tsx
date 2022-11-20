@@ -1,22 +1,21 @@
+import { api } from "../../services/api";
 import { useForm } from "react-hook-form";
 import { useModal } from "../../hooks/use-modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { maskCPF, maskPhone } from "../../utils/mask";
 import { findSearch } from "../../utils/functions";
-import { PropsStreets } from "../../pages/admin-streets/types";
-import { PropsNeighborhoods } from "../../pages/admin-neighborhoods/types";
-import { PropsCities } from "../../pages/admin-cities/types";
+import { TStreets } from "../../pages/admin-streets/types";
+import { TNeighborhoods } from "../../pages/admin-neighborhoods/types";
+import { TCities } from "../../pages/admin-cities/types";
 import { Input } from "../inputs";
-import { api } from "../../services/api";
-import { PropsOwners } from "../../pages/admin-owners/types";
-import { useCallback } from "react";
+import { TOwners } from "../../pages/admin-owners/types";
 
-export type PropsModalOwner = {
+export type TModalOwner = {
   addOwner: (data: any) => void;
-  streets: PropsStreets[];
-  neighborhoods: PropsNeighborhoods[];
-  cities: PropsCities[];
+  streets: TStreets[];
+  neighborhoods: TNeighborhoods[];
+  cities: TCities[];
 };
 
 export default function ModalOwner({
@@ -24,16 +23,16 @@ export default function ModalOwner({
   cities,
   neighborhoods,
   streets,
-}: PropsModalOwner) {
+}: TModalOwner) {
   const { openOwner, closeOwner } = useModal();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsOwners>();
+  } = useForm<TOwners>();
 
-  const onSubmit = useCallback(async (data: PropsOwners) => {
+  async function onSubmit(data: TOwners) {
     const rwsStreet = findSearch(streets, data.streets_id, "street");
     const rwsDistrict = findSearch(
       neighborhoods,
@@ -54,12 +53,12 @@ export default function ModalOwner({
       rental_value: "0",
     };
 
-    await api.post(`/customers`, newPostData).then(async res => {
+    await api.patch(`/customers`, newPostData).then(async res => {
       const customers = await res.data;
       addOwner((old: any) => [...old, customers]);
       closeOwner(!openOwner);
     });
-  }, []);
+  }
 
   return (
     <div className={`${openOwner ? "" : "hidden"} modal`}>

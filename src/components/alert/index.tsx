@@ -1,32 +1,40 @@
+import { useEffect } from "react";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect } from "react";
 import { useAlert } from "../../hooks/use-alert";
-import { PropsAlert } from "./types";
+import { TAlert } from "../../context/alert";
 
-export function Alert({ title, message }: PropsAlert) {
+export function Alert({ title, message, variant = "success" }: TAlert) {
   const { changeAlert } = useAlert();
 
   useEffect(() => {
     setTimeout(() => {
-      changeAlert({} as PropsAlert);
-    }, 2800);
+      changeAlert({} as TAlert);
+    }, 4500);
   }, []);
 
   return (
     <div
-      className="bg-green-100 border-l-8 border-green-500 text-green-700 p-4 mb-3 fixed inset-x-6 top-2"
+      className={`${
+        variant !== "success"
+          ? "border-red-500 text-red-700 bg-red-300"
+          : "border-green-500 text-green-700 bg-green-300"
+      } border-l-8 p-4 mb-3 fixed right-4 top-4`}
       role="alert"
     >
-      {title && <p className="font-bold">{title}</p>}
-      <p className="flex justify-between">
-        <span>{message}</span>
-        <FontAwesomeIcon
-          icon={faTimes}
-          className="text-lg"
-          onClick={() => changeAlert({ title: "", message: "" })}
-        />
-      </p>
+      <div className="flex flex-row items-center">
+        <span>
+          {title && <p className="font-bold">{title}</p>}
+          <p className="pr-5">{message}</p>
+        </span>
+        <span>
+          <FontAwesomeIcon
+            icon={faTimes}
+            className="text-lg"
+            onClick={() => changeAlert({ title: "", message: "" })}
+          />
+        </span>
+      </div>
     </div>
   );
 }

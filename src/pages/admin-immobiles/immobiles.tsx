@@ -1,8 +1,4 @@
-import { parse, stringify } from "query-string";
-import { KeyboardEvent, useCallback, useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Loading } from "../../components/loading";
-import { Pagination } from "../../components/pagination";
+import { api } from "../../services/api";
 import {
   faEdit,
   faSort,
@@ -10,15 +6,19 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { parse, stringify } from "query-string";
+import { KeyboardEvent, useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Loading } from "../../components/loading";
+import { Pagination } from "../../components/pagination";
 import { situationText } from "../../utils/functions";
-import { api } from "../../services/api";
-import { PropsPagination } from "../../global/types";
-import { PropsImmobles } from "./types";
+import { TPagination } from "../../global/types";
+import { TImmobles } from "./types";
 
 export default function Immobiles() {
   const [loading, setLoading] = useState<boolean>(true);
-  const [immobiles, setImmobiles] = useState<PropsPagination<PropsImmobles[]>>(
-    {} as PropsPagination<PropsImmobles[]>,
+  const [immobiles, setImmobiles] = useState<TPagination<TImmobles[]>>(
+    {} as TPagination<TImmobles[]>,
   );
 
   const navigate = useNavigate();
@@ -48,24 +48,16 @@ export default function Immobiles() {
     });
   }
 
-  const handleDelete = useCallback(
-    async ({ id, description }: { id: string; description: string }) => {
-      if (!confirm(`Você deseja excluir ${description}?`)) return;
-      setLoading(true);
-      await api
-        .delete(`/immobiles/${id}`)
-        .then(() =>
-          setImmobiles({
-            ...immobiles,
-            data: immobiles?.data?.filter((f: { id: string }) => f.id !== id),
-          }),
-        )
-        .finally(() => setLoading(false));
-    },
-    [],
-  );
+  async function handleDelete(data: TImmobles) {
+    if (!confirm(`Você deseja excluir ${data.description}?`)) return;
 
-  const loadImmobiles = useCallback(async () => {
+    await api
+      .delete(`/immobiles/${data.id}`)
+      .then(() => loadImmobiles())
+      .finally(() => setLoading(false));
+  }
+
+  async function loadImmobiles() {
     setLoading(true);
 
     const urlParse = parse(
@@ -76,11 +68,11 @@ export default function Immobiles() {
       .get(`/immobiles?${decodeURI(stringify({ ...query, ...urlParse }))}`)
       .then(async resp => setImmobiles(await resp.data))
       .finally(() => setLoading(false));
-  }, []);
+  }
 
   useEffect(() => {
     loadImmobiles();
-  }, [locationDecodURI]);
+  }, []);
 
   if (loading) return <Loading />;
 
@@ -161,50 +153,40 @@ export default function Immobiles() {
         <span className="text-center basis-1/12">Situação</span>
       </li>
 
-      {immobiles?.data?.map(
-        ({
-          id,
-          photos,
-          reference,
-          description,
-          street,
-          published,
-          situation,
-        }) => (
-          <li key={id} className="list-orders">
-            <span className="flex gap-1 basis-1/12">
-              <img src={photos?.[0]?.image_xs} alt="." className="w-full" />
-            </span>
-            <span className="flex gap-1 basis-1/12">
-              <Link
-                className="btn-primary btn-xs"
-                to={`/adm/immobiles/${id}/edit`}
-              >
-                <FontAwesomeIcon icon={faEdit} />
-              </Link>
-              <span
-                className="btn-danger btn-xs"
-                onClick={() => handleDelete({ id, description })}
-              >
-                <FontAwesomeIcon icon={faTrash} />
-              </span>
-            </span>
-            <span className="basis-1/12">{reference}</span>
-            <span className="basis-4/12">{description}</span>
-            <span className="basis-4/12">{street?.street}</span>
-            <span
-              className={`text-center basis-1/12 ${
-                published ? "bg-green-300" : "bg-red-300"
-              }`}
+      {immobiles?.data?.map(rws => (
+        <li key={rws.id} className="list-orders">
+          <span className="flex gap-1 basis-1/12">
+            <img src={rws.photos?.[0]?.image_xs} alt="." className="w-full" />
+          </span>
+          <span className="flex gap-1 basis-1/12">
+            <Link
+              className="btn-primary btn-xs"
+              to={`/adm/immobiles/${rws.id}/edit`}
             >
-              {published ? "ON" : "OFF"}
+              <FontAwesomeIcon icon={faEdit} />
+            </Link>
+            <span
+              className="btn-danger btn-xs"
+              onClick={() => handleDelete(rws)}
+            >
+              <FontAwesomeIcon icon={faTrash} />
             </span>
-            <span className="basis-1/12 text-center">
-              {situationText(situation)}
-            </span>
-          </li>
-        ),
-      )}
+          </span>
+          <span className="basis-1/12">{rws.reference}</span>
+          <span className="basis-4/12">{rws.description}</span>
+          <span className="basis-4/12">{rws.street?.street}</span>
+          <span
+            className={`text-center basis-1/12 ${
+              rws.published ? "bg-green-300" : "bg-red-300"
+            }`}
+          >
+            {rws.published ? "ON" : "OFF"}
+          </span>
+          <span className="basis-1/12 text-center">
+            {situationText(rws.situation)}
+          </span>
+        </li>
+      ))}
 
       {!immobiles?.data?.length && (
         <li className="py-3 px-6 text-center">Nenhum imovel encontado</li>

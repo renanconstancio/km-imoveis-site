@@ -1,16 +1,16 @@
 import { api } from "../../services/api";
 import { parse } from "query-string";
-import { KeyboardEvent, useCallback, useEffect, useState } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Loading } from "../../components/loading";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PropsNeighborhoods } from "./types";
+import { TNeighborhoods } from "./types";
 
 export default function Neighborhoods() {
   const [clear, setClear] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [neighborhoods, setNeighborhoods] = useState<PropsNeighborhoods[]>([]);
+  const [neighborhoods, setNeighborhoods] = useState<TNeighborhoods[]>([]);
 
   const location = useLocation();
 
@@ -19,41 +19,37 @@ export default function Neighborhoods() {
   const q = (query.q || "") as unknown as string;
 
   function handleSearch(event: KeyboardEvent<EventTarget & HTMLInputElement>) {
-    if (event.currentTarget.value) {
-      if (event.code === "Enter" || event.keyCode === 13) {
-        setClear(!clear);
-        setNeighborhoods(
-          neighborhoods?.filter(
-            (f: { district: string }) =>
-              f.district
-                .toLowerCase()
-                .includes(event.currentTarget.value.toLowerCase()), //f.street === event.currentTarget.value,
-          ),
-        );
-      }
+    if (
+      event.currentTarget.value &&
+      (event.code === "Enter" || event.keyCode === 13)
+    ) {
+      setClear(!clear);
+      setNeighborhoods(
+        neighborhoods?.filter((f: { district: string }) =>
+          f.district
+            .toLowerCase()
+            .includes(event.currentTarget.value.toLowerCase()),
+        ),
+      );
     }
   }
 
-  const handleDelete = useCallback(async (data: PropsNeighborhoods) => {
+  async function handleDelete(data: TNeighborhoods) {
     if (!confirm(`Você deseja excluir ${data.district}?`)) return;
-    setLoading(true);
+
     await api
       .delete(`/neighborhoods/${data.id}`)
-      .then(() =>
-        setNeighborhoods(
-          neighborhoods?.filter((f: { id: string }) => f.id !== data.id),
-        ),
-      )
+      .then(() => loadNeighborhoods())
       .finally(() => setLoading(false));
-  }, []);
+  }
 
-  const loadNeighborhoods = useCallback(async () => {
+  async function loadNeighborhoods() {
     setLoading(true);
     await api
       .get(`/neighborhoods`)
       .then(async resp => setNeighborhoods(await resp.data))
       .finally(() => setLoading(false));
-  }, []);
+  }
 
   useEffect(() => {
     loadNeighborhoods();

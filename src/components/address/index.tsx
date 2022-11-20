@@ -1,8 +1,8 @@
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PropsAddress } from "./types";
+import { TAddress } from "./types";
 
-export function Address({ address }: PropsAddress) {
+export function Address({ address }: TAddress) {
   return (
     <address className="text-sm mb-2">
       {address && (

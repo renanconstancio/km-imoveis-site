@@ -1,13 +1,9 @@
-import { PropsBanners } from "./types";
+import { TBanners } from "./types";
 import { Carousel } from "react-responsive-carousel";
 import { situationText, slugiFy } from "../../utils/functions";
 import { Link } from "react-router-dom";
 
-export default function CarouselIndex({
-  banners,
-}: {
-  banners: PropsBanners[];
-}) {
+export default function CarouselIndex({ banners }: { banners: TBanners[] }) {
   return (
     <Carousel
       interval={4500}
@@ -23,10 +19,10 @@ export default function CarouselIndex({
         <>
           {reference ? (
             <Link
+              key={id}
               to={`/${slugiFy(
                 `${situationText(situation)}`,
               )}/imovel/${reference}/${slugiFy(`${description}`)}`}
-              key={id}
               style={{
                 backgroundImage: `url(${photo.image_lg})`,
                 backgroundPosition: "center bottom",
@@ -36,6 +32,7 @@ export default function CarouselIndex({
             ></Link>
           ) : (
             <div
+              key={id}
               style={{
                 backgroundImage: `url(${photo.image_lg})`,
                 backgroundPosition: "center bottom",

@@ -1,16 +1,16 @@
 import { api } from "../../services/api";
 import { parse } from "query-string";
-import { KeyboardEvent, useCallback, useEffect, useState } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Loading } from "../../components/loading";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PropsUsers } from "./types";
+import { TUsers } from "./types";
 
 export default function Users() {
   const [clear, setClear] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [users, setUsers] = useState<PropsUsers[]>([]);
+  const [users, setUsers] = useState<TUsers[]>([]);
 
   const location = useLocation();
 
@@ -19,39 +19,38 @@ export default function Users() {
   const q = (query.q || "") as unknown as string;
 
   function handleSearch(event: KeyboardEvent<EventTarget & HTMLInputElement>) {
-    if (event.currentTarget.value) {
-      if (event.code === "Enter" || event.keyCode === 13) {
-        setClear(!clear);
-        setUsers(
-          users?.filter(
-            (f: { first_name: string }) =>
-              f.first_name
-                .toLowerCase()
-                .includes(event.currentTarget.value.toLowerCase()), //f.street === event.currentTarget.value,
-          ),
-        );
-      }
+    if (
+      event.currentTarget.value &&
+      (event.code === "Enter" || event.keyCode === 13)
+    ) {
+      setClear(!clear);
+      setUsers(
+        users?.filter(
+          (f: { first_name: string }) =>
+            f.first_name
+              .toLowerCase()
+              .includes(event.currentTarget.value.toLowerCase()), //f.street === event.currentTarget.value,
+        ),
+      );
     }
   }
 
-  const handleDelete = useCallback(async (data: PropsUsers) => {
+  async function handleDelete(data: TUsers) {
     if (!confirm(`Você deseja excluir ${data.first_name}?`)) return;
-    setLoading(true);
+
     await api
       .delete(`/users/${data.id}`)
-      .then(() =>
-        setUsers(users?.filter((f: { id: string }) => f.id !== data.id)),
-      )
+      .then(() => loadUsers())
       .finally(() => setLoading(false));
-  }, []);
+  }
 
-  const loadUsers = useCallback(async () => {
+  async function loadUsers() {
     setLoading(true);
     await api
       .get(`/users`)
       .then(async resp => setUsers(await resp.data))
       .finally(() => setLoading(false));
-  }, []);
+  }
 
   useEffect(() => {
     loadUsers();

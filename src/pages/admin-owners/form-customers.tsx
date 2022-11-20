@@ -1,28 +1,28 @@
 import { api } from "../../services/api";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { useCallback, useEffect, useState } from "react";
-import { useAlert } from "../../hooks/use-alert";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFolderOpen,
   faSave,
   faUndo,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { useAlert } from "../../hooks/use-alert";
 import { maskCPF, maskPhone } from "../../utils/mask";
 import { Input } from "../../components/inputs";
 import { useModal } from "../../hooks/use-modal";
 import { ModalCity, ModalDistrict, ModalStreet } from "../../components/modal";
 import { findSearch } from "../../utils/functions";
-import { PropsOwners } from "./types";
-import { PropsCities } from "../admin-cities/types";
-import { PropsNeighborhoods } from "../admin-neighborhoods/types";
-import { PropsStreets } from "../admin-streets/types";
+import { TCities } from "../admin-cities/types";
+import { TNeighborhoods } from "../admin-neighborhoods/types";
+import { TStreets } from "../admin-streets/types";
+import { TOwners } from "./types";
 
 export default function FormCustomers() {
-  const [cities, setCities] = useState<PropsCities[]>([]);
-  const [neighborhoods, setNeighborhoods] = useState<PropsNeighborhoods[]>([]);
-  const [streets, setStreets] = useState<PropsStreets[]>([]);
+  const [cities, setCities] = useState<TCities[]>([]);
+  const [neighborhoods, setNeighborhoods] = useState<TNeighborhoods[]>([]);
+  const [streets, setStreets] = useState<TStreets[]>([]);
 
   const {
     openStreet,
@@ -44,9 +44,9 @@ export default function FormCustomers() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsOwners>();
+  } = useForm<TOwners>();
 
-  const onSubmit = useCallback(async (data: PropsOwners) => {
+  async function onSubmit(data: TOwners) {
     const rwsStreet = findSearch(streets, data.streets_id, "street");
     const rwsDistrict = findSearch(
       neighborhoods,
@@ -57,7 +57,7 @@ export default function FormCustomers() {
       item => [item.city, item.state.state].join("/") === data.cities_id,
     );
 
-    const newPostData = {
+    const newData = {
       ...data,
       type: "owner",
       cities_id: rwsCity?.id,
@@ -68,49 +68,42 @@ export default function FormCustomers() {
       email: "",
     };
 
-    if (ownerId) {
-      await api
-        .put(`/customers/${ownerId}`, newPostData)
-        .then(() =>
-          changeAlert({
-            message: "Dados salvos com sucesso.",
-          }),
-        )
-        .catch(() =>
-          changeAlert({
-            message: "Não foi possivel fazer um novo cadastro para o imovél.",
-          }),
-        );
-      return;
-    }
-
     await api
-      .post(`/customers`, newPostData)
+      .patch(`/customers`, newData)
       .then(async resp => {
         changeAlert({
           message: "Dados salvos com sucesso.",
         });
         navigate({ pathname: `/adm/owners/${(await resp.data).id}/edit` });
       })
-      .catch(() =>
+      .catch(error => {
         changeAlert({
-          message: "Não foi possivel fazer um novo cadastro para o imovél.",
-        }),
-      );
-  }, []);
+          title: "Atenção",
+          message: "Não foi possivel fazer o cadastro!",
+          variant: "danger",
+        });
 
-  const loadCustomers = useCallback(async () => {
+        if (error.response.status === 422)
+          changeAlert({
+            title: "Atenção",
+            variant: "danger",
+            message: `${error.response.data.message}`,
+          });
+      });
+  }
+
+  async function loadCustomers() {
     await api
       .get(`/customers/${ownerId}`)
       .then(async res => {
-        const customer: PropsOwners = await res.data;
+        const customer: TOwners = await res.data;
         reset({
           ...customer,
           neighborhoods_id: customer?.district?.district,
           streets_id: customer.street?.street,
           cities_id:
             customer.city?.city && customer.city?.state.state
-              ? [].join("/")
+              ? [customer.city?.city, customer.city?.state.state].join("/")
               : "",
         });
       })
@@ -119,32 +112,25 @@ export default function FormCustomers() {
           message: "Não foi possivel conectar ao servidor.",
         });
       });
-  }, []);
+  }
 
-  const loadCities = useCallback(async () => {
-    await api.get("/cities").then(async res => setCities(await res.data));
-  }, []);
-
-  const loadNeighborhoods = useCallback(async () => {
-    await api
-      .get("/neighborhoods")
-      .then(async res => setNeighborhoods(await res.data));
-  }, []);
-
-  const loadStreets = useCallback(async () => {
-    await api.get("/streets").then(async res => setStreets(await res.data));
+  useEffect(() => {
+    (async () =>
+      await api.get("/cities").then(async res => setCities(await res.data)))();
   }, []);
 
   useEffect(() => {
-    loadCities();
+    (async () =>
+      await api
+        .get("/neighborhoods")
+        .then(async res => setNeighborhoods(await res.data)))();
   }, []);
 
   useEffect(() => {
-    loadNeighborhoods();
-  }, []);
-
-  useEffect(() => {
-    loadStreets();
+    (async () =>
+      await api
+        .get("/streets")
+        .then(async res => setStreets(await res.data)))();
   }, []);
 
   useEffect(() => {
@@ -193,6 +179,22 @@ export default function FormCustomers() {
                 register={register("last_name", {
                   required: {
                     value: true,
+                    message: "Campo é obrigatório",
+                  },
+                })}
+              />
+            </div>
+          </div>
+          <div className="flex flex-wrap -mx-3">
+            <div className="basis-full md:basis-6/12 px-3 mb-6">
+              <Input
+                type="text"
+                label="E-mail"
+                className={`input-form ${errors.email && "invalid"}`}
+                error={errors.email}
+                register={register("email", {
+                  required: {
+                    value: false,
                     message: "Campo é obrigatório",
                   },
                 })}
@@ -261,12 +263,12 @@ export default function FormCustomers() {
               <Input
                 mask={maskPhone}
                 type="text"
-                label="Telefone"
+                label="Telefone *"
                 className={`input-form ${errors.phone && "invalid"}`}
                 error={errors.phone}
                 register={register("phone", {
                   required: {
-                    value: false,
+                    value: true,
                     message: "Campo é obrigatório",
                   },
                 })}
@@ -284,7 +286,7 @@ export default function FormCustomers() {
                     type="search"
                     className={`input-form ${errors.streets_id && "invalid"}`}
                     placeholder="Pesquisar..."
-                    {...register("streets_id", { required: true })}
+                    {...register("streets_id", { required: false })}
                   />
                 </span>
                 <span
@@ -330,7 +332,7 @@ export default function FormCustomers() {
                       errors.neighborhoods_id && "invalid"
                     }`}
                     placeholder="Pesquisar..."
-                    {...register("neighborhoods_id", { required: true })}
+                    {...register("neighborhoods_id", { required: false })}
                   />
                 </span>
                 <span
@@ -360,7 +362,7 @@ export default function FormCustomers() {
                     type="search"
                     className={`input-form ${errors.cities_id && "invalid"}`}
                     placeholder="Pesquisar..."
-                    {...register("cities_id", { required: true })}
+                    {...register("cities_id", { required: false })}
                   />
                 </span>
                 <span

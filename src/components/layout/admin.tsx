@@ -28,7 +28,13 @@ export default function Admin() {
       <main className="basis-4/5 pb-8 px-4 overflow-y-auto relative">
         <NavDropDown />
 
-        {alert.message && <Alert message={alert.message} title={alert.title} />}
+        {alert.message && (
+          <Alert
+            message={alert.message}
+            title={alert.title}
+            variant={alert.variant}
+          />
+        )}
 
         <Outlet />
       </main>

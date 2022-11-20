@@ -1,13 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
 import { parse, stringify } from "query-string";
-import { PropsPagination } from "./types";
+import { TPagination } from "./types";
 
 export function Pagination({
   total,
   currentPage,
   perPage,
   ...rest
-}: PropsPagination) {
+}: TPagination) {
   // Logic for displaying page numbers
   const pageNumbers = [];
   for (let i = 1; i <= Math.ceil(total / perPage); i++) {

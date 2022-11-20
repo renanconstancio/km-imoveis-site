@@ -23,9 +23,9 @@ import {
   faBolt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PropsCardTags } from "./types";
+import { TCardTags } from "./types";
 
-export function CardTags({ cardTags, cardTag }: PropsCardTags) {
+export function CardTags({ cardTags, cardTag }: TCardTags) {
   const arrayString = cardTag?.split(",");
   return (
     <>
@@ -74,41 +74,7 @@ export function CardTags({ cardTags, cardTag }: PropsCardTags) {
               {label.icon === "faShower" && <FontAwesomeIcon icon={faShower} />}
               {label.icon === "faPhoneVolume" && (
                 <FontAwesomeIcon icon={faPhoneVolume} />
-              )}
-              {/* {label.icon === "faTv" && <FontAwesomeIcon icon={faTv} />}
-              {label.icon === "faSpa" && <FontAwesomeIcon icon={faSpa} />}
-              {label.icon === "faCheck" && <FontAwesomeIcon icon={faCheck} />}
-              {label.icon === "faWarehouse" && (
-                <FontAwesomeIcon icon={faWarehouse} />
-              )}
-              {label.icon === "faCar" && <FontAwesomeIcon icon={faCar} />}
-              {label.icon === "faBath" && <FontAwesomeIcon icon={faBath} />}
-              {label.icon === "faKitchenSet" && (
-                <FontAwesomeIcon icon={faKitchenSet} />
-              )}
-              {label.icon === "faWind" && <FontAwesomeIcon icon={faWind} />}
-              {label.icon === "faSink" && <FontAwesomeIcon icon={faSink} />}
-              {label.icon === "faBed" && <FontAwesomeIcon icon={faBed} />}
-              {label.icon === "faExpand" && <FontAwesomeIcon icon={faExpand} />}
-              {label.icon === "faFan" && <FontAwesomeIcon icon={faFan} />}
-              {label.icon === "faSnowflake" && (
-                <FontAwesomeIcon icon={faSnowflake} />
-              )}
-              {label.icon === "faJugDetergent" && (
-                <FontAwesomeIcon icon={faJugDetergent} />
-              )}
-              {label.icon === "faBowlFood" && <FontAwesomeIcon icon={faBowlFood} />}
-              {label.icon === "faWaterLadder" && (
-                <FontAwesomeIcon icon={faWaterLadder} />
-              )}
-              {label.icon === "faUtensils" && <FontAwesomeIcon icon={faUtensils} />}
-              {label.icon === "faDoorOpen" && <FontAwesomeIcon icon={faDoorOpen} />}
-              {label.icon === "faShower" && (
-                <FontAwesomeIcon icon={faShower} />
-              )}
-              {label.icon === "faPhoneVolume" && (
-                <FontAwesomeIcon icon={faPhoneVolume} />
-                )} */}{" "}
+              )}{" "}
               {label.tag}
             </span>
           ),

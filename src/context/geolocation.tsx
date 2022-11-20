@@ -28,7 +28,7 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
     {} as GeolocationType,
   );
 
-  const loadCities = useCallback(async (lat: string, lon: string) => {
+  async function loadCities(lat: string, lon: string) {
     console.log(lat);
     await axios
       .get(
@@ -42,7 +42,7 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
           city: address.city_district,
         });
       });
-  }, []);
+  }
 
   useEffect(() => {
     if (navigator.geolocation) {

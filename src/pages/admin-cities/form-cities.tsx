@@ -1,3 +1,4 @@
+import { api } from "../../services/api";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -5,62 +6,53 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
 import { findSearch } from "../../utils/functions";
-import { PropsCities } from "./types";
-import { api } from "../../services/api";
+import { TCities } from "./types";
 
 export default function FormCities() {
   const [states, setSates] = useState([]);
 
   const { changeAlert } = useAlert();
-
   const navigate = useNavigate();
 
-  const { streetId } = useParams<{ streetId: string | undefined }>();
+  const { cityId } = useParams<{ cityId: string | undefined }>();
 
   const {
     reset,
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PropsCities>();
+  } = useForm<TCities>();
 
-  const onSubmit = useCallback(async (data: PropsCities) => {
+  async function onSubmit(data: TCities) {
     const rwsState = findSearch(states, data.states_id, "state");
-    const newPostData = {
+    const newData = {
       ...data,
       states_id: rwsState?.id,
     };
 
-    if (streetId) {
-      await api
-        .put(`/cities/${streetId}`, newPostData)
-        .then(() =>
-          changeAlert({
-            message: "Dados salvos com sucesso.",
-          }),
-        )
-        .catch(() =>
-          changeAlert({
-            message: "Não foi possivel fazer um novo cadastro para o imovél.",
-          }),
-        );
-      return;
-    }
-
     await api
-      .post(`/cities`, newPostData)
+      .patch(`/cities`, newData)
       .then(async resp => {
         changeAlert({
           message: "Dados salvos com sucesso.",
         });
         navigate({ pathname: `/adm/cities/${(await resp.data).id}/edit` });
       })
-      .catch(() =>
+      .catch(error => {
         changeAlert({
-          message: "Não foi possivel fazer um novo cadastro para o imovél.",
-        }),
-      );
-  }, []);
+          title: "Atenção",
+          message: "Não foi possivel fazer o cadastro!",
+          variant: "danger",
+        });
+
+        if (error.response.status === 422)
+          changeAlert({
+            title: "Atenção",
+            variant: "danger",
+            message: `${error.response.data.message}`,
+          });
+      });
+  }
 
   const loadStates = useCallback(async () => {
     await api.get("/states").then(async res => setSates(await res.data));
@@ -70,26 +62,28 @@ export default function FormCities() {
     loadStates();
   }, []);
 
-  const loadCities = useCallback(async () => {
-    api
-      .get(`/cities/${streetId}`)
-      .then(async res => {
-        const resp = await res.data;
-        reset({
-          ...resp,
-          states_id: resp.state?.state,
-        });
-      })
-      .catch(() =>
-        changeAlert({
-          message: "Não foi possivel conectar ao servidor.",
-        }),
-      );
-  }, []);
+  const loadCities = useCallback(
+    async () =>
+      api
+        .get(`/cities/${cityId}`)
+        .then(async resp => {
+          const city = await resp.data;
+          reset({
+            ...city,
+            states_id: city.state?.state,
+          });
+        })
+        .catch(() =>
+          changeAlert({
+            message: "Não foi possivel conectar ao servidor.",
+          }),
+        ),
+    [],
+  );
 
   useEffect(() => {
-    if (streetId) loadCities();
-  }, [streetId]);
+    if (cityId) loadCities();
+  }, [cityId]);
 
   return (
     <>
@@ -112,7 +106,7 @@ export default function FormCities() {
         >
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="basis-full md:basis-4/12 px-3">
-              <label className="label-form" htmlFor="street">
+              <label className="label-form" htmlFor="city">
                 Cidade *
               </label>
               <input

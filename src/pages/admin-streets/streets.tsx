@@ -1,16 +1,16 @@
 import { api } from "../../services/api";
 import { parse } from "query-string";
-import { KeyboardEvent, useCallback, useEffect, useState } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Loading } from "../../components/loading";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PropsStreets } from "./types";
+import { TStreets } from "./types";
 
 export default function Streets() {
   const [clear, setClear] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [streets, setStreets] = useState<PropsStreets[]>([]);
+  const [streets, setStreets] = useState<TStreets[]>([]);
 
   const location = useLocation();
 
@@ -19,39 +19,37 @@ export default function Streets() {
   const q = (query.q || "") as unknown as string;
 
   function handleSearch(event: KeyboardEvent<EventTarget & HTMLInputElement>) {
-    if (event.currentTarget.value) {
-      if (event.code === "Enter" || event.keyCode === 13) {
-        setClear(!clear);
-        setStreets(
-          streets?.filter(
-            (f: { street: string }) =>
-              f.street
-                .toLowerCase()
-                .includes(event.currentTarget.value.toLowerCase()), //f.street === event.currentTarget.value,
-          ),
-        );
-      }
+    if (
+      event.currentTarget.value &&
+      (event.code === "Enter" || event.keyCode === 13)
+    ) {
+      setClear(!clear);
+      setStreets(
+        streets?.filter((f: { street: string }) =>
+          f.street
+            .toLowerCase()
+            .includes(event.currentTarget.value.toLowerCase()),
+        ),
+      );
     }
   }
 
-  const handleDelete = useCallback(async (data: PropsStreets) => {
+  async function handleDelete(data: TStreets) {
     if (!confirm(`Você deseja excluir ${data.street}?`)) return;
-    setLoading(true);
+
     await api
       .delete(`/streets/${data.id}`)
-      .then(() =>
-        setStreets(streets?.filter((f: { id: string }) => f.id !== data.id)),
-      )
+      .then(() => loadStreets())
       .finally(() => setLoading(false));
-  }, []);
+  }
 
-  const loadStreets = useCallback(async () => {
+  async function loadStreets() {
     setLoading(true);
     await api
       .get(`/streets`)
       .then(async resp => setStreets(await resp.data))
       .finally(() => setLoading(false));
-  }, []);
+  }
 
   useEffect(() => {
     loadStreets();

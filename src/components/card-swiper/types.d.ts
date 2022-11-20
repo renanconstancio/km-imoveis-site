@@ -1,6 +1,6 @@
-import { PropsImmobles } from "../../pages/admin-immobiles/types";
+import { TImmobles } from "../../pages/admin-immobiles/types";
 
-export type PropsCardSwiper = {
-  mapping: PropsImmobles[];
+export type TCardSwiper = {
+  mapping: TImmobles[];
   id: string;
 };

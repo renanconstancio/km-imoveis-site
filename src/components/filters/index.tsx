@@ -1,6 +1,6 @@
 import { api } from "../../services/api";
 import { useForm } from "react-hook-form";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { parse, stringify } from "query-string";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,28 +8,28 @@ import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useGeolocation } from "../../hooks/use-geolocation";
 import { OptionSituationList } from "../option-situation";
 import { Input } from "../inputs";
-import { PropsFilters, PropsFiltersComp } from "./types";
-import { PropsCategories } from "../../pages/admin-categories/types";
+import { TFilters, TFiltersComp } from "./types";
+import { TCategories } from "../../pages/admin-categories/types";
 
-export function Filters({ variant = "col" }: PropsFiltersComp) {
+export function Filters({ variant = "col" }: TFiltersComp) {
   const [openClose, setOpenClose] = useState<boolean>(false);
-  const [categories, setCategories] = useState<PropsCategories[]>([]);
+  const [categories, setCategories] = useState<TCategories[]>([]);
   const [cities, setCities] = useState<
     { city: string; state: string; neighborhoods: { district: string }[] }[]
   >([]);
   const [neighborhoods, setNeighborhoods] = useState<{ district: string }[]>(
     [],
   );
-  const [citiesDefault, setCitiesDefault] = useState<string>("");
+  // const [citiesDefault, setCitiesDefault] = useState<string>("");
 
   const { geolocation } = useGeolocation();
-  const { handleSubmit, register } = useForm<PropsFilters>();
+  const { handleSubmit, register } = useForm<TFilters>();
 
   const navigate = useNavigate();
   const location = useLocation();
   const parsed = parse(location.search);
 
-  function onSubmit(data: PropsFilters) {
+  function onSubmit(data: TFilters) {
     switch (data.situation as string) {
       case "Venda":
         data = { ...data, situation: "sale" };
@@ -68,25 +68,25 @@ export function Filters({ variant = "col" }: PropsFiltersComp) {
     );
   }
 
-  const loadFilters = useCallback(async () => {
+  async function loadFilters() {
     await api
       .get("/immobiles/website/filter")
       .then(async res => setCities(await res.data));
-  }, []);
+  }
 
-  const loadCategories = useCallback(async () => {
+  async function loadCategories() {
     await api
       .get("/categories")
       .then(async res => setCategories(await res.data));
-  }, []);
+  }
+
+  // useEffect(() => {
+  //   setCitiesDefault(`${geolocation?.city}`);
+  // }, []);
 
   useEffect(() => {
-    setCitiesDefault(`${geolocation?.city}`);
+    loadCategories();
   }, []);
-
-  useEffect(() => {
-    if (!categories.length) loadCategories();
-  }, [categories]);
 
   useEffect(() => {
     loadFilters();
