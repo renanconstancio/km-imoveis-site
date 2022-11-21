@@ -7,6 +7,7 @@ import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
 import { findSearch } from "../../utils/functions";
 import { TCities } from "./types";
+import { Helmet } from "react-helmet-async";
 
 export default function FormCities() {
   const [states, setSates] = useState([]);
@@ -87,6 +88,12 @@ export default function FormCities() {
 
   return (
     <>
+      <Helmet>
+        <title>
+          {cityId ? "Editar" : "Cadastrar"}
+          Cidades - {import.meta.env.VITE_TITLE}
+        </title>
+      </Helmet>
       <div className="overflow-x-auto rounded-sm bg-white p-6">
         <div className="border-b pb-3 mb-5 flex gap-3">
           <button className="btn-success btn-ico" type="submit" form="form">

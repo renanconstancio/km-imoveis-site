@@ -6,6 +6,7 @@ import { Loading } from "../../components/loading";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { api } from "../../services/api";
+import { Helmet } from "react-helmet-async";
 
 export default function Cities() {
   const [clear, setClear] = useState<boolean>(false);
@@ -56,67 +57,72 @@ export default function Cities() {
   if (loading) return <Loading />;
 
   return (
-    <ul className="overflow-x-auto rounded-sm bg-white p-5">
-      <li className="flex border-b mb-3 pb-3 gap-3 justify-between">
-        <section className="basis-6/12 flex gap-3 justify-end items-center">
-          <aside className="flex flex-1">
-            <input
-              type="text"
-              className="input-form"
-              defaultValue={`${query.q || ""}`}
-              onKeyDown={handleSearch}
-            />
-            {(q || clear) && (
-              <button
-                className="btn-default text-black"
-                type="button"
-                onClick={() => {
-                  loadCities();
-                  setClear(!clear);
-                }}
-              >
-                <FontAwesomeIcon icon={faTimes} />
-              </button>
-            )}
-          </aside>
-          <nav>
-            <Link className="btn-success" to="/adm/cities/new">
-              <FontAwesomeIcon icon={faEdit} /> Criar
-            </Link>
-          </nav>
-        </section>
-      </li>
-
-      <li className="list-orders uppercase font-play font-bold bg-gray-200">
-        <span className="basis-1/12">ações</span>
-        <span className="basis-11/12">Cidade</span>
-      </li>
-
-      {cities?.map(rws => (
-        <li key={rws.id} className="list-orders">
-          <span className="flex gap-1 basis-1/12">
-            <Link
-              className="btn-primary btn-xs"
-              to={`/adm/cities/${rws.id}/edit`}
-            >
-              <FontAwesomeIcon icon={faEdit} />
-            </Link>
-            <span
-              className="btn-danger btn-xs"
-              onClick={() => handleDelete(rws)}
-            >
-              <FontAwesomeIcon icon={faTrash} />
-            </span>
-          </span>
-          <span className="basis-11/12">
-            {[rws.city, rws.state?.state].join("/")}
-          </span>
+    <>
+      <Helmet>
+        <title>Lista de Cidades - {import.meta.env.VITE_TITLE}</title>
+      </Helmet>
+      <ul className="overflow-x-auto rounded-sm bg-white p-5">
+        <li className="flex border-b mb-3 pb-3 gap-3 justify-between">
+          <section className="basis-6/12 flex gap-3 justify-end items-center">
+            <aside className="flex flex-1">
+              <input
+                type="text"
+                className="input-form"
+                defaultValue={`${query.q || ""}`}
+                onKeyDown={handleSearch}
+              />
+              {(q || clear) && (
+                <button
+                  className="btn-default text-black"
+                  type="button"
+                  onClick={() => {
+                    loadCities();
+                    setClear(!clear);
+                  }}
+                >
+                  <FontAwesomeIcon icon={faTimes} />
+                </button>
+              )}
+            </aside>
+            <nav>
+              <Link className="btn-success" to="/adm/cities/new">
+                <FontAwesomeIcon icon={faEdit} /> Criar
+              </Link>
+            </nav>
+          </section>
         </li>
-      ))}
 
-      {!cities.length && (
-        <li className="py-3 px-6 text-center">Nenhum imovel encontado</li>
-      )}
-    </ul>
+        <li className="list-orders uppercase font-play font-bold bg-gray-200">
+          <span className="basis-1/12">ações</span>
+          <span className="basis-11/12">Cidade</span>
+        </li>
+
+        {cities?.map(rws => (
+          <li key={rws.id} className="list-orders">
+            <span className="flex gap-1 basis-1/12">
+              <Link
+                className="btn-primary btn-xs"
+                to={`/adm/cities/${rws.id}/edit`}
+              >
+                <FontAwesomeIcon icon={faEdit} />
+              </Link>
+              <span
+                className="btn-danger btn-xs"
+                onClick={() => handleDelete(rws)}
+              >
+                <FontAwesomeIcon icon={faTrash} />
+              </span>
+            </span>
+            <span className="basis-11/12">
+              {[rws.city, rws.state?.state].join("/")}
+            </span>
+          </li>
+        ))}
+
+        {!cities.length && (
+          <li className="py-3 px-6 text-center">Nenhum imovel encontado</li>
+        )}
+      </ul>
+    </>
   );
 }

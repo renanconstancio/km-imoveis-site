@@ -14,12 +14,5 @@
     "sourceType": "module"
   },
   "plugins": ["react"],
-  "rules": {
-    "react/props-types": "off",
-    "react/react-in-jsx-scope": "off",
-    "react/no-unused-vars": "warn",
-    "@typescript-eslint/explicit-module-boundary-types": "warn",
-    "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": "warn"
-  }
+  "rules": {}
 }

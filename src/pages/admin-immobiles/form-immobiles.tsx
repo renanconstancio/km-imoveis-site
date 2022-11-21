@@ -57,6 +57,7 @@ import { TTenant } from "../admin-tenant/types";
 import { TOwners } from "../admin-owners/types";
 import { TUsers } from "../admin-users/types";
 import { TImmobles } from "./types";
+import { Helmet } from "react-helmet-async";
 
 export default function FormImmobles() {
   const [cities, setCities] = useState<TCities[]>([]);
@@ -275,6 +276,12 @@ export default function FormImmobles() {
 
   return (
     <>
+      <Helmet>
+        <title>
+          {immobleId ? "Editar " : "Cadastrar"}
+          Imóveis - {import.meta.env.VITE_TITLE}
+        </title>
+      </Helmet>
       <div className="overflow-x-auto rounded-sm bg-white p-6">
         <div className="border-b pb-3 mb-5 flex flex-row justify-between">
           <aside className="flex flex-row gap-3">

@@ -8,6 +8,7 @@ import { Loading } from "../../components/loading";
 import { CadSwiper } from "../../components/card-swiper";
 import { H2 } from "../../components/title";
 import { api } from "../../services/api";
+import { Helmet } from "react-helmet-async";
 
 export function SiteHome() {
   const [loading, setLoading] = useState(true);
@@ -110,6 +111,10 @@ export function SiteHome() {
 
   return (
     <>
+      <Helmet>
+        <title>{import.meta.env.VITE_TITLE}</title>
+        <link rel="canonical" href={window.location.href} />
+      </Helmet>
       <div className="border-b border-gray-200 py-2">
         {loading ? (
           <section className="py-48">

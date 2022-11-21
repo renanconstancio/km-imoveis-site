@@ -7,6 +7,7 @@ import { Pagination } from "../../components/pagination";
 import { api, tags } from "../../services/api";
 import { TPagination } from "../../global/types";
 import { TImmobles } from "../admin-immobiles/types";
+import { Helmet } from "react-helmet-async";
 
 export function SiteSearch() {
   const [loading, setLoading] = useState(true);
@@ -49,6 +50,10 @@ export function SiteSearch() {
 
   return (
     <>
+      <Helmet>
+        <title>Pesquisar Imóveis - {import.meta.env.VITE_TITLE}</title>
+        <link rel="canonical" href={window.location.href} />
+      </Helmet>
       <div className="border-b border-gray-200 py-2">
         {!loading && location.pathname !== "/" && (
           <section className="container px-4 uppercase font-play mb-7">

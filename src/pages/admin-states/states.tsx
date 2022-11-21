@@ -6,6 +6,7 @@ import { Loading } from "../../components/loading";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TStates } from "./types";
+import { Helmet } from "react-helmet-async";
 
 export default function States() {
   const [clear, setClear] = useState<boolean>(false);
@@ -60,65 +61,70 @@ export default function States() {
   if (loading) return <Loading />;
 
   return (
-    <ul className="overflow-x-auto rounded-sm bg-white p-5">
-      <li className="flex border-b mb-3 pb-3 gap-3 justify-between">
-        <section className="w-6/12 flex gap-3 justify-end items-center">
-          <aside className="flex flex-1">
-            <input
-              type="text"
-              className="input-form"
-              defaultValue={`${query.q || ""}`}
-              onKeyDown={handleSearch}
-            />
-            {(q || clear) && (
-              <button
-                className="btn-default text-black"
-                type="button"
-                onClick={() => {
-                  loadStates();
-                  setClear(!clear);
-                }}
-              >
-                <FontAwesomeIcon icon={faTimes} />
-              </button>
-            )}
-          </aside>
-          <nav>
-            <Link className="btn-success" to="/adm/states/new">
-              <FontAwesomeIcon icon={faEdit} /> Criar
-            </Link>
-          </nav>
-        </section>
-      </li>
-
-      <li className="list-orders uppercase font-play font-bold bg-gray-200">
-        <span className="w-1/12">ações</span>
-        <span className="w-11/12">Estados</span>
-      </li>
-
-      {states?.map(rws => (
-        <li key={rws.id} className="list-orders">
-          <span className="flex gap-1 w-1/12">
-            <Link
-              className="btn-primary btn-xs"
-              to={`/adm/states/${rws.id}/edit`}
-            >
-              <FontAwesomeIcon icon={faEdit} />
-            </Link>
-            <span
-              className="btn-danger btn-xs"
-              onClick={() => handleDelete(rws)}
-            >
-              <FontAwesomeIcon icon={faTrash} />
-            </span>
-          </span>
-          <span className="w-11/12">{rws.state}</span>
+    <>
+      <Helmet>
+        <title>Lista de Estados - {import.meta.env.VITE_TITLE}</title>
+      </Helmet>
+      <ul className="overflow-x-auto rounded-sm bg-white p-5">
+        <li className="flex border-b mb-3 pb-3 gap-3 justify-between">
+          <section className="w-6/12 flex gap-3 justify-end items-center">
+            <aside className="flex flex-1">
+              <input
+                type="text"
+                className="input-form"
+                defaultValue={`${query.q || ""}`}
+                onKeyDown={handleSearch}
+              />
+              {(q || clear) && (
+                <button
+                  className="btn-default text-black"
+                  type="button"
+                  onClick={() => {
+                    loadStates();
+                    setClear(!clear);
+                  }}
+                >
+                  <FontAwesomeIcon icon={faTimes} />
+                </button>
+              )}
+            </aside>
+            <nav>
+              <Link className="btn-success" to="/adm/states/new">
+                <FontAwesomeIcon icon={faEdit} /> Criar
+              </Link>
+            </nav>
+          </section>
         </li>
-      ))}
 
-      {!states.length && (
-        <li className="py-3 px-6 text-center">Nenhum imovel encontado</li>
-      )}
-    </ul>
+        <li className="list-orders uppercase font-play font-bold bg-gray-200">
+          <span className="w-1/12">ações</span>
+          <span className="w-11/12">Estados</span>
+        </li>
+
+        {states?.map(rws => (
+          <li key={rws.id} className="list-orders">
+            <span className="flex gap-1 w-1/12">
+              <Link
+                className="btn-primary btn-xs"
+                to={`/adm/states/${rws.id}/edit`}
+              >
+                <FontAwesomeIcon icon={faEdit} />
+              </Link>
+              <span
+                className="btn-danger btn-xs"
+                onClick={() => handleDelete(rws)}
+              >
+                <FontAwesomeIcon icon={faTrash} />
+              </span>
+            </span>
+            <span className="w-11/12">{rws.state}</span>
+          </li>
+        ))}
+
+        {!states.length && (
+          <li className="py-3 px-6 text-center">Nenhum imovel encontado</li>
+        )}
+      </ul>
+    </>
   );
 }

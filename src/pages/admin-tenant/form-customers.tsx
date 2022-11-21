@@ -18,6 +18,7 @@ import { TCities } from "../admin-cities/types";
 import { TNeighborhoods } from "../admin-neighborhoods/types";
 import { TStreets } from "../admin-streets/types";
 import { TTenant } from "./types";
+import { Helmet } from "react-helmet-async";
 
 export default function FormCustomers() {
   const [cities, setCities] = useState<TCities[]>([]);
@@ -142,6 +143,12 @@ export default function FormCustomers() {
 
   return (
     <>
+      <Helmet>
+        <title>
+          {tenantId ? "Editar" : "Cadastrar"}
+          Inquilínos - {import.meta.env.VITE_TITLE}
+        </title>
+      </Helmet>
       <div className="overflow-x-auto rounded-sm bg-white p-6">
         <div className="border-b pb-3 mb-5 flex gap-3">
           <button className="btn-success btn-ico" type="submit" form="form">

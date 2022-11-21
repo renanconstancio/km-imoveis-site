@@ -3,14 +3,21 @@ import "react-responsive-carousel/lib/styles/carousel.css";
 
 import ReactDOM from "react-dom/client";
 
-import { RoutesAdm } from "./routes/routes-adm";
-import { BrowserRouter, Routes } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
-import { RoutesSite } from "./routes/routes-site";
+
+import { AuthProvider } from "./context/auth";
+import { AlertProvider } from "./context/alert";
+import { ModalProvider } from "./context/modal";
+import RouteIndex from "./routes";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <HelmetProvider>
-    <RoutesAdm />
-    <RoutesSite />
+    <AuthProvider>
+      <AlertProvider>
+        <ModalProvider>
+          <RouteIndex />
+        </ModalProvider>
+      </AlertProvider>
+    </AuthProvider>
   </HelmetProvider>,
 );

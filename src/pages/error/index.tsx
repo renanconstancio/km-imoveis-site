@@ -4,7 +4,7 @@ import { Footer } from "../../components/footer";
 import { Header } from "../../components/header";
 
 export function Error() {
-  const error: any = useRouteError();
+  // const error: any = useRouteError();
 
   return (
     <div className="bg-gray-200 flex flex-1 flex-col relative">
@@ -30,12 +30,13 @@ export function Error() {
           </section>
         </div>
       )}
+
       <div className="container">
         <h1 className="font-play text-9xl mb-5">Oops!</h1>
         <p>Descupe, não consegui a página que você digitou.</p>
         <p>
           <i className="font-play font-bold">
-            {error.statusText || error.message}
+            {/* {error.statusText || error.message} */}
           </i>
         </p>
       </div>

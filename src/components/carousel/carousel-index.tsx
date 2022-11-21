@@ -1,3 +1,4 @@
+import React from "react";
 import { TBanners } from "./types";
 import { Carousel } from "react-responsive-carousel";
 import { situationText, slugiFy } from "../../utils/functions";
@@ -16,10 +17,9 @@ export default function CarouselIndex({ banners }: { banners: TBanners[] }) {
       width={"100%"}
     >
       {banners.map(({ photo, reference, description, situation }, id) => (
-        <>
+        <React.Fragment key={id}>
           {reference ? (
             <Link
-              key={id}
               to={`/${slugiFy(
                 `${situationText(situation)}`,
               )}/imovel/${reference}/${slugiFy(`${description}`)}`}
@@ -32,7 +32,6 @@ export default function CarouselIndex({ banners }: { banners: TBanners[] }) {
             ></Link>
           ) : (
             <div
-              key={id}
               style={{
                 backgroundImage: `url(${photo.image_lg})`,
                 backgroundPosition: "center bottom",
@@ -41,7 +40,7 @@ export default function CarouselIndex({ banners }: { banners: TBanners[] }) {
               className="flex flex-row h-[250px] md:h-[475px]"
             ></div>
           )}
-        </>
+        </React.Fragment>
       ))}
     </Carousel>
   );

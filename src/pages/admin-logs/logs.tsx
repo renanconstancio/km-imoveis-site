@@ -12,6 +12,7 @@ import { Pagination } from "../../components/pagination";
 import { TPagination } from "../../global/types";
 import { TLogs } from "./types";
 import ModalLog from "../../components/modal/modal-log";
+import { Helmet } from "react-helmet-async";
 
 export default function Logs() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -63,6 +64,9 @@ export default function Logs() {
 
   return (
     <>
+      <Helmet>
+        <title>Logs - {import.meta.env.VITE_TITLE}</title>
+      </Helmet>
       <ul className="overflow-x-auto rounded-sm bg-white p-5">
         <li className="flex border-b mb-3 pb-3 gap-3 justify-between">
           <section className="basis-6/12 flex gap-3 justify-end items-center">
