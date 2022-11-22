@@ -47,7 +47,7 @@ export default function Cities() {
     await api
       .get(`/cities`)
       .finally(() => setLoading(false))
-      .then(async resp => setCities(await resp.data));
+      .then(async (resp) => setCities(await resp.data));
   }
 
   useEffect(() => {
@@ -97,7 +97,7 @@ export default function Cities() {
           <span className="basis-11/12">Cidade</span>
         </li>
 
-        {cities?.map(rws => (
+        {cities?.map((rws) => (
           <li key={rws.id} className="list-orders">
             <span className="flex gap-1 basis-1/12">
               <Link

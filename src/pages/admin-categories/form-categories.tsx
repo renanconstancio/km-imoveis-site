@@ -30,7 +30,7 @@ export default function FormCategories() {
 
     await api
       .patch(`/categories`, newData)
-      .then(async resp => {
+      .then(async (resp) => {
         changeAlert({
           message: "Cadastro salvo com sucesso!",
         });
@@ -38,7 +38,7 @@ export default function FormCategories() {
           pathname: `/adm/categories/${await resp.data?.id}/edit`,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         changeAlert({
           title: "Atenção",
           message: "Não foi possivel fazer o cadastro!",
@@ -57,7 +57,7 @@ export default function FormCategories() {
   async function loadCategories() {
     await api
       .get(`/categories/${categoryId}`)
-      .then(async res =>
+      .then(async (res) =>
         reset({
           ...(await res.data),
         }),

@@ -13,9 +13,6 @@ import RouteIndex from "./routes";
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <HelmetProvider>
     <AuthProvider>
-
-
-
       <AlertProvider>
         <ModalProvider>
           <RouteIndex />

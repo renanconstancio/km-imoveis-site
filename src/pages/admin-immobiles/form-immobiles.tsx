@@ -103,16 +103,16 @@ export default function FormImmobles() {
 
   async function onSubmit(data: TImmobles) {
     const rwsUser = users.find(
-      item => [item.first_name].join(" ") === data.users_id,
+      (item) => [item.first_name].join(" ") === data.users_id,
     );
     const rwsOwner = owners.find(
-      item => [item.first_name, item.last_name].join(" ") === data.owner_id,
+      (item) => [item.first_name, item.last_name].join(" ") === data.owner_id,
     );
     const rwsTenant = tenants.find(
-      item => [item.first_name, item.last_name].join(" ") === data.tenant_id,
+      (item) => [item.first_name, item.last_name].join(" ") === data.tenant_id,
     );
     const rwsCity = cities.find(
-      item => [item.city, item.state.state].join("/") === data.cities_id,
+      (item) => [item.city, item.state.state].join("/") === data.cities_id,
     );
     const rwsStreet = findSearch(streets, data.streets_id, "street");
     const rwsDistrict = findSearch(
@@ -141,13 +141,13 @@ export default function FormImmobles() {
 
     await api
       .patch(`/immobiles`, newData)
-      .then(async resp => {
+      .then(async (resp) => {
         changeAlert({
           message: "Dados salvos com sucesso.",
         });
         navigate({ pathname: `/adm/immobiles/${(await resp.data).id}/edit` });
       })
-      .catch(error => {
+      .catch((error) => {
         changeAlert({
           title: "Atenção",
           message: "Não foi possivel fazer o cadastro!",
@@ -166,7 +166,7 @@ export default function FormImmobles() {
   async function loadImmoble() {
     await api
       .get(`/immobiles/${immobleId}`)
-      .then(async res => {
+      .then(async (res) => {
         const immoble: TImmobles = await res.data;
 
         reset({
@@ -199,7 +199,7 @@ export default function FormImmobles() {
         setDescriptionText(immoble?.description_text);
         setOnOff(immoble?.published);
       })
-      .catch(e => {
+      .catch((e) => {
         changeAlert({
           message: "Não foi possivel conectar ao servidor.",
         });
@@ -209,37 +209,37 @@ export default function FormImmobles() {
   async function loadCategories() {
     await api
       .get("/categories")
-      .then(async res => setCategories(await res.data));
+      .then(async (res) => setCategories(await res.data));
   }
 
   async function loadCities() {
-    await api.get("/cities").then(async res => setCities(await res.data));
+    await api.get("/cities").then(async (res) => setCities(await res.data));
   }
 
   async function loadNeighborhoods() {
     await api
       .get("/neighborhoods")
-      .then(async res => setNeighborhoods(await res.data));
+      .then(async (res) => setNeighborhoods(await res.data));
   }
 
   async function loadStreets() {
-    await api.get("/streets").then(async res => setStreets(await res.data));
+    await api.get("/streets").then(async (res) => setStreets(await res.data));
   }
 
   async function loadTenants() {
     await api
       .get("/customers?limit=10000&search[type]=tenant")
-      .then(async res => setTenant(await res.data?.data));
+      .then(async (res) => setTenant(await res.data?.data));
   }
 
   async function loadOwners() {
     await api
       .get("/customers?limit=10000&search[type]=owner")
-      .then(async res => setOwner(await res.data?.data));
+      .then(async (res) => setOwner(await res.data?.data));
   }
 
   async function loadUsers() {
-    await api.get("/users").then(async res => setUsers(await res.data));
+    await api.get("/users").then(async (res) => setUsers(await res.data));
   }
 
   useEffect(() => {
@@ -613,7 +613,7 @@ export default function FormImmobles() {
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
               <datalist id="cities_id">
-                {cities.map(city => (
+                {cities.map((city) => (
                   <option
                     key={city.id}
                     value={[city.city, city?.state?.state].join("/")}
@@ -697,13 +697,13 @@ export default function FormImmobles() {
                       onClick={() => {
                         if (tagsSite?.includes(label.tag)) {
                           setTagsSite(
-                            tagsSite?.filter(item => {
+                            tagsSite?.filter((item) => {
                               return item !== label.tag;
                             }),
                           );
                           return;
                         }
-                        setTagsSite(old => [...old, label.tag]);
+                        setTagsSite((old) => [...old, label.tag]);
                       }}
                     >
                       {label.icon === "faTv" && <FontAwesomeIcon icon={faTv} />}

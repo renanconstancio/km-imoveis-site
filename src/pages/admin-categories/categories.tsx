@@ -48,7 +48,7 @@ export default function Categories() {
     await api
       .get(`/categories`)
       .finally(() => setLoading(false))
-      .then(async resp => setCategories(await resp.data));
+      .then(async (resp) => setCategories(await resp.data));
   }
 
   useEffect(() => {
@@ -98,7 +98,7 @@ export default function Categories() {
           <span className="basis-11/12">Estados</span>
         </li>
 
-        {categories?.map(rws => (
+        {categories?.map((rws) => (
           <li key={rws.id} className="list-orders">
             <span className="flex gap-1 basis-1/12">
               <Link

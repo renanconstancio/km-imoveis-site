@@ -10,9 +10,13 @@
   ],
   "overrides": [],
   "parserOptions": {
+    "ecmaFeatures": {
+      "tsx": true
+    },
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
   "plugins": ["react"],
-  "rules": {}
+  "rules": { 
+  }
 }

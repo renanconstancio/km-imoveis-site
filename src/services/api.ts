@@ -1,5 +1,4 @@
 import axios, { Axios } from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
 
 export const api: Axios = axios.create({
   baseURL: import.meta.env.VITE_API_HOST,
