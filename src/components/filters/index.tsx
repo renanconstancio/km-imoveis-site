@@ -10,6 +10,7 @@ import { OptionSituationList } from "../option-situation";
 import { Input } from "../inputs";
 import { TFilters, TFiltersComp } from "./types";
 import { TCategories } from "../../pages/admin-categories/types";
+import { maskCurrency } from "../../utils/mask";
 
 export function Filters({ variant = "col" }: TFiltersComp) {
   const [openClose, setOpenClose] = useState<boolean>(false);
@@ -71,13 +72,13 @@ export function Filters({ variant = "col" }: TFiltersComp) {
   async function loadFilters() {
     await api
       .get("/immobiles/website/filter")
-      .then(async res => setCities(await res.data));
+      .then(async (res) => setCities(await res.data));
   }
 
   async function loadCategories() {
     await api
       .get("/categories")
-      .then(async res => setCategories(await res.data));
+      .then(async (res) => setCategories(await res.data));
   }
 
   // useEffect(() => {
@@ -105,7 +106,7 @@ export function Filters({ variant = "col" }: TFiltersComp) {
           !openClose ? "hidden mt-3 md:m-0 md:flex" : "flex mt-3 md:m-0"
         } ${
           variant === "col" ? "flex-col" : "flex-col md:flex-row"
-        } gap-3 md:mr-5 aling-end`}
+        } gap-5 md:mr-5 aling-end flex-wrap`}
       >
         <li>
           <Input
@@ -143,7 +144,7 @@ export function Filters({ variant = "col" }: TFiltersComp) {
             className={`input-form`}
             placeholder={"Busca por cidades"}
             register={register("city")}
-            onChange={e => handleChangeCity(e.target.value)}
+            onChange={(e) => handleChangeCity(e.target.value)}
             defaultValue=""
           />
           <datalist id="cities">
@@ -178,6 +179,29 @@ export function Filters({ variant = "col" }: TFiltersComp) {
             placeholder={""}
             register={register("reference")}
           />
+        </li>
+
+        <li className="flex gap-5">
+          <span>
+            <Input
+              type="tel"
+              mask={maskCurrency}
+              label="Valor De"
+              className={`input-form text-end`}
+              placeholder={""}
+              register={register("price_gte")}
+            />
+          </span>
+          <span>
+            <Input
+              type="tel"
+              mask={maskCurrency}
+              label="Valor Até"
+              className={`input-form text-end`}
+              placeholder={""}
+              register={register("price_lte")}
+            />
+          </span>
         </li>
         <li>
           <label htmlFor="" className="label-form">

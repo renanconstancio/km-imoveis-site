@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Card } from "../../components/card";
 import { parse, stringify } from "query-string";
@@ -8,6 +8,7 @@ import { api, tags } from "../../services/api";
 import { TPagination } from "../../global/types";
 import { TImmobles } from "../admin-immobiles/types";
 import { Helmet } from "react-helmet-async";
+import { maskCurrencyUs } from "../../utils/mask";
 
 export function SiteSearch() {
   const [loading, setLoading] = useState(true);
@@ -20,9 +21,14 @@ export function SiteSearch() {
   const query = parse(location.search);
   const locationDecodUri = decodeURI(location.search);
   const situation = (query.situation || "") as string;
+
+  const price_lte = (query.price_lte || "") as string;
+  const price_gte = (query.price_gte || "") as string;
+
   const reference = (query.reference || "") as string;
   const district = (query.district || "") as string;
   const category = (query.category || "") as string;
+
   const city = (query.city || "") as string;
   const limit = (query.limit || "20") as string;
   const page = (query.page || "1") as string;
@@ -30,17 +36,27 @@ export function SiteSearch() {
   async function loadImmobiles() {
     setLoading(true);
 
-    const conveterParse = parse(
-      `page=${page}&limit=${limit}&search[situation]=${situation}&search[category]=${category}&search[reference]=${reference}&search[city]=${city}&search[district]=${district}`,
-    );
+    let conveterParse = `page=${page}&limit=${limit}&search[situation]=${situation}&search[category]=${category}&search[reference]=${reference}&search[city]=${city}&search[district]=${district}`;
+
+    if (price_lte) {
+      conveterParse = `${conveterParse}&search[rent_price_lte]=${maskCurrencyUs(
+        price_lte,
+      )}`;
+    }
+
+    if (price_gte) {
+      conveterParse = `${conveterParse}&search[rent_price_gte]=${maskCurrencyUs(
+        price_gte,
+      )}`;
+    }
 
     await api
       .get(
         `/immobiles/website/list?${decodeURI(
-          stringify({ ...query, ...conveterParse }),
+          stringify({ ...parse(conveterParse) }),
         )}`,
       )
-      .then(async resp => setImmobiles(await resp.data))
+      .then(async (resp) => setImmobiles(await resp.data))
       .finally(() => setLoading(false));
   }
 
@@ -92,7 +108,7 @@ export function SiteSearch() {
                   ]}
                   tag={item.tags || ""}
                   tags={tags}
-                  images={item?.photos?.map(f => f.image_xs) || []}
+                  images={item?.photos?.map((f) => f.image_xs) || []}
                 />
               </li>
             ))}

@@ -3,6 +3,8 @@ export type TFiltersComp = {
 };
 
 export type TFilters = {
+  price_lte: string;
+  price_gte: string;
   category: string;
   district: string;
   city: string;
