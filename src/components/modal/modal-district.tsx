@@ -19,7 +19,7 @@ export default function ModalDistrict({ addDistricts }: TModalDistrict) {
   } = useForm<TNeighborhoods>();
 
   async function onSubmit(data: TNeighborhoods) {
-    await api.patch(`/neighborhoods`, data).then(async res => {
+    await api.patch(`/neighborhoods`, data).then(async (res) => {
       const category = await res.data;
       addDistricts((old: any) => [...old, category]);
       closeNeighborhoods(!openNeighborhoods);

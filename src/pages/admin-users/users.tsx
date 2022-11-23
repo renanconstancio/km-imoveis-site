@@ -49,7 +49,7 @@ export default function Users() {
     setLoading(true);
     await api
       .get(`/users`)
-      .then(async resp => setUsers(await resp.data))
+      .then(async (resp) => setUsers(await resp.data))
       .finally(() => setLoading(false));
   }
 
@@ -100,7 +100,7 @@ export default function Users() {
           <span className="basis-11/12">Nome.</span>
         </li>
 
-        {users?.map(rws => (
+        {users?.map((rws) => (
           <li key={rws.id} className="list-orders">
             <span className="flex gap-1 basis-1/12">
               <Link

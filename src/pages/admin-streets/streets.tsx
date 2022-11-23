@@ -48,7 +48,7 @@ export default function Streets() {
     setLoading(true);
     await api
       .get(`/streets`)
-      .then(async resp => setStreets(await resp.data))
+      .then(async (resp) => setStreets(await resp.data))
       .finally(() => setLoading(false));
   }
 
@@ -99,7 +99,7 @@ export default function Streets() {
           <span className="basis-11/12">Rua, Avenida, Apto.</span>
         </li>
 
-        {streets?.map(rws => (
+        {streets?.map((rws) => (
           <li key={rws.id} className="list-orders">
             <span className="flex gap-1 basis-1/12">
               <Link

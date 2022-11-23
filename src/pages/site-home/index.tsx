@@ -31,7 +31,7 @@ export function SiteHome() {
       .get(
         `/immobiles/website/list?limit=20&search[situation]=location&search[city]=${city}`,
       )
-      .then(async resp => setImmobilesLocation(await resp.data?.data))
+      .then(async (resp) => setImmobilesLocation(await resp.data?.data))
       .finally(() => setLoading(false));
   }
 
@@ -41,7 +41,7 @@ export function SiteHome() {
       .get(
         `/immobiles/website/list?limit=20&search[situation]=purchase&search[city]=${city}`,
       )
-      .then(async resp => setImmobilesPurchase(await resp.data?.data))
+      .then(async (resp) => setImmobilesPurchase(await resp.data?.data))
       .finally(() => setLoading(false));
   }
 
@@ -51,7 +51,7 @@ export function SiteHome() {
       .get(
         `/immobiles/website/list?limit=20&search[situation]=exchange&search[city]=${city}`,
       )
-      .then(async resp => setImmobilesExchange(await resp.data?.data))
+      .then(async (resp) => setImmobilesExchange(await resp.data?.data))
       .finally(() => setLoading(false));
   }
 
@@ -61,7 +61,7 @@ export function SiteHome() {
       .get(
         `/immobiles/website/list?limit=20&search[situation]=sale&search[city]=${city}`,
       )
-      .then(async resp => setImmobilesSales(await resp.data?.data))
+      .then(async (resp) => setImmobilesSales(await resp.data?.data))
       .finally(() => setLoading(false));
   }
 
@@ -71,7 +71,7 @@ export function SiteHome() {
       .get(
         `/immobiles/website/list?limit=20&search[situation]=sale_lease&search[city]=${city}`,
       )
-      .then(async resp => setImmobilesSaleLease(await resp.data?.data))
+      .then(async (resp) => setImmobilesSaleLease(await resp.data?.data))
       .finally(() => setLoading(false));
   }
 
@@ -81,7 +81,7 @@ export function SiteHome() {
       .get(
         `/immobiles/website/list?limit=20&search[situation]=sale_barter&search[city]=${city}`,
       )
-      .then(async resp => setImmobilesSaleBarter(await resp.data?.data))
+      .then(async (resp) => setImmobilesSaleBarter(await resp.data?.data))
       .finally(() => setLoading(false));
   }
 

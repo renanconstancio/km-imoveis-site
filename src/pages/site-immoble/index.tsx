@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { H2 } from "../../components/title";
@@ -28,14 +28,14 @@ export function SiteImmoble() {
     setLoading(true);
     await api
       .get(`/immobiles/${reference}/reference`)
-      .then(async resp => setImmoble(await resp.data))
+      .then(async (resp) => setImmoble(await resp.data))
       .finally(() => setLoading(false));
   }
 
   async function loadImmobles() {
     await api
       .get(`/immobiles/website/list?limit=8`)
-      .then(async resp => setImmobiles(await resp.data?.data));
+      .then(async (resp) => setImmobiles(await resp.data?.data));
   }
 
   useEffect(() => {

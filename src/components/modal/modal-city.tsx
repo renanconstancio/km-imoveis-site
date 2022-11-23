@@ -32,7 +32,7 @@ export default function ModalCity({ addCities }: TModalCity) {
   async function onSubmit(data: TCities) {
     await api
       .patch(`/cities`, { city: data.city, states_id: statesId })
-      .then(async res => {
+      .then(async (res) => {
         const cities = await res.data;
         addCities((old: any) => [...old, cities]);
         closeCity(!openCity);
@@ -40,7 +40,7 @@ export default function ModalCity({ addCities }: TModalCity) {
   }
 
   async function loadStates() {
-    await api.get("/states").then(async res => setSates(await res.data));
+    await api.get("/states").then(async (res) => setSates(await res.data));
   }
 
   useEffect(() => {

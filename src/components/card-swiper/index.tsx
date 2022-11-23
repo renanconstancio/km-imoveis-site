@@ -68,7 +68,7 @@ export function CadSwiper({ mapping, id }: TCardSwiper) {
               ]}
               tag={item.tags || ""}
               tags={tags}
-              images={item?.photos?.map(f => f.image_xs) || []}
+              images={item?.photos?.map((f) => f.image_xs) || []}
             />
           </SwiperSlide>
         ))}

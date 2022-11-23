@@ -22,7 +22,7 @@ export function NavLeft() {
         <FontAwesomeIcon icon={faDashboard} /> Dashboard
       </NavLink>
       <NavLink
-        to="/adm/immobiles"
+        to="/adm/immobiles?order[reference]=desc"
         className={({ isActive }) =>
           isActive ? activeClassName : classDefaultName
         }

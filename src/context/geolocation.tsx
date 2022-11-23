@@ -1,11 +1,5 @@
 import axios from "axios";
-import {
-  createContext,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 
 export type GeolocationType = {
   latitude: string;
@@ -29,12 +23,11 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
   );
 
   async function loadCities(lat: string, lon: string) {
-    console.log(lat);
     await axios
       .get(
         `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
       )
-      .then(async resp => {
+      .then(async (resp) => {
         const { address } = await resp.data;
         setCity(address.city_district);
         setGeolocationState({
@@ -46,7 +39,7 @@ export function GeolocationProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
+      navigator.geolocation.getCurrentPosition((position) => {
         setGeolocationState({
           latitude: String(position.coords.latitude),
           longitude: String(position.coords.longitude),

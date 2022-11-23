@@ -67,7 +67,7 @@ export default function Immobiles() {
 
     await api
       .get(`/immobiles?${decodeURI(stringify({ ...query, ...urlParse }))}`)
-      .then(async resp => setImmobiles(await resp.data))
+      .then(async (resp) => setImmobiles(await resp.data))
       .finally(() => setLoading(false));
   }
 
@@ -159,7 +159,7 @@ export default function Immobiles() {
           <span className="text-center basis-1/12">Situação</span>
         </li>
 
-        {immobiles?.data?.map(rws => (
+        {immobiles?.data?.map((rws) => (
           <li key={rws.id} className="list-orders">
             <span className="flex gap-1 basis-1/12">
               <img src={rws.photos?.[0]?.image_xs} alt="." className="w-full" />

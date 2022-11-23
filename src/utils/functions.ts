@@ -1,5 +1,5 @@
 export function findSearch(arr: any[], value: string, key: string) {
-  return arr.find(item => item[key] === value);
+  return arr.find((item) => item[key] === value);
 }
 
 export function toNumber(str: any) {

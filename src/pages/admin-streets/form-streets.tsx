@@ -31,13 +31,13 @@ export default function FormStreets() {
 
     await api
       .patch(`/streets`, newData)
-      .then(async resp => {
+      .then(async (resp) => {
         changeAlert({
           message: "Dados salvos com sucesso.",
         });
         navigate({ pathname: `/adm/streets/${(await resp.data).id}/edit` });
       })
-      .catch(error => {
+      .catch((error) => {
         changeAlert({
           title: "Atenção",
           message: "Não foi possivel fazer o cadastro!",
@@ -56,7 +56,7 @@ export default function FormStreets() {
   async function loadStreets() {
     await api
       .get(`/streets/${streetId}`)
-      .then(async res =>
+      .then(async (res) =>
         reset({
           ...(await res.data),
         }),

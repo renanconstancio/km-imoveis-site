@@ -41,7 +41,7 @@ export default function ModalTenant({
       "district",
     );
     const rwsCity = cities.find(
-      item => [item.city, item.state.state].join("/") === data.cities_id,
+      (item) => [item.city, item.state.state].join("/") === data.cities_id,
     );
 
     const newPostData = {
@@ -57,7 +57,7 @@ export default function ModalTenant({
       rental_value: "0",
     };
 
-    await api.patch(`/customers`, newPostData).then(async res => {
+    await api.patch(`/customers`, newPostData).then(async (res) => {
       const customers = await res.data;
       addTenant((old: any) => [...old, customers]);
       closeTenant(!openTenant);
@@ -292,7 +292,7 @@ export default function ModalTenant({
                     </small>
                   )}
                   <datalist id="cities_id">
-                    {cities.map(city => (
+                    {cities.map((city) => (
                       <option
                         key={city.id}
                         value={[city.city, city?.state?.state].join("/")}

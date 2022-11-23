@@ -55,7 +55,7 @@ export default function FormCustomers() {
       "district",
     );
     const rwsCity = cities.find(
-      item => [item.city, item.state.state].join("/") === data.cities_id,
+      (item) => [item.city, item.state.state].join("/") === data.cities_id,
     );
 
     const newData = {
@@ -71,13 +71,13 @@ export default function FormCustomers() {
 
     await api
       .patch(`/customers`, newData)
-      .then(async resp => {
+      .then(async (resp) => {
         changeAlert({
           message: "Dados salvos com sucesso.",
         });
         navigate({ pathname: `/adm/owners/${(await resp.data).id}/edit` });
       })
-      .catch(error => {
+      .catch((error) => {
         changeAlert({
           title: "Atenção",
           message: "Não foi possivel fazer o cadastro!",
@@ -96,7 +96,7 @@ export default function FormCustomers() {
   async function loadCustomers() {
     await api
       .get(`/customers/${ownerId}`)
-      .then(async res => {
+      .then(async (res) => {
         const customer: TOwners = await res.data;
         reset({
           ...customer,
@@ -117,21 +117,23 @@ export default function FormCustomers() {
 
   useEffect(() => {
     (async () =>
-      await api.get("/cities").then(async res => setCities(await res.data)))();
+      await api
+        .get("/cities")
+        .then(async (res) => setCities(await res.data)))();
   }, []);
 
   useEffect(() => {
     (async () =>
       await api
         .get("/neighborhoods")
-        .then(async res => setNeighborhoods(await res.data)))();
+        .then(async (res) => setNeighborhoods(await res.data)))();
   }, []);
 
   useEffect(() => {
     (async () =>
       await api
         .get("/streets")
-        .then(async res => setStreets(await res.data)))();
+        .then(async (res) => setStreets(await res.data)))();
   }, []);
 
   useEffect(() => {
@@ -383,7 +385,7 @@ export default function FormCustomers() {
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
               <datalist id="cities_id">
-                {cities.map(city => (
+                {cities.map((city) => (
                   <option
                     key={city.id}
                     value={[city.city, city?.state?.state].join("/")}

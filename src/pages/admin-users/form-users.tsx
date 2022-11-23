@@ -38,13 +38,13 @@ export default function FormUsers() {
 
     await api
       .patch(`/users`, newData)
-      .then(async resp => {
+      .then(async (resp) => {
         changeAlert({
           message: "Dados salvos com sucesso.",
         }),
           navigate({ pathname: `/adm/users/${(await resp.data).id}/edit` });
       })
-      .catch(error => {
+      .catch((error) => {
         changeAlert({
           title: "Atenção",
           message: "Não foi possivel fazer o cadastro!",
@@ -63,7 +63,7 @@ export default function FormUsers() {
   async function loadStreets() {
     await api
       .get(`/users/${userId}`)
-      .then(async res => {
+      .then(async (res) => {
         const resp: TUsers = await res.data;
         reset({
           ...resp,
@@ -202,7 +202,7 @@ export default function FormUsers() {
                 type="password"
                 label="Senha *"
                 className={`input-form`}
-                onChange={e => setValue("password", e.target.value)}
+                onChange={(e) => setValue("password", e.target.value)}
                 // error={errors.password}
                 // register={register("password", {
                 //   required: {

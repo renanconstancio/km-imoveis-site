@@ -8,7 +8,7 @@ export const api: Axios = axios.create({
 });
 
 api.interceptors.request.use(
-  async response => {
+  async (response) => {
     const token = await JSON.parse(localStorage.getItem("user") || "");
 
     if (token?.token) {
@@ -20,13 +20,13 @@ api.interceptors.request.use(
 
     return response;
   },
-  error => Promise.reject(error),
+  (error) => Promise.reject(error),
 );
 
 export const interceptorsResponse = (logout: { (): void; (): void }) => {
   api.interceptors.response.use(
-    response => response,
-    async error => {
+    (response) => response,
+    async (error) => {
       if (error?.response?.status === 401) {
         logout();
         return;

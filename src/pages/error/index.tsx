@@ -1,4 +1,3 @@
-import { useRouteError } from "react-router-dom";
 import { Filters } from "../../components/filters";
 import { Footer } from "../../components/footer";
 import { Header } from "../../components/header";

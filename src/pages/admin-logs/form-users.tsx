@@ -51,7 +51,7 @@ export default function FormUsers() {
 
     await api
       .post(`/users`, newPostData)
-      .then(async resp => {
+      .then(async (resp) => {
         changeAlert({
           message: "Dados salvos com sucesso.",
         }),
@@ -67,7 +67,7 @@ export default function FormUsers() {
   const loadStreets = useCallback(async () => {
     await api
       .get(`/users/${userId}`)
-      .then(async res =>
+      .then(async (res) =>
         reset({
           ...(await res.data),
         }),
@@ -169,7 +169,7 @@ export default function FormUsers() {
                 type="password"
                 label="Senha *"
                 className={`input-form`}
-                onChange={e => setValue("password", e.target.value)}
+                onChange={(e) => setValue("password", e.target.value)}
                 // error={errors.password}
                 // register={register("password", {
                 //   required: {

@@ -52,7 +52,7 @@ export default function Logs() {
 
     await api
       .get(`/logs?${decodeURI(stringify({ ...query, ...urlParse }))}`)
-      .then(async resp => setLogs(await resp.data))
+      .then(async (resp) => setLogs(await resp.data))
       .finally(() => setLoading(false));
   }
 
@@ -100,7 +100,7 @@ export default function Logs() {
           <span className="basis-2/12">Data/Hora</span>
         </li>
 
-        {logs?.data?.map(rws => (
+        {logs?.data?.map((rws) => (
           <li key={rws.created_at} className="list-orders">
             <span className="flex items-center basis-1/12">
               {/* <span className={`${addClassName(rws.type)}`}></span> */}

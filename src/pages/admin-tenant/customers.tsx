@@ -66,7 +66,7 @@ export default function Customers() {
 
     await api
       .get(`/customers?${decodeURI(stringify({ ...query, ...conveterParse }))}`)
-      .then(async resp => setCustomers(await resp.data))
+      .then(async (resp) => setCustomers(await resp.data))
       .finally(() => setLoading(false));
   }
 
@@ -144,7 +144,7 @@ export default function Customers() {
           <span className="basis-3/12">Telefone.</span>
         </li>
 
-        {customers?.data?.map(rws => (
+        {customers?.data?.map((rws) => (
           <li key={rws.id} className="list-orders">
             <span className="flex gap-1 basis-1/12">
               <Link

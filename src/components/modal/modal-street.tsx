@@ -21,7 +21,7 @@ export default function ModalStreet({ addStreets }: TModalStreet) {
   } = useForm<TStreets>();
 
   async function onSubmit(data: TStreets) {
-    await api.post(`/streets`, data).then(async res => {
+    await api.post(`/streets`, data).then(async (res) => {
       const category = await res.data;
       addStreets((old: any) => [...old, category]);
       closeStreet(!openStreet);

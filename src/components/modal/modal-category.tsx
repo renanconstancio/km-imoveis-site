@@ -24,7 +24,7 @@ export default function ModalCategory({ addCategories }: TModalCategory) {
         ...data,
         filter: data.filter === "yes" ? true : false,
       })
-      .then(async res => {
+      .then(async (res) => {
         const category = await res.data;
         addCategories((old: any) => [...old, category]);
         closeCategory(!openCategory);

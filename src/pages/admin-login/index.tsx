@@ -8,7 +8,6 @@ import { Input } from "../../components/inputs";
 import { Alert } from "../../components/alert";
 import { api } from "../../services/api";
 import { TUserLogin } from "./types";
-import { useCallback } from "react";
 
 export function Login() {
   const { login } = useAuth();
@@ -22,7 +21,7 @@ export function Login() {
   async function onHandleSubmit(data: TUserLogin) {
     await api
       .post(`/users/login`, data)
-      .then(async resp => {
+      .then(async (resp) => {
         const { user, token } = await resp.data;
         login({
           id: user.id,

@@ -24,63 +24,63 @@ export function Dashboard() {
     (async () =>
       await api
         .get("/immobiles")
-        .then(async resp => setTotal((await resp.data)?.total)))();
+        .then(async (resp) => setTotal((await resp.data)?.total)))();
   }, []);
 
   useEffect(() => {
     (async () =>
       await api
-        .get("/immobiles?search[situation]=location")
-        .then(async resp => setTotalLocation((await resp.data)?.total)))();
+        .get("/immobiles?search[published]=true&search[situation]=location")
+        .then(async (resp) => setTotalLocation((await resp.data)?.total)))();
   }, []);
 
   useEffect(() => {
     (async () =>
       await api
         .get("/immobiles?search[published]=false")
-        .then(async resp => setTotalOffline((await resp.data)?.total)))();
+        .then(async (resp) => setTotalOffline((await resp.data)?.total)))();
   }, []);
 
   useEffect(() => {
     (async () =>
       await api
         .get("/immobiles?search[published]=true")
-        .then(async resp => setTotalOnline((await resp.data)?.total)))();
+        .then(async (resp) => setTotalOnline((await resp.data)?.total)))();
   }, []);
 
   useEffect(() => {
     (async () =>
       await api
-        .get("/immobiles?search[situation]=purchase&search[published]=true")
-        .then(async resp => setTotalPurchase((await resp.data)?.total)))();
+        .get("/immobiles?search[published]=true&search[situation]=purchase")
+        .then(async (resp) => setTotalPurchase((await resp.data)?.total)))();
   }, []);
 
   useEffect(() => {
     (async () =>
       await api
-        .get("/immobiles?search[situation]=exchange&search[published]=true")
-        .then(async resp => setTotalExchange((await resp.data)?.total)))();
+        .get("/immobiles?search[published]=true&search[situation]=exchange")
+        .then(async (resp) => setTotalExchange((await resp.data)?.total)))();
   }, []);
 
   useEffect(() => {
     (async () =>
       await api
-        .get("/immobiles?search[situation]=sale&search[published]=true")
-        .then(async resp => setTotalSale((await resp.data)?.total)))();
+        .get("/immobiles?search[published]=true&search[situation]=sale")
+        .then(async (resp) => setTotalSale((await resp.data)?.total)))();
   }, []);
 
   useEffect(() => {
     (async () =>
       await api
         .get("/immobiles?search[published]=true&search[situation]=sale_lease")
-        .then(async resp => setTotalSaleLease((await resp.data)?.total)))();
+        .then(async (resp) => setTotalSaleLease((await resp.data)?.total)))();
   }, []);
 
   useEffect(() => {
     (async () =>
       await api
         .get("/immobiles?search[published]=true&search[situation]=sale_barter")
-        .then(async resp => setTotalSaleBarter((await resp.data)?.total)))();
+        .then(async (resp) => setTotalSaleBarter((await resp.data)?.total)))();
   }, []);
 
   return (

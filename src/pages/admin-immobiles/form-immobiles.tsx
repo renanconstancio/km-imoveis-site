@@ -33,6 +33,9 @@ import {
   ModalStreet,
   ModalDistrict,
   ModalCity,
+  ModalPhoto,
+  ModalTenant,
+  ModalOwner,
 } from "../../components/modal";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -46,11 +49,6 @@ import { OptionSituation } from "../../components/option-situation";
 import { TCategories } from "../admin-categories/types";
 import { TCities } from "../admin-cities/types";
 import { Input } from "../../components/inputs";
-
-import ModalPhoto from "../../components/modal/modal-photos";
-import ModalTenant from "../../components/modal/modal-tenant";
-import ModalOwner from "../../components/modal/modal-owner";
-
 import { TNeighborhoods } from "../admin-neighborhoods/types";
 import { TStreets } from "../admin-streets/types";
 import { TTenant } from "../admin-tenant/types";
@@ -102,9 +100,7 @@ export default function FormImmobles() {
   } = useForm<TImmobles>();
 
   async function onSubmit(data: TImmobles) {
-    const rwsUser = users.find(
-      (item) => [item.first_name].join(" ") === data.users_id,
-    );
+    const rwsUser = users.find((item) => item.first_name === data.users_id);
     const rwsOwner = owners.find(
       (item) => [item.first_name, item.last_name].join(" ") === data.owner_id,
     );
@@ -121,7 +117,7 @@ export default function FormImmobles() {
       "district",
     );
     const rwsCategory = findSearch(categories, data.categories_id, "category");
-    const existsTags = (tagsSite.length ? tagsSite : []).join(",");
+    const existsTags = tagsSite.length ? tagsSite.join(",") : "";
 
     const newData = {
       ...data,
@@ -299,7 +295,10 @@ export default function FormImmobles() {
                 <span>{watch("photos")?.length} Fotos</span>
               </button>
             )}
-            <Link className="btn-warning btn-ico" to="/adm/immobiles">
+            <Link
+              className="btn-warning btn-ico"
+              to="/adm/immobiles?order[reference]=desc"
+            >
               <FontAwesomeIcon icon={faUndo} />
               <span>Voltar</span>
             </Link>

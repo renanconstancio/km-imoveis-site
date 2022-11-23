@@ -30,13 +30,13 @@ export default function FormStates() {
 
     await api
       .patch(`/states`, newData)
-      .then(async resp => {
+      .then(async (resp) => {
         changeAlert({
           message: "Dados salvos com sucesso.",
         });
         navigate({ pathname: `/adm/states/${(await resp.data).id}/edit` });
       })
-      .catch(error => {
+      .catch((error) => {
         changeAlert({
           title: "Atenção",
           message: "Não foi possivel fazer o cadastro!",
@@ -53,7 +53,7 @@ export default function FormStates() {
   }
 
   async function loadStates() {
-    await api.get(`/states/${stateId}`).then(async res =>
+    await api.get(`/states/${stateId}`).then(async (res) =>
       reset({
         ...(await res.data),
       }),

@@ -48,7 +48,7 @@ export default function Neighborhoods() {
     setLoading(true);
     await api
       .get(`/neighborhoods`)
-      .then(async resp => setNeighborhoods(await resp.data))
+      .then(async (resp) => setNeighborhoods(await resp.data))
       .finally(() => setLoading(false));
   }
 
@@ -99,7 +99,7 @@ export default function Neighborhoods() {
           <span className="basis-11/12">Bairros</span>
         </li>
 
-        {neighborhoods?.map(rws => (
+        {neighborhoods?.map((rws) => (
           <li key={rws.id} className="list-orders">
             <span className="flex gap-1 basis-1/12">
               <Link

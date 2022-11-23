@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { parse, stringify } from "query-string";
-import { KeyboardEvent, useCallback, useEffect, useState } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Loading } from "../../components/loading";
 import { Pagination } from "../../components/pagination";
@@ -66,7 +66,7 @@ export default function Customers() {
 
     await api
       .get(`/customers?${decodeURI(stringify({ ...query, ...conveterParse }))}`)
-      .then(async resp => setCustomers(await resp.data))
+      .then(async (resp) => setCustomers(await resp.data))
       .finally(() => setLoading(false));
   }
 
@@ -144,7 +144,7 @@ export default function Customers() {
           <span className="basis-3/12">Telefone.</span>
         </li>
 
-        {customers?.data?.map(rws => (
+        {customers?.data?.map((rws) => (
           <li key={rws.id} className="list-orders">
             <span className="flex gap-1 basis-1/12">
               <Link

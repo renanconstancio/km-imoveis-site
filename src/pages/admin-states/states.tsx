@@ -50,7 +50,7 @@ export default function States() {
     setLoading(true);
     await api
       .get(`/states`)
-      .then(async resp => setStates(await resp.data))
+      .then(async (resp) => setStates(await resp.data))
       .finally(() => setLoading(false));
   }, []);
 
@@ -101,7 +101,7 @@ export default function States() {
           <span className="w-11/12">Estados</span>
         </li>
 
-        {states?.map(rws => (
+        {states?.map((rws) => (
           <li key={rws.id} className="list-orders">
             <span className="flex gap-1 w-1/12">
               <Link

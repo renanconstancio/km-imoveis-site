@@ -13,7 +13,7 @@ export default function CarouselIcons({ images }: { images: string[] }) {
       centerSlidePercentage={100}
       width={"100%"}
     >
-      {images.map(image => (
+      {images.map((image) => (
         <div key={image}>
           <img src={image} className="w-full" />
         </div>

@@ -33,13 +33,13 @@ export default function FormCities() {
 
     await api
       .patch(`/cities`, newData)
-      .then(async resp => {
+      .then(async (resp) => {
         changeAlert({
           message: "Dados salvos com sucesso.",
         });
         navigate({ pathname: `/adm/cities/${(await resp.data).id}/edit` });
       })
-      .catch(error => {
+      .catch((error) => {
         changeAlert({
           title: "Atenção",
           message: "Não foi possivel fazer o cadastro!",
@@ -56,7 +56,7 @@ export default function FormCities() {
   }
 
   const loadStates = useCallback(async () => {
-    await api.get("/states").then(async res => setSates(await res.data));
+    await api.get("/states").then(async (res) => setSates(await res.data));
   }, []);
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function FormCities() {
     async () =>
       api
         .get(`/cities/${cityId}`)
-        .then(async resp => {
+        .then(async (resp) => {
           const city = await resp.data;
           reset({
             ...city,
