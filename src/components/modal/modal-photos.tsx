@@ -1,6 +1,6 @@
 import { api } from "../../services/api";
 import { useModal } from "../../hooks/use-modal";
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useAlert } from "../../hooks/use-alert";
 import { ReactSortable } from "react-sortablejs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,14 +20,13 @@ export default function ModalPhoto({ immobleId, addPhotos }: TModalPhoto) {
   const [photos, setPhotoModal] = useState<TImmoblesPhotos[]>([]);
   const [endEvent, setEndEvent] = useState<boolean>(false);
 
-  let tempSortPhotos: TImmoblesPhotos[] = [];
-
   async function handleSortImage(listSort: TImmoblesPhotos[]) {
-    tempSortPhotos = listSort;
     setPhotoModal(listSort);
-    console.log(tempSortPhotos);
+
     if (endEvent) {
-      await api.put(`/immobiles/photos/sort`, tempSortPhotos);
+      await api
+        .put(`/immobiles/photos/sort`, listSort)
+        .then(() => setEndEvent(false));
     }
   }
 
@@ -105,7 +104,7 @@ export default function ModalPhoto({ immobleId, addPhotos }: TModalPhoto) {
                 <ReactSortable
                   list={photos}
                   setList={handleSortImage}
-                  onChange={() => setEndEvent(!endEvent)}
+                  onChange={() => setEndEvent(true)}
                   className="flex flex-wrap mb-6 "
                   tag="ul"
                 >

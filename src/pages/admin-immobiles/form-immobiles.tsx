@@ -195,7 +195,7 @@ export default function FormImmobles() {
         setDescriptionText(immoble?.description_text);
         setOnOff(immoble?.published);
       })
-      .catch((e) => {
+      .catch(() => {
         changeAlert({
           message: "Não foi possivel conectar ao servidor.",
         });
