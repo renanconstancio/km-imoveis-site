@@ -10,7 +10,7 @@ import { OptionSituationList } from "../option-situation";
 import { Input } from "../inputs";
 import { TFilters, TFiltersComp } from "./types";
 import { TCategories } from "../../pages/admin-categories/types";
-import { maskCurrency } from "../../utils/mask";
+import { maskCurrency, maskCurrencyUs } from "../../utils/mask";
 
 export function Filters({ variant = "col" }: TFiltersComp) {
   const [openClose, setOpenClose] = useState<boolean>(false);
@@ -54,6 +54,20 @@ export function Filters({ variant = "col" }: TFiltersComp) {
 
     if (geolocation?.city !== data.city)
       data = { ...data, city: data.city.split("/")[0] };
+
+    if (data.price_lte) {
+      data = {
+        ...data,
+        price_lte: maskCurrencyUs(data.price_lte),
+      };
+    }
+
+    if (data.price_gte) {
+      data = {
+        ...data,
+        price_gte: maskCurrencyUs(data.price_gte),
+      };
+    }
 
     navigate({
       pathname: "/search",

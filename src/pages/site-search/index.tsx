@@ -38,14 +38,26 @@ export function SiteSearch() {
 
     let conveterParse = `page=${page}&limit=${limit}&search[situation]=${situation}&search[category]=${category}&search[reference]=${reference}&search[city]=${city}&search[district]=${district}`;
 
-    if (price_lte) {
+    if (situation === "location" && price_lte) {
       conveterParse = `${conveterParse}&search[rent_price_lte]=${maskCurrencyUs(
         price_lte,
       )}`;
     }
 
-    if (price_gte) {
+    if (situation === "location" && price_gte) {
       conveterParse = `${conveterParse}&search[rent_price_gte]=${maskCurrencyUs(
+        price_gte,
+      )}`;
+    }
+
+    if (situation !== "location" && price_lte) {
+      conveterParse = `${conveterParse}&search[sale_price_lte]=${maskCurrencyUs(
+        price_lte,
+      )}`;
+    }
+
+    if (situation !== "location" && price_gte) {
+      conveterParse = `${conveterParse}&search[sale_price_gte]=${maskCurrencyUs(
         price_gte,
       )}`;
     }
