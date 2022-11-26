@@ -81,6 +81,16 @@ export function SiteSearch() {
       <Helmet>
         <title>Pesquisar Imóveis - {import.meta.env.VITE_TITLE}</title>
         <link rel="canonical" href={window.location.href} />
+        <meta name="description" content={import.meta.env.VITE_DESCRIPTION} />
+        <meta name="keywords" content={import.meta.env.VITE_KEYWORDS} />
+        <meta property="og:url" content={import.meta.env.VITE_URL} />
+        <meta property="og:title" content={import.meta.env.VITE_TITLE} />
+        <meta
+          property="og:description"
+          content={import.meta.env.VITE_DESCRIPTION}
+        />
+        <meta property="og:image" content={import.meta.env.VITE_IMAGE} />
+        <link rel="canonical" href={import.meta.env.VITE_URL} />
       </Helmet>
       <div className="border-b border-gray-200 py-2">
         {!loading && location.pathname !== "/" && (

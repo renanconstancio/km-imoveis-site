@@ -3,7 +3,7 @@ import { ButtonWhatsappFloat } from "../button-whatsapp";
 
 export function Footer() {
   return (
-    <footer className="mt-5 bg-white">
+    <footer className="mt-5 bg-gray-900 text-gray-400">
       <section className="container px-4 my-10 flex flex-row gap-5">
         <img src={logo} alt="Logo" width={100} />
         <address>
