@@ -1,13 +1,11 @@
-import "swiper/css";
-import "swiper/css/navigation";
+import { api } from "../../services/api";
 import { parse } from "query-string";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { TImmobles } from "../admin-immobiles/types";
 import { Loading } from "../../components/loading";
-import { CadSwiper } from "../../components/card-swiper";
+import { CardCarousel } from "../../components/card-carousel";
 import { H2 } from "../../components/title";
-import { api } from "../../services/api";
 import { Helmet } from "react-helmet-async";
 
 export function SiteHome() {
@@ -29,7 +27,7 @@ export function SiteHome() {
     setLoading(true);
     await api
       .get(
-        `/immobiles/website/list?limit=20&search[situation]=location&search[city]=${city}`,
+        `/immobiles/website/list?limit=20&search[situation]=location&search[city]=${city}&order[random]=true`,
       )
       .then(async (resp) => setImmobilesLocation(await resp.data?.data))
       .finally(() => setLoading(false));
@@ -39,7 +37,7 @@ export function SiteHome() {
     setLoading(true);
     await api
       .get(
-        `/immobiles/website/list?limit=20&search[situation]=purchase&search[city]=${city}`,
+        `/immobiles/website/list?limit=20&search[situation]=purchase&search[city]=${city}&order[random]=true`,
       )
       .then(async (resp) => setImmobilesPurchase(await resp.data?.data))
       .finally(() => setLoading(false));
@@ -49,7 +47,7 @@ export function SiteHome() {
     setLoading(true);
     await api
       .get(
-        `/immobiles/website/list?limit=20&search[situation]=exchange&search[city]=${city}`,
+        `/immobiles/website/list?limit=20&search[situation]=exchange&search[city]=${city}&order[random]=true`,
       )
       .then(async (resp) => setImmobilesExchange(await resp.data?.data))
       .finally(() => setLoading(false));
@@ -59,7 +57,7 @@ export function SiteHome() {
     setLoading(true);
     await api
       .get(
-        `/immobiles/website/list?limit=20&search[situation]=sale&search[city]=${city}`,
+        `/immobiles/website/list?limit=20&search[situation]=sale&search[city]=${city}&order[random]=true`,
       )
       .then(async (resp) => setImmobilesSales(await resp.data?.data))
       .finally(() => setLoading(false));
@@ -69,7 +67,7 @@ export function SiteHome() {
     setLoading(true);
     await api
       .get(
-        `/immobiles/website/list?limit=20&search[situation]=sale_lease&search[city]=${city}`,
+        `/immobiles/website/list?limit=20&search[situation]=sale_lease&search[city]=${city}&order[random]=true`,
       )
       .then(async (resp) => setImmobilesSaleLease(await resp.data?.data))
       .finally(() => setLoading(false));
@@ -79,7 +77,7 @@ export function SiteHome() {
     setLoading(true);
     await api
       .get(
-        `/immobiles/website/list?limit=20&search[situation]=sale_barter&search[city]=${city}`,
+        `/immobiles/website/list?limit=20&search[situation]=sale_barter&search[city]=${city}&order[random]=true`,
       )
       .then(async (resp) => setImmobilesSaleBarter(await resp.data?.data))
       .finally(() => setLoading(false));
@@ -133,55 +131,58 @@ export function SiteHome() {
         ) : (
           <>
             {immobilesLocation.length > 0 && (
-              <section className="container p-4 mb-7 mt-5">
-                <div className="relative bg-white p-4">
-                  <H2 title={`Imóveis para Locação`} />
-                  <CadSwiper id="location" mapping={immobilesLocation} />
+              <section className="container mt-5">
+                <div className="relative p-4">
+                  <H2 title={`Locação`} />
+                  <CardCarousel id="location" mapping={immobilesLocation} />
                 </div>
               </section>
             )}
 
             {immobilesSales.length > 0 && (
-              <section className="container p-4 mb-7">
-                <div className="relative bg-white p-4">
-                  <H2 title={`Imóveis para Venda`} />
-                  <CadSwiper id="sale" mapping={immobilesSales} />
+              <section className="container">
+                <div className="relative p-4">
+                  <H2 title={`Venda`} />
+                  <CardCarousel id="sale" mapping={immobilesSales} />
                 </div>
               </section>
             )}
 
             {immobilesPurchase.length > 0 && (
-              <section className="container p-4 mb-7">
-                <div className="relative bg-white p-4">
-                  <H2 title={`Imóveis para Compra`} />
-                  <CadSwiper id="purchase" mapping={immobilesPurchase} />
+              <section className="container">
+                <div className="relative p-4">
+                  <H2 title={`Compra`} />
+                  <CardCarousel id="purchase" mapping={immobilesPurchase} />
                 </div>
               </section>
             )}
 
             {immobilesExchange.length > 0 && (
-              <section className="container p-4 mb-7">
-                <div className="relative bg-white p-4">
-                  <H2 title={`Imóveis com Permuta`} />
-                  <CadSwiper id="exchange" mapping={immobilesExchange} />
+              <section className="container">
+                <div className="relative p-4">
+                  <H2 title={`Permuta`} />
+                  <CardCarousel id="exchange" mapping={immobilesExchange} />
                 </div>
               </section>
             )}
 
             {immobilesSaleLease.length > 0 && (
-              <section className="container p-4 mb-7">
-                <div className="relative bg-white p-4">
-                  <H2 title={`Imóveis com Venda e Locação`} />
-                  <CadSwiper id="sale_lease" mapping={immobilesSaleLease} />
+              <section className="container">
+                <div className="relative p-4">
+                  <H2 title={`Venda e Locação`} />
+                  <CardCarousel id="sale_lease" mapping={immobilesSaleLease} />
                 </div>
               </section>
             )}
 
             {immobilesSaleBarter.length > 0 && (
-              <section className="container p-4 mb-7">
-                <div className="relative bg-white p-4">
-                  <H2 title={`Imóveis com Venda e Permuta`} />
-                  <CadSwiper id="sale_barter" mapping={immobilesSaleBarter} />
+              <section className="container">
+                <div className="relative p-4">
+                  <H2 title={`Venda e Permuta`} />
+                  <CardCarousel
+                    id="sale_barter"
+                    mapping={immobilesSaleBarter}
+                  />
                 </div>
               </section>
             )}

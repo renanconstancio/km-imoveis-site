@@ -1,21 +1,30 @@
 import React from "react";
-import { TBanners } from "./types";
-import { Carousel } from "react-responsive-carousel";
+import { TCarousel } from "./types";
+import ReactOwlCarousel, { Options } from "react-owl-carousel";
 import { situationText, slugiFy } from "../../utils/functions";
 import { Link } from "react-router-dom";
 
-export default function CarouselIndex({ banners }: { banners: TBanners[] }) {
+export default function CarouselIndex({ banners }: { banners: TCarousel[] }) {
+  const options: Options = {
+    nav: false,
+    loop: true,
+    margin: 5,
+    items: 1,
+    dots: true,
+    autoplay: true,
+    autoplayTimeout: 5000,
+    center: true,
+    dotClass: "owl-dot owl-dot-personalized",
+    dotsClass: "owl-dots absolute bottom-3 inset-x-0",
+    responsive: {
+      0: {
+        items: 1,
+      },
+    },
+  };
+
   return (
-    <Carousel
-      interval={4500}
-      autoPlay={true}
-      infiniteLoop={true}
-      showArrows={true}
-      dynamicHeight={false}
-      showThumbs={false}
-      centerSlidePercentage={100}
-      width={"100%"}
-    >
+    <ReactOwlCarousel className="owl-theme" {...options}>
       {banners.map(({ photo, reference, description, situation }, id) => (
         <React.Fragment key={id}>
           {reference ? (
@@ -28,7 +37,7 @@ export default function CarouselIndex({ banners }: { banners: TBanners[] }) {
                 backgroundPosition: "center bottom",
                 backgroundSize: "cover",
               }}
-              className="flex flex-row h-[250px] md:h-[475px]"
+              className="item h-[250px] md:h-[475px]"
             ></Link>
           ) : (
             <div
@@ -37,11 +46,11 @@ export default function CarouselIndex({ banners }: { banners: TBanners[] }) {
                 backgroundPosition: "center bottom",
                 backgroundSize: "cover",
               }}
-              className="flex flex-row h-[250px] md:h-[475px]"
+              className="item h-[250px] md:h-[475px]"
             ></div>
           )}
         </React.Fragment>
       ))}
-    </Carousel>
+    </ReactOwlCarousel>
   );
 }

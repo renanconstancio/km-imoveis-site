@@ -119,8 +119,10 @@ export function Filters({ variant = "col" }: TFiltersComp) {
         className={`${
           !openClose ? "hidden mt-3 md:m-0 md:flex" : "flex mt-3 md:m-0"
         } ${
-          variant === "col" ? "flex-col" : "flex-col md:flex-row"
-        } gap-5 md:mr-5 aling-end flex-wrap`}
+          variant === "col"
+            ? "flex-col gap-2 py-5"
+            : "gap-5 flex-col md:flex-row"
+        } md:mr-5 aling-end flex-wrap`}
       >
         <li>
           <Input

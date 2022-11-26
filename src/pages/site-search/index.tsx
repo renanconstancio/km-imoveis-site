@@ -112,29 +112,28 @@ export function SiteSearch() {
             <Loading />
           </section>
         ) : (
-          <ul className="container px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <section className="container px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {immobiles?.data?.map((item, k) => (
-              <li className="relative bg-white overflow-hidden" key={k}>
-                <Card
-                  reference={item.reference}
-                  situation={item.situation}
-                  description={item.description}
-                  buildingArea={item.building_area}
-                  terrainArea={item.terrain_area}
-                  rentPrice={item.rent_price}
-                  salePrice={item.sale_price}
-                  address={[
-                    item.district?.district ?? "",
-                    item.city?.city ?? "",
-                    item.city?.state.state ?? "",
-                  ]}
-                  tag={item.tags || ""}
-                  tags={tags}
-                  images={item?.photos?.map((f) => f.image_xs) || []}
-                />
-              </li>
+              <Card
+                key={k}
+                reference={item.reference}
+                situation={item.situation}
+                description={item.description}
+                buildingArea={item.building_area}
+                terrainArea={item.terrain_area}
+                rentPrice={item.rent_price}
+                salePrice={item.sale_price}
+                address={[
+                  item.district?.district ?? "",
+                  item.city?.city ?? "",
+                  item.city?.state.state ?? "",
+                ]}
+                tag={item.tags || ""}
+                tags={tags}
+                images={item?.photos?.map((f) => f.image_xs) || []}
+              />
             ))}
-          </ul>
+          </section>
         )}
 
         {!loading && location.pathname !== "/" && (

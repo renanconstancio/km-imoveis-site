@@ -1,4 +1,4 @@
-export type TBanners = {
+export type TCarousel = {
   reference: string;
   description: string;
   situation:

@@ -1,5 +1,7 @@
-import "./global/styles/app.css";
 import "react-responsive-carousel/lib/styles/carousel.css";
+import "owl.carousel/dist/assets/owl.theme.default.css";
+import "owl.carousel/dist/assets/owl.carousel.css";
+import "./global/styles/app.css";
 
 import ReactDOM from "react-dom/client";
 

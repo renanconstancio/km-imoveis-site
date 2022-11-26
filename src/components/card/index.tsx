@@ -25,12 +25,11 @@ export function Card({
   tag,
 }: TCard) {
   return (
-    // <li className="relative bg-white overflow-hidden">
     <Link
       to={`/${slugiFy(
         `${situationText(situation)}`,
       )}/imovel/${reference}/${slugiFy(`${description}`)}`}
-      className="block relative bg-white overflow-hidden"
+      className="block relative bg-white overflow-hidden h-full rounded-lg"
     >
       <ul className="absolute left-0 top-3 h-[auto] w-auto z-[9999] font-play text-white text-sm flex gap-2">
         <li className={`p-1 ${situationTextClassName(situation)}`}>
@@ -66,6 +65,5 @@ export function Card({
         </section>
       </div>
     </Link>
-    // </li>
   );
 }

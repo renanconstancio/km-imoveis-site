@@ -3,13 +3,13 @@ import { Outlet, useLocation } from "react-router-dom";
 import { Footer } from "../footer";
 import { Header } from "../header";
 import { Filters } from "../filters";
-import { CarouselIndex } from "../carousel";
-import { TBanners } from "../carousel/types";
+import { TCarousel } from "../carousel/types";
 
 import banner01 from "../../assets/banners/banner-a.jpg";
 import banner02 from "../../assets/banners/banner-b.jpg";
+import { CarouselIndex } from "../carousel";
 
-const bannerFix: TBanners[] = [
+const bannerFix: TCarousel[] = [
   {
     reference: "",
     description: "",
@@ -35,7 +35,7 @@ const bannerFix: TBanners[] = [
 ];
 
 export default function Site() {
-  const [banners] = useState<TBanners[]>(bannerFix);
+  const [banners] = useState<TCarousel[]>(bannerFix);
 
   const location = useLocation();
 
@@ -57,10 +57,10 @@ export default function Site() {
       {location.pathname === "/" && (
         <div className="bg-slate-100">
           <section className="container px-4 flex flex-wrap items-center">
-            <div className="basis-full md:basis-2/6 mt-4 md:mt-0">
+            <div className="w-full md:w-2/6 mt-4 md:mt-0">
               <Filters />
             </div>
-            <div className="basis-full md:basis-4/6 mb-5 mt-5 md:m-0">
+            <div className="w-full md:w-4/6 mb-5 mt-5 md:m-0">
               {banners.length ? <CarouselIndex banners={banners} /> : ""}
             </div>
           </section>

@@ -1,3 +1,4 @@
+import { api, tags } from "../../services/api";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -5,15 +6,14 @@ import { H2 } from "../../components/title";
 import { Address } from "../../components/address";
 import { Price } from "../../components/price";
 import { Loading } from "../../components/loading";
-import { CarouselIcons } from "../../components/carousel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExpand } from "@fortawesome/free-solid-svg-icons";
 import { situationText, situationTextClassName } from "../../utils/functions";
 import { ButtonWhatsapp } from "../../components/button-whatsapp";
 import { CardTags } from "../../components/card-tags";
-import { CadSwiper } from "../../components/card-swiper";
 import { TImmobles } from "../admin-immobiles/types";
-import { api, tags } from "../../services/api";
+import { CardCarousel } from "../../components/card-carousel";
+import { CarouselIcons } from "../../components/carousel";
 
 export function SiteImmoble() {
   const [loading, setLoading] = useState(true);
@@ -33,8 +33,18 @@ export function SiteImmoble() {
   }
 
   async function loadImmobles() {
+    let uri = "/immobiles/website/list?limit=20&order[random]=true";
+
+    if (immoble?.situation) {
+      uri = `${uri}&search[situation]=${immoble?.situation}`;
+    }
+
+    if (immoble?.city) {
+      uri = `${uri}&search[city]=${immoble?.city?.city}`;
+    }
+
     await api
-      .get(`/immobiles/website/list?limit=8`)
+      .get(uri)
       .then(async (resp) => setImmobiles(await resp.data?.data));
   }
 
@@ -50,8 +60,8 @@ export function SiteImmoble() {
   }, [immoble]);
 
   useEffect(() => {
-    loadImmobles();
-  }, []);
+    if (immoble?.id) loadImmobles();
+  }, [immoble]);
 
   if (!immoble.id)
     return (
@@ -63,7 +73,7 @@ export function SiteImmoble() {
             abaixo
           </p>
           <div className="pt-5 relative">
-            <CadSwiper id="all" mapping={immobiles} />
+            <CardCarousel id="all" mapping={immobiles} />
           </div>
         </div>
       </div>
@@ -208,9 +218,13 @@ export function SiteImmoble() {
                 </li>
               )}
             </ul>
-            <div className="mt-5 relative bg-white p-5">
-              <CadSwiper id="all" mapping={immobiles} />
-            </div>
+
+            <section className="container mt-5">
+              <div className="relative p-4">
+                <H2 title={`Veja outros`} />
+                <CardCarousel id="all" mapping={immobiles} />
+              </div>
+            </section>
           </div>
         </>
       )}
