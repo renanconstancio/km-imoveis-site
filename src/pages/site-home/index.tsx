@@ -7,6 +7,7 @@ import { Loading } from "../../components/loading";
 import { CardCarousel } from "../../components/card-carousel";
 import { H2 } from "../../components/title";
 import { Helmet } from "react-helmet-async";
+import SEO from "../../components/seo/seo";
 
 export function SiteHome() {
   const [loading, setLoading] = useState(true);
@@ -109,7 +110,14 @@ export function SiteHome() {
 
   return (
     <>
-      <Helmet>
+      <SEO
+        description={import.meta.env.VITE_DESCRIPTION}
+        image={import.meta.env.VITE_IMAGE}
+        keywords={import.meta.env.VITE_KEYWORDS}
+        title={import.meta.env.VITE_TITLE}
+        siteTitle={import.meta.env.VITE_TITLE}
+      />
+      {/* <Helmet>
         <title>{import.meta.env.VITE_TITLE}</title>
         <link rel="canonical" href={window.location.href} />
         <meta name="description" content={import.meta.env.VITE_DESCRIPTION} />
@@ -121,8 +129,7 @@ export function SiteHome() {
           content={import.meta.env.VITE_DESCRIPTION}
         />
         <meta property="og:image" content={import.meta.env.VITE_IMAGE} />
-        <link rel="canonical" href={import.meta.env.VITE_URL} />
-      </Helmet>
+      </Helmet> */}
       <div className="border-b border-gray-200 py-2">
         {loading ? (
           <section className="py-48">
