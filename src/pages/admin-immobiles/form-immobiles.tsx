@@ -58,6 +58,7 @@ import { TImmobles } from "./types";
 import { Helmet } from "react-helmet-async";
 
 export default function FormImmobles() {
+  const [codeReference, setCodeRefence] = useState<string>("");
   const [cities, setCities] = useState<TCities[]>([]);
   const [neighborhoods, setNeighborhoods] = useState<TNeighborhoods[]>([]);
   const [streets, setStreets] = useState<TStreets[]>([]);
@@ -202,6 +203,19 @@ export default function FormImmobles() {
       });
   }
 
+  async function loadEendImmobleCode() {
+    await api
+      .get(`/immobiles?limit=1&order[reference]=desc`)
+      .then(async (res) =>
+        setCodeRefence(
+          `${Number((await res.data)?.data?.[0]?.reference) + 1}`.padStart(
+            3,
+            "0",
+          ),
+        ),
+      );
+  }
+
   async function loadCategories() {
     await api
       .get("/categories")
@@ -267,6 +281,10 @@ export default function FormImmobles() {
   }, []);
 
   useEffect(() => {
+    loadEendImmobleCode();
+  }, []);
+
+  useEffect(() => {
     if (immobleId) loadImmoble();
   }, [immobleId]);
 
@@ -326,8 +344,11 @@ export default function FormImmobles() {
               <Input
                 type="text"
                 label="CÓD. *"
-                className={`input-form ${errors.reference && "invalid"}`}
+                className={`input-form ${
+                  errors.reference && "invalid"
+                } text-end`}
                 error={errors.reference}
+                defaultValue={codeReference}
                 register={register("reference", {
                   required: {
                     value: true,

@@ -43,7 +43,7 @@ export function Header() {
             <a
               href={`https://api.whatsapp.com/send?phone=${toNumber(
                 `55${import.meta.env.VITE_PHONE}`,
-              )}&text=Olá, gostaria de saber mais infomações sobre casa para locação`}
+              )}&text=`}
               target="_blank"
               rel="noreferrer"
               className="p-2 sm:p-4 bg-slate-100 rounded-lg"

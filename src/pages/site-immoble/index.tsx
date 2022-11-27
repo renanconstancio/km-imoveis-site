@@ -33,7 +33,7 @@ export function SiteImmoble() {
   }
 
   async function loadImmobles() {
-    let uri = "/immobiles/website/list?limit=20&order[random]=true";
+    let uri = "";
 
     if (immoble?.situation) {
       uri = `${uri}&search[situation]=${immoble?.situation}`;
@@ -44,7 +44,7 @@ export function SiteImmoble() {
     }
 
     await api
-      .get(uri)
+      .get(`/immobiles/website/list?limit=20&order[random]=true${uri}`)
       .then(async (resp) => setImmobiles(await resp.data?.data));
   }
 
@@ -60,7 +60,7 @@ export function SiteImmoble() {
   }, [immoble]);
 
   useEffect(() => {
-    if (immoble?.id) loadImmobles();
+    if (immoble.id) loadImmobles();
   }, [immoble]);
 
   if (!immoble.id)
@@ -219,12 +219,14 @@ export function SiteImmoble() {
               )}
             </ul>
 
-            <section className="container mt-5">
-              <div className="relative p-4">
-                <H2 title={`Veja outros`} />
-                <CardCarousel id="all" mapping={immobiles} />
-              </div>
-            </section>
+            {immobiles.length && (
+              <section className="container mt-5">
+                <div className="relative">
+                  <H2 title={`Veja outros`} />
+                  <CardCarousel id="all" mapping={immobiles} />
+                </div>
+              </section>
+            )}
           </div>
         </>
       )}
