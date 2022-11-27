@@ -83,8 +83,8 @@ export default function Immobiles() {
         <title>Lista de Imóveis - {import.meta.env.VITE_TITLE}</title>
       </Helmet>
       <ul className="overflow-x-auto rounded-sm bg-white p-5">
-        <li className="flex border-b mb-3 pb-3 gap-3 justify-between">
-          <section className="basis-6/12 flex gap-3 justify-end items-center">
+        <li className="flex flex-wrap border-b mb-3 pb-3 gap-3 justify-between">
+          <section className="w-full md:basis-6/12 flex gap-3 justify-end items-center">
             <aside className="flex flex-1">
               <input
                 type="text"
@@ -179,7 +179,7 @@ export default function Immobiles() {
               </span>
             </span>
             <span className="basis-1/12">{rws.reference}</span>
-            <span className="basis-4/12">{rws.description}</span>
+            <span className="basis-3/12">{rws.description}</span>
             <span className="basis-4/12">{rws.street?.street}</span>
             <span
               className={`text-center basis-1/12 ${

@@ -100,8 +100,8 @@ export default function Logs() {
           <span className="basis-2/12">Data/Hora</span>
         </li>
 
-        {logs?.data?.map((rws) => (
-          <li key={rws.created_at} className="list-orders">
+        {logs?.data?.map((rws, i) => (
+          <li key={i} className="list-orders">
             <span className="flex items-center basis-1/12">
               {/* <span className={`${addClassName(rws.type)}`}></span> */}
               <span
