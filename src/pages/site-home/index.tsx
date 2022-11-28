@@ -6,7 +6,7 @@ import { TImmobles } from "../admin-immobiles/types";
 import { Loading } from "../../components/loading";
 import { CardCarousel } from "../../components/card-carousel";
 import { H2 } from "../../components/title";
-import SEO from "../../components/seo/seo";
+import { SEO } from "../../components/seo/seo";
 
 export function SiteHome() {
   const [loading, setLoading] = useState(true);

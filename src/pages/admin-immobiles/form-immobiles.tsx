@@ -55,7 +55,7 @@ import { TTenant } from "../admin-tenant/types";
 import { TOwners } from "../admin-owners/types";
 import { TUsers } from "../admin-users/types";
 import { TImmobles } from "./types";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "../../components/seo/seo";
 
 export default function FormImmobles() {
   const [codeReference, setCodeRefence] = useState<string>("");
@@ -290,12 +290,11 @@ export default function FormImmobles() {
 
   return (
     <>
-      <Helmet>
-        <title>
-          {immobleId ? "Editar " : "Cadastrar"}
-          Imóveis - {import.meta.env.VITE_TITLE}
-        </title>
-      </Helmet>
+      <SEO
+        title={`${immobleId ? "Editar " : "Cadastrar"} Imóveis`}
+        siteTitle={import.meta.env.VITE_TITLE}
+      />
+
       <div className="overflow-x-auto rounded-sm bg-white p-6">
         <div className="border-b pb-3 mb-5 flex flex-row justify-between">
           <aside className="flex flex-row gap-3">
@@ -384,20 +383,7 @@ export default function FormImmobles() {
                 </select>
               </div>
             </div>
-            {/* <div className="basis-full md:basis-2/12 px-3">
-              <label className="label-form" htmlFor="published">
-                Web
-              </label>
-              <div className="relative">
-                <select
-                  className="input-form"
-                  {...register("published", { required: false })}
-                >
-                  <option value={"false"}>OFFLINE</option>
-                  <option value={"true"}>ONLINE</option>
-                </select>
-              </div>
-            </div> */}
+
             <div className="basis-full mb-6"></div>
             <div className="basis-full md:basis-4/12 px-3 mb-6">
               <label className="label-form" htmlFor="users_id">
@@ -418,9 +404,11 @@ export default function FormImmobles() {
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
               <datalist id="users_id">
-                {users.map(({ id, first_name }) => (
-                  <option key={id} value={[first_name].join(", ")} />
-                ))}
+                {users
+                  .filter((f) => f.type !== "root")
+                  .map(({ id, first_name }) => (
+                    <option key={id} value={first_name} />
+                  ))}
               </datalist>
             </div>
             <div className="basis-full md:basis-4/12 px-3">

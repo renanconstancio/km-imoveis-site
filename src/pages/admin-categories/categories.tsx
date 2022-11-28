@@ -6,7 +6,7 @@ import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TCategories } from "./types";
 import { parse } from "query-string";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "../../components/seo/seo";
 
 export default function Categories() {
   const [clear, setClear] = useState<boolean>(false);
@@ -59,9 +59,11 @@ export default function Categories() {
 
   return (
     <>
-      <Helmet>
-        <title>Lista de Categorias - {import.meta.env.VITE_TITLE}</title>
-      </Helmet>
+      <SEO
+        title={`Lista de Categorias`}
+        siteTitle={import.meta.env.VITE_TITLE}
+      />
+
       <ul className="overflow-x-auto rounded-sm bg-white p-5">
         <li className="flex border-b mb-3 pb-3 gap-3 justify-between">
           <section className="basis-6/12 flex gap-3 justify-end items-center">

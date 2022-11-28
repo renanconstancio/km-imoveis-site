@@ -13,7 +13,7 @@ import { CardTags } from "../../components/card-tags";
 import { TImmobles } from "../admin-immobiles/types";
 import { CardCarousel } from "../../components/card-carousel";
 import { CarouselIcons } from "../../components/carousel";
-import SEO from "../../components/seo/seo";
+import { SEO } from "../../components/seo/seo";
 
 export function SiteImmoble() {
   const [loading, setLoading] = useState(true);

@@ -8,6 +8,7 @@ import { Input } from "../../components/inputs";
 import { Alert } from "../../components/alert";
 import { api } from "../../services/api";
 import { TUserLogin } from "./types";
+import { SEO } from "../../components/seo/seo";
 
 export function Login() {
   const { login } = useAuth();
@@ -43,6 +44,7 @@ export function Login() {
       className="h-screen"
       style={{ backgroundImage: `url(${bgLogin})` }}
     >
+      <SEO title={`Login`} siteTitle={import.meta.env.VITE_TITLE} />
       <div className="container px-6 py-12 h-full">
         <div className="flex justify-center items-center flex-wrap h-full text-gray-800 ">
           <div className="md:basis-8/12 lg:basis-5/12 lg:ml-20 bg-white">

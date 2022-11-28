@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { TSeo } from "./types";
 
-export default function SEO({
+export function SEO({
   title,
   description,
   keywords,

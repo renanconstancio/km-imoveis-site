@@ -8,7 +8,7 @@ import { api, tags } from "../../services/api";
 import { TPagination } from "../../global/types";
 import { TImmobles } from "../admin-immobiles/types";
 import { maskCurrencyUs } from "../../utils/mask";
-import SEO from "../../components/seo/seo";
+import { SEO } from "../../components/seo/seo";
 
 export function SiteSearch() {
   const [loading, setLoading] = useState(true);

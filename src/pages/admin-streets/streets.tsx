@@ -6,7 +6,7 @@ import { Loading } from "../../components/loading";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TStreets } from "./types";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "../../components/seo/seo";
 
 export default function Streets() {
   const [clear, setClear] = useState<boolean>(false);
@@ -60,9 +60,8 @@ export default function Streets() {
 
   return (
     <>
-      <Helmet>
-        <title>Lista de Ruas - {import.meta.env.VITE_TITLE}</title>
-      </Helmet>
+      <SEO title={`Lista de Ruas`} siteTitle={import.meta.env.VITE_TITLE} />
+
       <ul className="overflow-x-auto rounded-sm bg-white p-5">
         <li className="flex border-b mb-3 pb-3 gap-3 justify-between">
           <section className="basis-6/12 flex gap-3 justify-end items-center">

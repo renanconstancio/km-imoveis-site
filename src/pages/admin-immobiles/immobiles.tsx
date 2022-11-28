@@ -14,7 +14,7 @@ import { Pagination } from "../../components/pagination";
 import { situationText } from "../../utils/functions";
 import { TPagination } from "../../global/types";
 import { TImmobles } from "./types";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "../../components/seo/seo";
 
 export default function Immobiles() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -79,9 +79,8 @@ export default function Immobiles() {
 
   return (
     <>
-      <Helmet>
-        <title>Lista de Imóveis - {import.meta.env.VITE_TITLE}</title>
-      </Helmet>
+      <SEO title="Lista de Imóveis" siteTitle={import.meta.env.VITE_TITLE} />
+
       <ul className="overflow-x-auto rounded-sm bg-white p-5">
         <li className="flex flex-wrap border-b mb-3 pb-3 gap-3 justify-between">
           <section className="w-full md:basis-6/12 flex gap-3 justify-end items-center">

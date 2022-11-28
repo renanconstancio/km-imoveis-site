@@ -7,7 +7,7 @@ import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { useAlert } from "../../hooks/use-alert";
 import { Input } from "../../components/inputs";
 import { TStates } from "./types";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "../../components/seo/seo";
 
 export default function FormStates() {
   const { changeAlert } = useAlert();
@@ -66,12 +66,11 @@ export default function FormStates() {
 
   return (
     <>
-      <Helmet>
-        <title>
-          {stateId ? "Editar" : "Cadastrar"}
-          Estados - {import.meta.env.VITE_TITLE}
-        </title>
-      </Helmet>
+      <SEO
+        title={`${stateId ? "Editar" : "Cadastrar"} Estados`}
+        siteTitle={import.meta.env.VITE_TITLE}
+      />
+
       <div className="overflow-x-auto rounded-sm bg-white p-6">
         <div className="border-b pb-3 mb-5 flex gap-3">
           <button className="btn-success btn-ico" type="submit" form="form">

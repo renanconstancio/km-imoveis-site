@@ -8,7 +8,7 @@ import { useAlert } from "../../hooks/use-alert";
 import { Input } from "../../components/inputs";
 import { maskCep } from "../../utils/mask";
 import { TStreets } from "./types";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "../../components/seo/seo";
 
 export default function FormStreets() {
   const { changeAlert } = useAlert();
@@ -74,12 +74,11 @@ export default function FormStreets() {
 
   return (
     <>
-      <Helmet>
-        <title>
-          {streetId ? "Editar" : "Cadastrar"}
-          Ruas - {import.meta.env.VITE_TITLE}
-        </title>
-      </Helmet>
+      <SEO
+        title={`${streetId ? "Editar" : "Cadastrar"} Ruas`}
+        siteTitle={import.meta.env.VITE_TITLE}
+      />
+
       <div className="overflow-x-auto rounded-sm bg-white p-6">
         <div className="border-b pb-3 mb-5 flex gap-3">
           <button className="btn-success btn-ico" type="submit" form="form">

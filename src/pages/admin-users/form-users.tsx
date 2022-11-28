@@ -9,7 +9,7 @@ import { Input } from "../../components/inputs";
 import { maskPhone } from "../../utils/mask";
 import { useAuth } from "../../hooks/use-auth";
 import { TUsers } from "./types";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "../../components/seo/seo";
 
 export default function FormUsers() {
   const navigate = useNavigate();
@@ -82,12 +82,11 @@ export default function FormUsers() {
 
   return (
     <>
-      <Helmet>
-        <title>
-          {userId ? "Editar" : "Cadastrar"}
-          Usuários - {import.meta.env.VITE_TITLE}
-        </title>
-      </Helmet>
+      <SEO
+        title={`${userId ? "Editar" : "Cadastrar"} Usuários`}
+        siteTitle={import.meta.env.VITE_TITLE}
+      />
+
       <div className="overflow-x-auto rounded-sm bg-white p-6">
         <div className="border-b pb-3 mb-5 flex gap-3">
           <button className="btn-success btn-ico" type="submit" form="form">

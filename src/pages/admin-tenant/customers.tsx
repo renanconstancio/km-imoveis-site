@@ -13,7 +13,7 @@ import { Loading } from "../../components/loading";
 import { Pagination } from "../../components/pagination";
 import { TPagination } from "../../global/types";
 import { TTenant } from "./types";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "../../components/seo/seo";
 
 export default function Customers() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -78,9 +78,11 @@ export default function Customers() {
 
   return (
     <>
-      <Helmet>
-        <title>Lista de Inquilínos - {import.meta.env.VITE_TITLE}</title>
-      </Helmet>
+      <SEO
+        title={`Lista de Inquilínos`}
+        siteTitle={import.meta.env.VITE_TITLE}
+      />
+
       <ul className="overflow-x-auto rounded-sm bg-white p-5">
         <li className="flex border-b mb-3 pb-3 gap-3 justify-between">
           <section className="basis-6/12 flex gap-3 justify-end items-center">

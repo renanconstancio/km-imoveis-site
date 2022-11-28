@@ -1,3 +1,4 @@
+import { api } from "../../services/api";
 import {
   faCashRegister,
   faExchange,
@@ -7,7 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import { api } from "../../services/api";
+import { SEO } from "../../components/seo/seo";
 
 export function Dashboard() {
   const [totalImmobiles, setTotal] = useState<number>(0);
@@ -85,6 +86,7 @@ export function Dashboard() {
 
   return (
     <ul className="flex flex-wrap -mx-3">
+      <SEO title="Dashboard" siteTitle={import.meta.env.VITE_TITLE} />
       <li className="p-3 basis-full md:basis-1/3">
         <section className="rounded overflow-hidden shadow-lg bg-green-100">
           <div className="flex items-center px-6 pt-4 pb-3 gap-3">
