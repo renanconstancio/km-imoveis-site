@@ -6,7 +6,6 @@ import { TImmobles } from "../admin-immobiles/types";
 import { Loading } from "../../components/loading";
 import { CardCarousel } from "../../components/card-carousel";
 import { H2 } from "../../components/title";
-import { Helmet } from "react-helmet-async";
 import SEO from "../../components/seo/seo";
 
 export function SiteHome() {
@@ -111,25 +110,13 @@ export function SiteHome() {
   return (
     <>
       <SEO
-        description={import.meta.env.VITE_DESCRIPTION}
-        image={import.meta.env.VITE_IMAGE}
-        keywords={import.meta.env.VITE_KEYWORDS}
-        title={import.meta.env.VITE_TITLE}
+        title={""}
         siteTitle={import.meta.env.VITE_TITLE}
+        description={import.meta.env.VITE_DESCRIPTION}
+        keywords={import.meta.env.VITE_KEYWORDS}
+        image={import.meta.env.VITE_IMAGE}
+        robots
       />
-      {/* <Helmet>
-        <title>{import.meta.env.VITE_TITLE}</title>
-        <link rel="canonical" href={window.location.href} />
-        <meta name="description" content={import.meta.env.VITE_DESCRIPTION} />
-        <meta name="keywords" content={import.meta.env.VITE_KEYWORDS} />
-        <meta property="og:url" content={import.meta.env.VITE_URL} />
-        <meta property="og:title" content={import.meta.env.VITE_TITLE} />
-        <meta
-          property="og:description"
-          content={import.meta.env.VITE_DESCRIPTION}
-        />
-        <meta property="og:image" content={import.meta.env.VITE_IMAGE} />
-      </Helmet> */}
       <div className="border-b border-gray-200 py-2">
         {loading ? (
           <section className="py-48">
