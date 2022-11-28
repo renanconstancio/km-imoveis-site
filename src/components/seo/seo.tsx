@@ -74,7 +74,7 @@ export function SEO({
 
   return (
     <Helmet
-      title={title ? `${title} | ${siteTitle}` : siteTitle}
+      title={title ? [title, siteTitle].join(" - ") : siteTitle}
       link={[
         {
           rel: `canonical`,
