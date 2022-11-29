@@ -37,7 +37,7 @@ export default function CarouselIndex({ banners }: { banners: TCarousel[] }) {
                 backgroundPosition: "center bottom",
                 backgroundSize: "cover",
               }}
-              className="item h-[250px] md:h-[475px]"
+              className="item h-[265px] md:h-[475px]"
             ></Link>
           ) : (
             <div
@@ -46,7 +46,7 @@ export default function CarouselIndex({ banners }: { banners: TCarousel[] }) {
                 backgroundPosition: "center bottom",
                 backgroundSize: "cover",
               }}
-              className="item h-[250px] md:h-[475px]"
+              className="item h-[265px] md:h-[475px]"
             ></div>
           )}
         </React.Fragment>

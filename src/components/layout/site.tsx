@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { Footer } from "../footer";
 import { Header } from "../header";
 import { Filters } from "../filters";
 import { TCarousel } from "../carousel/types";
 
+import { CarouselIndex } from "../carousel";
+
 import banner01 from "../../assets/banners/banner-a.jpg";
 import banner02 from "../../assets/banners/banner-b.jpg";
-import { CarouselIndex } from "../carousel";
+import banner03 from "../../assets/banners/banner-c.png";
 
 const bannerFix: TCarousel[] = [
   {
@@ -32,13 +34,26 @@ const bannerFix: TCarousel[] = [
       image_xs: "",
     },
   },
+  {
+    reference: "",
+    description: "",
+    situation: "purchase",
+    state: "",
+    city: "",
+    photo: {
+      image_lg: `${banner03}`,
+      image_xs: "",
+    },
+  },
 ];
 
 export default function Site() {
-  const [banners] = useState<TCarousel[]>(bannerFix);
+  const [banners, setBanners] = useState<TCarousel[]>([]);
 
   const location = useLocation();
 
+console.log()
+  
   // async function loadBanners() {
   //   await api.get("/immobiles/banner/list").then(async resp => {
   //     const banner = await resp.data;
@@ -46,9 +61,9 @@ export default function Site() {
   //   });
   // }
 
-  // useEffect(() => {
-  //   loadBanners();
-  // }, []);
+  useEffect(() => {
+    setBanners(bannerFix.sort(() => Math.random() - 0.5));
+  }, [setBanners]);
 
   return (
     <div className="bg-gray-200 flex flex-1 flex-col relative">
