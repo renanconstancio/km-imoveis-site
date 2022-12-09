@@ -34,20 +34,22 @@ export default function CarouselIndex({ banners }: { banners: TCarousel[] }) {
               )}/imovel/${reference}/${slugiFy(`${description}`)}`}
               style={{
                 backgroundImage: `url(${photo.image_lg})`,
-                backgroundPosition: "center bottom",
+                backgroundPosition: "center center",
                 backgroundSize: "cover",
               }}
-              className="item h-[265px] md:h-[475px]"
+              className="item h-[475px] md:h-[475px]"
             ></Link>
           ) : (
             <div
               style={{
                 backgroundImage: `url(${photo.image_lg})`,
-                backgroundPosition: "center bottom",
+                backgroundPosition: "center center",
                 backgroundSize: "cover",
               }}
-              className="item h-[265px] md:h-[475px]"
-            ></div>
+              className="item"
+            >
+              <img src={photo.image_lg} alt={photo.image_lg} />
+            </div>
           )}
         </React.Fragment>
       ))}

@@ -7,11 +7,23 @@ import { TCarousel } from "../carousel/types";
 
 import { CarouselIndex } from "../carousel";
 
-import banner01 from "../../assets/banners/banner-a.jpg";
-import banner02 from "../../assets/banners/banner-b.jpg";
+import banner01 from "../../assets/banners/banner-a.png";
+import banner02 from "../../assets/banners/banner-b.png";
 import banner03 from "../../assets/banners/banner-c.png";
+import banner04 from "../../assets/banners/banner-d.png";
 
 const bannerFix: TCarousel[] = [
+  {
+    reference: "",
+    description: "",
+    situation: "purchase",
+    state: "",
+    city: "",
+    photo: {
+      image_lg: `${banner04}`,
+      image_xs: "",
+    },
+  },
   {
     reference: "",
     description: "",
@@ -52,8 +64,6 @@ export default function Site() {
 
   const location = useLocation();
 
-console.log()
-  
   // async function loadBanners() {
   //   await api.get("/immobiles/banner/list").then(async resp => {
   //     const banner = await resp.data;
@@ -71,11 +81,11 @@ console.log()
 
       {location.pathname === "/" && (
         <div className="bg-slate-100">
-          <section className="container px-4 flex flex-wrap items-center">
+          <section className="container px-4 flex flex-wrap justify-between items-center">
             <div className="w-full md:w-2/6 mt-4 md:mt-0">
               <Filters />
             </div>
-            <div className="w-full md:w-4/6 mb-5 mt-5 md:m-0">
+            <div className="w-full md:w-[550px] mb-5 mt-5 md:m-0">
               {banners.length ? <CarouselIndex banners={banners} /> : ""}
             </div>
           </section>
