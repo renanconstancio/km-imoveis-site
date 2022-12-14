@@ -11,19 +11,19 @@ export function SEO({
 }: TSeo) {
   const seoMeta = [];
 
-  seoMeta.push({
-    charSet: "UTF-8",
-  });
+  // seoMeta.push({
+  //   charSet: "UTF-8",
+  // });
 
-  seoMeta.push({
-    httpEquiv: `X-UA-Compatible`,
-    content: "IE=edge",
-  });
+  // seoMeta.push({
+  //   httpEquiv: `X-UA-Compatible`,
+  //   content: "IE=edge",
+  // });
 
-  seoMeta.push({
-    name: `viewport`,
-    content: "width=device-width, initial-scale=1.0",
-  });
+  // seoMeta.push({
+  //   name: `viewport`,
+  //   content: "width=device-width, initial-scale=1.0",
+  // });
 
   if (robots) {
     seoMeta.push({

@@ -10,7 +10,8 @@ import { CardTags } from "../card-tags";
 import { Address } from "../address";
 import { Price } from "../price";
 import { H2 } from "../title";
-
+import { LazyImage } from "../lazy-image";
+import logoSite from "../../assets/logo.png";
 export function Card({
   situation,
   reference,
@@ -36,9 +37,13 @@ export function Card({
           {situationText(situation)}
         </li>
       </ul>
-
-      <img src={images[0]} className="mx-auto w-full" alt={description} />
-
+      <LazyImage
+        placeholder={logoSite}
+        src={images[0]}
+        className="mx-auto w-full"
+        alt={description}
+      />
+      {/* <img src={images[0]} className="mx-auto w-full" alt={description} /> */}
       <div className="p-5">
         <small>CÓD.: {reference}</small>
         <H2 title={description} />

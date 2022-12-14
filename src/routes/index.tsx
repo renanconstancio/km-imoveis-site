@@ -1,10 +1,13 @@
+// import { lazy, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+
 import { Admin, Site } from "../components/layout";
 import { Categories, FormCategories } from "../pages/admin-categories";
 import { Cities, FormCities } from "../pages/admin-cities";
 import { Dashboard } from "../pages/admin-dashborad";
 import { Immobiles, FormImmobiles } from "../pages/admin-immobiles";
 import { Logs } from "../pages/admin-logs";
+// const Logs = lazy(() => import("../pages/admin-logs/logs"));
 import { Neighborhoods, FormNeighborhoods } from "../pages/admin-neighborhoods";
 import { Owners, FormOwners } from "../pages/admin-owners";
 import { States, FormStates } from "../pages/admin-states";
@@ -19,6 +22,7 @@ import { SiteSearch } from "../pages/site-search";
 export default function RouteIndex() {
   return (
     <BrowserRouter>
+      {/* <Suspense fallback={<h1>Carregando...</h1>}> */}
       <Routes>
         <Route path="adm" element={<Admin />}>
           <Route path="immobiles">
@@ -90,6 +94,7 @@ export default function RouteIndex() {
         </Route>
         <Route path="*" element={<Error />} />
       </Routes>
+      {/* </Suspense> */}
     </BrowserRouter>
   );
 }

@@ -111,7 +111,7 @@ export function SiteImmoble() {
             ),
             import.meta.env.VITE_TITLE,
           ].join(", ")}`}
-          image={immoble.photos?.[0]?.image_xs}
+          image={immoble.photos?.[0]?.image_lg}
           robots
         />
 

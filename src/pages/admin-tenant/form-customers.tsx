@@ -259,12 +259,12 @@ export default function FormCustomers() {
               <Input
                 mask={maskCPF}
                 type="tel"
-                label="CPF *"
+                label="CPF "
                 className={`input-form ${errors.cpf && "invalid"}`}
                 error={errors.cpf}
                 register={register("cpf", {
                   required: {
-                    value: true,
+                    value: false,
                     message: "Campo é obrigatório",
                   },
                 })}
