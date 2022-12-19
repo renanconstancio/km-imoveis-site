@@ -106,7 +106,7 @@ export function SiteHome() {
   useEffect(() => {
     loadSaleBarter();
   }, [city]);
-
+  //tudo ok
   return (
     <>
       <SEO
