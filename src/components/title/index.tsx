@@ -1,8 +1,8 @@
-import { TH2 } from "./types";
+import { TTitle } from "./types";
 
-export function H2({ title, ...rest }: TH2) {
+export function Title({ title, variant = "text-base", ...rest }: TTitle) {
   return (
-    <h2 className="font-play font-bold text-lg md:text-2xl mt-1 mb-5" {...rest}>
+    <h2 className={`font-play font-bold ${variant} mt-1 mb-5`} {...rest}>
       {title}
     </h2>
   );

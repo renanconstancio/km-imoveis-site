@@ -297,7 +297,7 @@ export default function FormCustomers() {
                     type="search"
                     className={`input-form ${errors.streets_id && "invalid"}`}
                     placeholder="Pesquisar..."
-                    {...register("streets_id", { required: true })}
+                    {...register("streets_id", { required: false })}
                   />
                 </span>
                 <span
@@ -343,7 +343,7 @@ export default function FormCustomers() {
                       errors.neighborhoods_id && "invalid"
                     }`}
                     placeholder="Pesquisar..."
-                    {...register("neighborhoods_id", { required: true })}
+                    {...register("neighborhoods_id", { required: false })}
                   />
                 </span>
                 <span
@@ -373,7 +373,7 @@ export default function FormCustomers() {
                     type="search"
                     className={`input-form ${errors.cities_id && "invalid"}`}
                     placeholder="Pesquisar..."
-                    {...register("cities_id", { required: true })}
+                    {...register("cities_id", { required: false })}
                   />
                 </span>
                 <span

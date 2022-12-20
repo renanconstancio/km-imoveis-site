@@ -15,13 +15,13 @@ export function CardCarousel({ mapping, id }: TCardCarousel) {
     ],
     responsive: {
       0: {
-        items: 1,
-      },
-      767: {
         items: 2,
       },
-      768: {
+      767: {
         items: 4,
+      },
+      768: {
+        items: 5,
       },
     },
   };
@@ -46,6 +46,7 @@ export function CardCarousel({ mapping, id }: TCardCarousel) {
           tag={item.tags || ""}
           tags={tags}
           images={item?.photos?.map((f) => f.image_xs) || []}
+          location={item.tenant_id && true}
         />
       ))}
     </ReactOwlCarousel>

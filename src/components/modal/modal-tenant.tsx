@@ -189,7 +189,7 @@ export default function ModalTenant({
                     error={errors.cpf}
                     register={register("cpf", {
                       required: {
-                        value: true,
+                        value: false,
                         message: "Campo é obrigatório",
                       },
                     })}
@@ -220,7 +220,7 @@ export default function ModalTenant({
                     type="search"
                     className={`input-form ${errors.streets_id && "invalid"}`}
                     placeholder="Pesquisar..."
-                    {...register("streets_id", { required: true })}
+                    {...register("streets_id", { required: false })}
                   />
                   {errors.streets_id && (
                     <small className="input-text-invalid">
@@ -260,7 +260,7 @@ export default function ModalTenant({
                       errors.neighborhoods_id && "invalid"
                     }`}
                     placeholder="Pesquisar..."
-                    {...register("neighborhoods_id", { required: true })}
+                    {...register("neighborhoods_id", { required: false })}
                   />
 
                   {errors.neighborhoods_id && (
@@ -283,7 +283,7 @@ export default function ModalTenant({
                     type="search"
                     className={`input-form ${errors.cities_id && "invalid"}`}
                     placeholder="Pesquisar..."
-                    {...register("cities_id", { required: true })}
+                    {...register("cities_id", { required: false })}
                   />
 
                   {errors.cities_id && (

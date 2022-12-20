@@ -1,23 +1,23 @@
-export function findSearch(arr: any[], value: string, key: string) {
+export function findSearch(arr: any[], value: string, key: any) {
   return arr.find((item) => item[key] === value);
 }
 
-export function toNumber(str: any) {
+export function toNumber(str: string) {
   return str.replace(/\D/g, "");
 }
 
-export function situationText(text: any) {
+export function situationText(text: string) {
   return Object.assign({
-    location: "Locação",
+    location: "Alugar",
     exchange: "Permuta",
     purchase: "Compra",
     sale: "Venda",
-    sale_lease: "Venda e Locação",
+    sale_lease: "Venda ou Alugar",
     sale_barter: "Venda e Permuta",
   })[text];
 }
 
-export function situationTextClassName(text: any) {
+export function situationTextClassName(text: string) {
   return Object.assign({
     location: "bg-km-blue",
     exchange: "bg-km-orange",
@@ -28,7 +28,7 @@ export function situationTextClassName(text: any) {
   })[text];
 }
 
-export function addClassName(text: any) {
+export function addClassName(text: string) {
   return Object.assign({
     access: "w-8 h-8 cursor-pointer rounded-full text-blue-700 bg-blue-200",
     create: "w-8 h-8 cursor-pointer rounded-full text-green-700 bg-green-200",

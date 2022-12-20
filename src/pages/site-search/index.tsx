@@ -107,7 +107,7 @@ export function SiteSearch() {
             <Loading />
           </section>
         ) : (
-          <section className="container px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-5">
             {immobiles?.data?.map((item, k) => (
               <Card
                 key={k}
@@ -126,6 +126,7 @@ export function SiteSearch() {
                 tag={item.tags || ""}
                 tags={tags}
                 images={item?.photos?.map((f) => f.image_xs) || []}
+                location={item.tenant_id && true}
               />
             ))}
           </section>

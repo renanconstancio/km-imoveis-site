@@ -53,6 +53,7 @@ export type TImmobles = {
   id: string;
   users_id: string;
   cities_id: string;
+  tenant_id: string;
   neighborhoods_id: string;
   streets_id: string;
   categories_id: string;

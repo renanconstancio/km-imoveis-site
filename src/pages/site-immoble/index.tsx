@@ -1,7 +1,7 @@
 import { api, tags } from "../../services/api";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { H2 } from "../../components/title";
+import { Title } from "../../components/title";
 import { Address } from "../../components/address";
 import { Price } from "../../components/price";
 import { Loading } from "../../components/loading";
@@ -62,6 +62,19 @@ export function SiteImmoble() {
     if (immoble.id) loadImmobles();
   }, [immoble]);
 
+  let textCondition = "imóvel alugado";
+  if (
+    immoble?.situation === "sale" ||
+    immoble?.situation === "sale_barter" ||
+    immoble?.situation === "exchange"
+  ) {
+    textCondition = "imóvel vendido";
+  }
+
+  if (immoble?.situation === "sale_lease") {
+    textCondition = "imóvel vendido ou alugado";
+  }
+
   if (loading)
     return (
       <section className="py-48">
@@ -69,11 +82,11 @@ export function SiteImmoble() {
       </section>
     );
 
-  if (!immoble.id)
+  if (!immoble.id || immoble.tenant_id)
     return (
       <div className="container">
         <div className="divide-y divide-slate-200 bg-white mx-4 sm:mx-0 p-5 pb-7">
-          <H2 title="Imóvel Indisponível" />
+          <Title title="Imóvel Indisponível" />
           <p className="py-3">
             Esse imóvel encontra-se Indisponível no momento, veja outras opções
             abaixo
@@ -117,8 +130,8 @@ export function SiteImmoble() {
 
         <div className="container">
           <ul className="divide-y divide-slate-200 bg-white mx-4 sm:mx-0 px-5 pb-7 flex flex-col flex-wrap sm:flex-row">
-            <li className="w-full">
-              <H2 title={`${immoble?.description}`} />
+            <li className="w-full pt-6">
+              <Title title={`${immoble?.description}`} variant="text-4xl" />
 
               <small>CÓD.: {immoble?.reference}</small>
 
@@ -137,7 +150,9 @@ export function SiteImmoble() {
                     immoble?.situation,
                   )}`}
                 >
-                  {situationText(immoble?.situation)}
+                  {immoble?.tenant_id
+                    ? textCondition
+                    : situationText(immoble?.situation)}
                 </li>
               </ul>
 
@@ -182,7 +197,7 @@ export function SiteImmoble() {
 
             {immoble?.description_text && (
               <li className="w-full sm:w-8/12 flex flex-col gap-3 pb-7">
-                <H2 title="Descrição do Imovél" />
+                <Title title="Descrição do Imovél" />
                 <div
                   dangerouslySetInnerHTML={{
                     __html: immoble?.description_text,
@@ -193,7 +208,7 @@ export function SiteImmoble() {
 
             {immoble?.user?.first_name && (
               <li className="w-full sm:w-8/12 flex flex-col gap-2">
-                <H2 title="Corretor" />
+                <Title title="Corretor" />
                 {immoble?.user?.first_name && (
                   <span>Nome: {immoble?.user?.first_name}</span>
                 )}
@@ -210,7 +225,7 @@ export function SiteImmoble() {
           {immobiles.length > 0 && (
             <section className="container mt-5 px-4 md:px-0">
               <div className="relative">
-                <H2 title={`Veja outros`} />
+                <Title title={`Veja outros`} />
                 <CardCarousel id="all" mapping={immobiles} />
               </div>
             </section>

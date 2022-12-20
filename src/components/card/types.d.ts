@@ -1,4 +1,5 @@
 type TCard = React.HTMLAttributes<HTMLLIElement> & {
+  location: booleans;
   reference: string;
   description: string;
   terrainArea: string;

@@ -1,112 +1,65 @@
-import { api } from "../../services/api";
+import { api, tags } from "../../services/api";
 import { parse } from "query-string";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { TImmobles } from "../admin-immobiles/types";
 import { Loading } from "../../components/loading";
-import { CardCarousel } from "../../components/card-carousel";
-import { H2 } from "../../components/title";
 import { SEO } from "../../components/seo/seo";
+import { Card } from "../../components/card";
+import { Title } from "../../components/title";
+
+type TSiteHome = {
+  location?: TImmobles[];
+  exchange?: TImmobles[];
+  purchase?: TImmobles[];
+  sale?: TImmobles[];
+  saleLease?: TImmobles[];
+  saleBarter?: TImmobles[];
+};
 
 export function SiteHome() {
   const [loading, setLoading] = useState(true);
-  const [immobilesSales, setImmobilesSales] = useState<TImmobles[]>([]);
-  const [immobilesLocation, setImmobilesLocation] = useState<TImmobles[]>([]);
-  const [immobilesPurchase, setImmobilesPurchase] = useState<TImmobles[]>([]);
-  const [immobilesExchange, setImmobilesExchange] = useState<TImmobles[]>([]);
-  const [immobilesSaleLease, setImmobilesSaleLease] = useState<TImmobles[]>([]);
-  const [immobilesSaleBarter, setImmobilesSaleBarter] = useState<TImmobles[]>(
-    [],
-  );
+  const [immobiles, setImmobiles] = useState<TSiteHome>();
 
   const location = useLocation();
   const query = parse(location.search);
   const city = (query.city || "") as string;
 
-  async function loadLocation() {
-    setLoading(true);
-    await api
-      .get(
-        `/immobiles/website/list?limit=20&search[situation]=location&search[city]=${city}&order[random]=true`,
-      )
-      .then(async (resp) => setImmobilesLocation(await resp.data?.data))
-      .finally(() => setLoading(false));
-  }
-
-  async function loadPurchase() {
-    setLoading(true);
-    await api
-      .get(
-        `/immobiles/website/list?limit=20&search[situation]=purchase&search[city]=${city}&order[random]=true`,
-      )
-      .then(async (resp) => setImmobilesPurchase(await resp.data?.data))
-      .finally(() => setLoading(false));
-  }
-
-  async function loadExchange() {
-    setLoading(true);
-    await api
-      .get(
-        `/immobiles/website/list?limit=20&search[situation]=exchange&search[city]=${city}&order[random]=true`,
-      )
-      .then(async (resp) => setImmobilesExchange(await resp.data?.data))
-      .finally(() => setLoading(false));
-  }
-
-  async function loadSale() {
-    setLoading(true);
-    await api
-      .get(
-        `/immobiles/website/list?limit=20&search[situation]=sale&search[city]=${city}&order[random]=true`,
-      )
-      .then(async (resp) => setImmobilesSales(await resp.data?.data))
-      .finally(() => setLoading(false));
-  }
-
-  async function loadSaleLease() {
-    setLoading(true);
-    await api
-      .get(
-        `/immobiles/website/list?limit=20&search[situation]=sale_lease&search[city]=${city}&order[random]=true`,
-      )
-      .then(async (resp) => setImmobilesSaleLease(await resp.data?.data))
-      .finally(() => setLoading(false));
-  }
-
-  async function loadSaleBarter() {
-    setLoading(true);
-    await api
-      .get(
-        `/immobiles/website/list?limit=20&search[situation]=sale_barter&search[city]=${city}&order[random]=true`,
-      )
-      .then(async (resp) => setImmobilesSaleBarter(await resp.data?.data))
-      .finally(() => setLoading(false));
-  }
-
   useEffect(() => {
-    loadLocation();
-  }, [city]);
+    (async () => {
+      setLoading(true);
+      await api
+        .get(
+          `/immobiles/website/list?limit=100&search[city]=${city}&order[random]=true`,
+        )
+        .then(async (resp) => {
+          const respAll = (await resp.data?.data) as TImmobles[] | null;
 
-  useEffect(() => {
-    loadPurchase();
-  }, [city]);
+          setImmobiles({
+            location: respAll
+              ?.filter((immoble) => immoble.situation === "location")
+              .slice(0, 10),
+            exchange: respAll
+              ?.filter((immoble) => immoble.situation === "exchange")
+              .slice(0, 10),
+            purchase: respAll
+              ?.filter((immoble) => immoble.situation === "purchase")
+              .slice(0, 10),
+            sale: respAll
+              ?.filter((immoble) => immoble.situation === "sale")
+              .slice(0, 10),
+            saleLease: respAll
+              ?.filter((immoble) => immoble.situation === "sale_lease")
+              .slice(0, 10),
+            saleBarter: respAll
+              ?.filter((immoble) => immoble.situation === "sale_barter")
+              .slice(0, 10),
+          });
+        })
+        .finally(() => setLoading(false));
+    })();
+  }, []);
 
-  useEffect(() => {
-    loadExchange();
-  }, [city]);
-
-  useEffect(() => {
-    loadSale();
-  }, [city]);
-
-  useEffect(() => {
-    loadSaleLease();
-  }, [city]);
-
-  useEffect(() => {
-    loadSaleBarter();
-  }, [city]);
-  //tudo ok
   return (
     <>
       <SEO
@@ -124,61 +77,189 @@ export function SiteHome() {
           </section>
         ) : (
           <>
-            {immobilesLocation.length > 0 && (
-              <section className="container mt-5">
-                <div className="relative p-4">
-                  <H2 title={`Locação`} />
-                  <CardCarousel id="location" mapping={immobilesLocation} />
-                </div>
-              </section>
+            {immobiles?.location && immobiles?.location?.length > 0 && (
+              <>
+                <Title
+                  title={`Casas para Alugar`}
+                  style={{
+                    textAlign: "center",
+                    margin: "2em 0 1em 0",
+                    textTransform: "uppercase",
+                    fontSize: "2em",
+                  }}
+                />
+                <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-5">
+                  {immobiles?.location?.map((item, k) => (
+                    <Card
+                      key={k}
+                      reference={item.reference}
+                      situation={item.situation}
+                      description={item.description}
+                      buildingArea={item.building_area}
+                      terrainArea={item.terrain_area}
+                      rentPrice={item.rent_price}
+                      salePrice={item.sale_price}
+                      address={[
+                        item.district?.district ?? "",
+                        item.city?.city ?? "",
+                        item.city?.state.state ?? "",
+                      ]}
+                      tag={item.tags || ""}
+                      tags={tags}
+                      images={item?.photos?.map((f) => f.image_xs) || []}
+                      location={item.tenant_id && true}
+                    />
+                  ))}
+                </section>
+              </>
             )}
 
-            {immobilesSales.length > 0 && (
-              <section className="container">
-                <div className="relative p-4">
-                  <H2 title={`Venda`} />
-                  <CardCarousel id="sale" mapping={immobilesSales} />
-                </div>
-              </section>
+            {immobiles?.sale && immobiles?.sale?.length > 0 && (
+              <>
+                <Title
+                  title={`Casas a Venda`}
+                  style={{
+                    textAlign: "center",
+                    margin: "2em 0 1em 0",
+                    textTransform: "uppercase",
+                    fontSize: "2em",
+                  }}
+                />
+                <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-5">
+                  {immobiles?.sale?.map((item, k) => (
+                    <Card
+                      key={k}
+                      reference={item.reference}
+                      situation={item.situation}
+                      description={item.description}
+                      buildingArea={item.building_area}
+                      terrainArea={item.terrain_area}
+                      rentPrice={item.rent_price}
+                      salePrice={item.sale_price}
+                      address={[
+                        item.district?.district ?? "",
+                        item.city?.city ?? "",
+                        item.city?.state.state ?? "",
+                      ]}
+                      tag={item.tags || ""}
+                      tags={tags}
+                      images={item?.photos?.map((f) => f.image_xs) || []}
+                      location={item.tenant_id && true}
+                    />
+                  ))}
+                </section>
+              </>
             )}
 
-            {immobilesPurchase.length > 0 && (
-              <section className="container">
-                <div className="relative p-4">
-                  <H2 title={`Compra`} />
-                  <CardCarousel id="purchase" mapping={immobilesPurchase} />
-                </div>
-              </section>
+            {immobiles?.exchange && immobiles?.exchange?.length > 0 && (
+              <>
+                <Title
+                  title={`Casas para Comprar`}
+                  style={{
+                    textAlign: "center",
+                    margin: "2em 0 1em 0",
+                    textTransform: "uppercase",
+                    fontSize: "2em",
+                  }}
+                />
+                <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-5">
+                  {immobiles?.exchange?.map((item, k) => (
+                    <Card
+                      key={k}
+                      reference={item.reference}
+                      situation={item.situation}
+                      description={item.description}
+                      buildingArea={item.building_area}
+                      terrainArea={item.terrain_area}
+                      rentPrice={item.rent_price}
+                      salePrice={item.sale_price}
+                      address={[
+                        item.district?.district ?? "",
+                        item.city?.city ?? "",
+                        item.city?.state.state ?? "",
+                      ]}
+                      tag={item.tags || ""}
+                      tags={tags}
+                      images={item?.photos?.map((f) => f.image_xs) || []}
+                      location={item.tenant_id && true}
+                    />
+                  ))}
+                </section>
+              </>
             )}
 
-            {immobilesExchange.length > 0 && (
-              <section className="container">
-                <div className="relative p-4">
-                  <H2 title={`Permuta`} />
-                  <CardCarousel id="exchange" mapping={immobilesExchange} />
-                </div>
-              </section>
+            {immobiles?.saleLease && immobiles?.saleLease?.length > 0 && (
+              <>
+                <Title
+                  title={`Casas para Venda e Locação`}
+                  style={{
+                    textAlign: "center",
+                    margin: "2em 0 1em 0",
+                    textTransform: "uppercase",
+                    fontSize: "2em",
+                  }}
+                />
+                <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-5">
+                  {immobiles?.saleLease?.map((item, k) => (
+                    <Card
+                      key={k}
+                      reference={item.reference}
+                      situation={item.situation}
+                      description={item.description}
+                      buildingArea={item.building_area}
+                      terrainArea={item.terrain_area}
+                      rentPrice={item.rent_price}
+                      salePrice={item.sale_price}
+                      address={[
+                        item.district?.district ?? "",
+                        item.city?.city ?? "",
+                        item.city?.state.state ?? "",
+                      ]}
+                      tag={item.tags || ""}
+                      tags={tags}
+                      images={item?.photos?.map((f) => f.image_xs) || []}
+                      location={item.tenant_id && true}
+                    />
+                  ))}
+                </section>
+              </>
             )}
 
-            {immobilesSaleLease.length > 0 && (
-              <section className="container">
-                <div className="relative p-4">
-                  <H2 title={`Venda e Locação`} />
-                  <CardCarousel id="sale_lease" mapping={immobilesSaleLease} />
-                </div>
-              </section>
-            )}
-
-            {immobilesSaleBarter.length > 0 && (
-              <section className="container">
-                <div className="relative p-4">
-                  <H2 title={`Venda e Permuta`} />
-                  <CardCarousel
-                    id="sale_barter"
-                    mapping={immobilesSaleBarter}
-                  />
-                </div>
-              </section>
+            {immobiles?.saleBarter && immobiles?.saleBarter?.length > 0 && (
+              <>
+                <Title
+                  title={`Casas para Venda e Permuta`}
+                  style={{
+                    textAlign: "center",
+                    margin: "2em 0 1em 0",
+                    textTransform: "uppercase",
+                    fontSize: "2em",
+                  }}
+                />
+                <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-5">
+                  {immobiles?.saleBarter?.map((item, k) => (
+                    <Card
+                      key={k}
+                      reference={item.reference}
+                      situation={item.situation}
+                      description={item.description}
+                      buildingArea={item.building_area}
+                      terrainArea={item.terrain_area}
+                      rentPrice={item.rent_price}
+                      salePrice={item.sale_price}
+                      address={[
+                        item.district?.district ?? "",
+                        item.city?.city ?? "",
+                        item.city?.state.state ?? "",
+                      ]}
+                      tag={item.tags || ""}
+                      tags={tags}
+                      images={item?.photos?.map((f) => f.image_xs) || []}
+                      location={item.tenant_id && true}
+                    />
+                  ))}
+                </section>
+              </>
             )}
           </>
         )}
