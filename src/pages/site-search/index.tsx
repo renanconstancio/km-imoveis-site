@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Card } from "../../components/card";
 import { parse, stringify } from "query-string";
-import { Loading } from "../../components/loading";
 import { Pagination } from "../../components/pagination";
 import { api, tags } from "../../services/api";
 import { TPagination } from "../../global/types";
 import { TImmobles } from "../admin-immobiles/types";
 import { maskCurrencyUs } from "../../utils/mask";
 import { SEO } from "../../components/seo/seo";
+import { CardSkeleton } from "../../components/card-skeleton";
 
-export function SiteSearch() {
+export default function SiteSearch() {
   const [loading, setLoading] = useState(true);
   const [immobiles, setImmobiles] = useState<TPagination<TImmobles[]>>(
     {} as TPagination<TImmobles[]>,
@@ -36,7 +36,7 @@ export function SiteSearch() {
   async function loadImmobiles() {
     setLoading(true);
 
-    let conveterParse = `page=${page}&limit=${limit}&search[situation]=${situation}&search[category]=${category}&search[reference]=${reference}&search[city]=${city}&search[district]=${district}`;
+    let conveterParse = `page=${page}&limit=${limit}&search[situation]=${situation}&search[category]=${category}&search[reference]=${reference}&search[city]=${city}&search[district]=${district}&order[created_at]=desc&order[tenant_id]=asc`;
 
     if (situation === "location" && price_lte) {
       conveterParse = `${conveterParse}&search[rent_price_lte]=${maskCurrencyUs(
@@ -68,7 +68,13 @@ export function SiteSearch() {
           stringify({ ...parse(conveterParse) }),
         )}`,
       )
-      .then(async (resp) => setImmobiles(await resp.data))
+      .then(async (resp) => {
+        const respAll: TPagination<TImmobles[]> = await resp.data;
+        setImmobiles({
+          ...respAll,
+          data: respAll.data?.sort(),
+        });
+      })
       .finally(() => setLoading(false));
   }
 
@@ -103,8 +109,10 @@ export function SiteSearch() {
         )}
 
         {loading ? (
-          <section className="py-48">
-            <Loading />
+          <section className="m-5 container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-5">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <CardSkeleton key={i} />
+            ))}
           </section>
         ) : (
           <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-5">
@@ -121,7 +129,7 @@ export function SiteSearch() {
                 address={[
                   item.district?.district ?? "",
                   item.city?.city ?? "",
-                  item.city?.state.state ?? "",
+                  item.city?.state?.state ?? "",
                 ]}
                 tag={item.tags || ""}
                 tags={tags}

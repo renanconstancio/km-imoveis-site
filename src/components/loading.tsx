@@ -8,3 +8,11 @@ export function Loading() {
     </div>
   );
 }
+
+export function LoadingFull() {
+  return (
+    <div className="h-screen flex flex-1 flex-row justify-center items-center">
+      <FontAwesomeIcon icon={faSpinner} className="fa-spin fa-2x" />
+    </div>
+  );
+}

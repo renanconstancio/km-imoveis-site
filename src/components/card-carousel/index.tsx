@@ -41,7 +41,7 @@ export function CardCarousel({ mapping, id }: TCardCarousel) {
           address={[
             item.district?.district ?? "",
             item.city?.city ?? "",
-            item.city?.state.state ?? "",
+            item.city?.state?.state ?? "",
           ]}
           tag={item.tags || ""}
           tags={tags}

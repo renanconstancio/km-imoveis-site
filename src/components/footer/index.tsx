@@ -22,35 +22,35 @@ export function Footer() {
           <Title title="Correspondente" />
           <i>Faça seu finaciamento com a gente!</i>
           <section className="flex flex-row flex-wrap -mx-3">
-            <span className="p-3 basis-1/3 md:basis-1/12">
+            <span className="p-3 basis-1/5 md:basis-1/12">
               <img
                 src={imgCaixa}
                 alt="Correspondente - Caixa"
                 className="rounded-lg"
               />
             </span>
-            <span className="p-3 basis-1/3 md:basis-1/12">
+            <span className="p-3 basis-1/5 md:basis-1/12">
               <img
                 src={imgBradesco}
                 alt="Correspondente - Bradesco"
                 className="rounded-lg"
               />
             </span>
-            <span className="p-3 basis-1/3 md:basis-1/12">
+            <span className="p-3 basis-1/5 md:basis-1/12">
               <img
                 src={imgSantander}
                 alt="Correspondente - Santander"
                 className="rounded-lg"
               />
             </span>
-            <span className="p-3 basis-1/3 md:basis-1/12">
+            <span className="p-3 basis-1/5 md:basis-1/12">
               <img
                 src={imgBB}
                 alt="Correspondente - BB"
                 className="rounded-lg"
               />
             </span>
-            <span className="p-3 basis-1/3 md:basis-1/12">
+            <span className="p-3 basis-1/5 md:basis-1/12">
               <img
                 src={imgItau}
                 alt="Correspondente - Itau"

@@ -11,15 +11,18 @@ import { AuthProvider } from "./context/auth";
 import { AlertProvider } from "./context/alert";
 import { ModalProvider } from "./context/modal";
 import RouteIndex from "./routes";
+import React from "react";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <HelmetProvider>
-    <AuthProvider>
-      <AlertProvider>
-        <ModalProvider>
-          <RouteIndex />
-        </ModalProvider>
-      </AlertProvider>
-    </AuthProvider>
-  </HelmetProvider>,
+  <React.StrictMode>
+    <HelmetProvider>
+      <AuthProvider>
+        <AlertProvider>
+          <ModalProvider>
+            <RouteIndex />
+          </ModalProvider>
+        </AlertProvider>
+      </AuthProvider>
+    </HelmetProvider>
+  </React.StrictMode>,
 );

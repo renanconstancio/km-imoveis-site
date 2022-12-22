@@ -15,3 +15,13 @@ export type TCarousel = {
     image_xs: string;
   };
 };
+
+export type TBanner = {
+  link?: string;
+  title: string;
+  description?: string;
+  photo: {
+    image_lg: string;
+    image_xs: string;
+  };
+};

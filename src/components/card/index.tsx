@@ -12,6 +12,7 @@ import { Price } from "../price";
 import { Title } from "../title";
 import { LazyImage } from "../lazy-image";
 import logoSite from "../../assets/logo.png";
+
 export function Card({
   situation,
   reference,

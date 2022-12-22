@@ -1,21 +1,24 @@
-import React from "react";
-import { TCarousel } from "./types";
-import ReactOwlCarousel, { Options } from "react-owl-carousel";
-import { situationText, slugiFy } from "../../utils/functions";
-import { Link } from "react-router-dom";
+import "./carousel-index.css";
+import { lazy } from "react";
+import { TBanner } from "./types";
+import { Options } from "react-owl-carousel";
+import bgPixel from "../../assets/bg-black-pixel.png";
 
-export default function CarouselIndex({ banners }: { banners: TCarousel[] }) {
+const OwlCarousel = lazy(() => import("react-owl-carousel"));
+
+export default function CarouselIndex({ banners }: { banners: TBanner[] }) {
   const options: Options = {
     nav: false,
     loop: true,
     margin: 5,
     items: 1,
-    dots: true,
+    dots: false,
     autoplay: true,
-    autoplayTimeout: 5000,
+    autoplayTimeout: 7000,
     center: true,
     dotClass: "owl-dot owl-dot-personalized",
     dotsClass: "owl-dots absolute bottom-3 inset-x-0",
+    animateOut: "fadeOut",
     responsive: {
       0: {
         items: 1,
@@ -24,35 +27,28 @@ export default function CarouselIndex({ banners }: { banners: TCarousel[] }) {
   };
 
   return (
-    <ReactOwlCarousel className="owl-theme" {...options}>
-      {banners.map(({ photo, reference, description, situation }, id) => (
-        <React.Fragment key={id}>
-          {reference ? (
-            <Link
-              to={`/${slugiFy(
-                `${situationText(situation)}`,
-              )}/imovel/${reference}/${slugiFy(`${description}`)}`}
-              style={{
-                backgroundImage: `url(${photo.image_lg})`,
-                backgroundPosition: "center center",
-                backgroundSize: "cover",
-              }}
-              className="item h-[475px] md:h-[475px]"
-            ></Link>
-          ) : (
+    <OwlCarousel className="owl-theme" {...options}>
+      {banners.map(({ photo, title, description, link }, id) => (
+        <div key={id}>
+          <picture>
+            <source srcSet={photo.image_lg} media="(min-width: 600px)" />
+            <img src={photo.image_xs} alt="banner" />
+          </picture>
+          <div
+            style={{
+              backgroundImage: `url(${bgPixel})`,
+            }}
+            className="carousel-index item"
+          >
+            <h3>{title}</h3>
             <div
-              style={{
-                backgroundImage: `url(${photo.image_lg})`,
-                backgroundPosition: "center center",
-                backgroundSize: "cover",
+              dangerouslySetInnerHTML={{
+                __html: `${description}`,
               }}
-              className="item"
-            >
-              <img src={photo.image_lg} alt={photo.image_lg} />
-            </div>
-          )}
-        </React.Fragment>
+            />
+          </div>
+        </div>
       ))}
-    </ReactOwlCarousel>
+    </OwlCarousel>
   );
 }

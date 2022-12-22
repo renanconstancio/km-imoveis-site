@@ -20,7 +20,7 @@ export function LazyImage({ placeholder, src, ...rest }: TLazyImage) {
     <img
       {...{ src: imgSrc, ...rest }}
       alt={rest?.alt || ""}
-      className={`w-full ${rest.className} ${customClass}`}
+      className={`${rest.className} ${customClass}`}
     />
   );
 }

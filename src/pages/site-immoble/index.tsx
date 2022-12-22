@@ -15,7 +15,7 @@ import { CardCarousel } from "../../components/card-carousel";
 import { CarouselIcons } from "../../components/carousel";
 import { SEO } from "../../components/seo/seo";
 
-export function SiteImmoble() {
+export default function SiteImmoble() {
   const [loading, setLoading] = useState(true);
   const [immobiles, setImmobiles] = useState<TImmobles[]>([]);
   const [immoble, setImmoble] = useState<TImmobles>({} as TImmobles);
@@ -32,7 +32,7 @@ export function SiteImmoble() {
   }
 
   async function loadImmobles() {
-    let uri = "";
+    let uri = "&order[created_at]=desc&order[tenant_id]=asc";
 
     if (immoble?.situation) {
       uri = `${uri}&search[situation]=${immoble?.situation}`;
@@ -59,7 +59,10 @@ export function SiteImmoble() {
   }, [immoble]);
 
   useEffect(() => {
-    if (immoble.id) loadImmobles();
+    if (immoble.id) {
+      window.scrollTo(0, 0);
+      loadImmobles();
+    }
   }, [immoble]);
 
   let textCondition = "imóvel alugado";
@@ -105,13 +108,13 @@ export function SiteImmoble() {
           siteTitle={import.meta.env.VITE_TITLE}
           title={`${immoble?.description} - ${[
             immoble.district?.district || "",
-            [immoble.city?.city || "", immoble.city?.state.state || ""].join(
+            [immoble.city?.city || "", immoble.city?.state?.state || ""].join(
               "/",
             ),
           ].join(", ")}`}
           description={`${immoble?.description} - ${[
             immoble.district?.district || "",
-            [immoble.city?.city || "", immoble.city?.state.state || ""].join(
+            [immoble.city?.city || "", immoble.city?.state?.state || ""].join(
               "/",
             ),
           ].join(", ")}`}
@@ -119,7 +122,7 @@ export function SiteImmoble() {
             immoble?.situation,
           )}, ${[
             immoble.district?.district || "",
-            [immoble.city?.city || "", immoble.city?.state.state || ""].join(
+            [immoble.city?.city || "", immoble.city?.state?.state || ""].join(
               "/",
             ),
             import.meta.env.VITE_TITLE,
@@ -139,7 +142,7 @@ export function SiteImmoble() {
                 address={[
                   immoble.district?.district ?? "",
                   immoble.city?.city ?? "",
-                  immoble.city?.state.state ?? "",
+                  immoble.city?.state?.state ?? "",
                 ]}
               />
             </li>
@@ -197,7 +200,7 @@ export function SiteImmoble() {
 
             {immoble?.description_text && (
               <li className="w-full sm:w-8/12 flex flex-col gap-3 pb-7">
-                <Title title="Descrição do Imovél" />
+                <Title title="Descrição do Imovél" variant="text-2xl" />
                 <div
                   dangerouslySetInnerHTML={{
                     __html: immoble?.description_text,
@@ -208,7 +211,7 @@ export function SiteImmoble() {
 
             {immoble?.user?.first_name && (
               <li className="w-full sm:w-8/12 flex flex-col gap-2">
-                <Title title="Corretor" />
+                <Title title="Corretor" variant="text-2xl" />
                 {immoble?.user?.first_name && (
                   <span>Nome: {immoble?.user?.first_name}</span>
                 )}

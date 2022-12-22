@@ -2,4 +2,7 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
+  "[css]": {
+    "editor.defaultFormatter": "vscode.css-language-features"
+  },
 }
