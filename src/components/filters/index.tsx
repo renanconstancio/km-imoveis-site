@@ -46,6 +46,7 @@ export function Filters({ variant = "col" }: TFiltersComp) {
         data = { ...data, situation: "exchange" };
         break;
       case "Venda e Locação":
+      case "Venda ou Locação":
       case "Venda ou Alugar":
         data = { ...data, situation: "sale_lease" };
         break;
