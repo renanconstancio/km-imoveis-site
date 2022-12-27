@@ -136,7 +136,7 @@ export default function SiteHome() {
             {immobiles?.location && immobiles?.location?.length > 0 && (
               <>
                 <Title
-                  title={`Casas para Alugar`}
+                  title={`Casas para Locação`}
                   style={{
                     textAlign: "center",
                     margin: "2em 0 1em 0",

@@ -8,11 +8,11 @@ export function toNumber(str: string) {
 
 export function situationText(text: string) {
   return Object.assign({
-    location: "Alugar",
+    location: "Locação",
     exchange: "Permuta",
     purchase: "Compra",
     sale: "Venda",
-    sale_lease: "Venda ou Alugar",
+    sale_lease: "Venda ou Locação",
     sale_barter: "Venda e Permuta",
   })[text];
 }
