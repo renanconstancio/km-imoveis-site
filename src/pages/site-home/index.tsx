@@ -18,6 +18,7 @@ import banner01Xs from "../../assets/banners/banner-a-xs.jpg";
 import banner02Xs from "../../assets/banners/banner-b-xs.jpg";
 import banner03Xs from "../../assets/banners/banner-c-xs.jpg";
 import { CardSkeleton } from "../../components/card-skeleton";
+import { useFetch } from "../../hooks/use-fetch";
 
 const bannerFix: TBanner[] = [
   {
@@ -56,8 +57,8 @@ type TSiteHome = {
 };
 
 export default function SiteHome() {
-  const [loading, setLoading] = useState(true);
-  const [immobiles, setImmobiles] = useState<TSiteHome>();
+  // const [loading, setLoading] = useState(true);
+  // const [immobiles, setImmobiles] = useState<TSiteHome>();
   const [banners, setBanners] = useState<TBanner[]>([]);
 
   const location = useLocation();
@@ -68,45 +69,34 @@ export default function SiteHome() {
     setBanners(bannerFix.sort(() => Math.random() - 0.5));
   }, [setBanners]);
 
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
-      await api
-        .get(
-          `/immobiles/website/list?limit=100&search[city]=${city}&order[random]=true&order[created_at]=desc&order[tenant_id]=asc`,
-        )
-        .then(async (resp) => {
-          const respAll = (await resp.data?.data) as TImmobles[] | null;
+  const url = `/immobiles/website/list?limit=20&search[city]=${city}&order[created_at]=desc&order[tenant_id]=asc`;
+  const { data: location, error } = useFetch(url);
 
-          setImmobiles({
-            location: respAll
-              ?.filter((immoble) => immoble.situation === "location")
-              .slice(0, 10)
-              .sort(() => Math.random() - 0.5),
-            exchange: respAll
-              ?.filter((immoble) => immoble.situation === "exchange")
-              .slice(0, 10)
-              .sort(() => Math.random() - 0.5),
-            purchase: respAll
-              ?.filter((immoble) => immoble.situation === "purchase")
-              .slice(0, 10)
-              .sort(() => Math.random() - 0.5),
-            sale: respAll
-              ?.filter((immoble) => immoble.situation === "sale")
-              .slice(0, 10)
-              .sort(() => Math.random() - 0.5),
-            saleLease: respAll
-              ?.filter((immoble) => immoble.situation === "sale_lease")
-              .slice(0, 10),
-            saleBarter: respAll
-              ?.filter((immoble) => immoble.situation === "sale_barter")
-              .slice(0, 10)
-              .sort(() => Math.random() - 0.5),
-          });
-        })
-        .finally(() => setLoading(false));
-    })();
-  }, []);
+  // const immobiles: TSiteHome = {
+  //   location: data?.data
+  //     ?.filter((immoble: TImmobles) => immoble.situation === "location")
+  //     .slice(0, 10)
+  //     .sort(() => Math.random() - 0.5),
+  //   exchange: data?.data
+  //     ?.filter((immoble: TImmobles) => immoble.situation === "exchange")
+  //     .slice(0, 10)
+  //     .sort(() => Math.random() - 0.5),
+  //   purchase: data?.data
+  //     ?.filter((immoble: TImmobles) => immoble.situation === "purchase")
+  //     .slice(0, 10)
+  //     .sort(() => Math.random() - 0.5),
+  //   sale: data?.data
+  //     ?.filter((immoble: TImmobles) => immoble.situation === "sale")
+  //     .slice(0, 10)
+  //     .sort(() => Math.random() - 0.5),
+  //   saleLease: data?.data
+  //     ?.filter((immoble: TImmobles) => immoble.situation === "sale_lease")
+  //     .slice(0, 10),
+  //   saleBarter: data?.data
+  //     ?.filter((immoble: TImmobles) => immoble.situation === "sale_barter")
+  //     .slice(0, 10)
+  //     .sort(() => Math.random() - 0.5),
+  // };
 
   return (
     <>
@@ -125,7 +115,7 @@ export default function SiteHome() {
             <Filters variant="row" />
           </section>
         </div>
-        {loading ? (
+        {/* {loading ? (
           <section className="m-5 container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-5">
             {[0, 1, 2, 3, 4].map((i) => (
               <CardSkeleton key={i} />
@@ -318,7 +308,7 @@ export default function SiteHome() {
               </>
             )}
           </>
-        )}
+        )} */}
       </div>
     </>
   );
