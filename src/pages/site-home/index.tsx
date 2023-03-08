@@ -1,4 +1,4 @@
-import { api, tags } from "../../services/api";
+// import { api, tags } from "../../services/api";
 import { parse } from "query-string";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -19,6 +19,7 @@ import banner02Xs from "../../assets/banners/banner-b-xs.jpg";
 import banner03Xs from "../../assets/banners/banner-c-xs.jpg";
 import { CardSkeleton } from "../../components/card-skeleton";
 import { useFetch } from "../../hooks/use-fetch";
+import { tags } from "../../services/api";
 
 const bannerFix: TBanner[] = [
   {
@@ -47,15 +48,6 @@ const bannerFix: TBanner[] = [
   },
 ];
 
-type TSiteHome = {
-  location?: TImmobles[];
-  exchange?: TImmobles[];
-  purchase?: TImmobles[];
-  sale?: TImmobles[];
-  saleLease?: TImmobles[];
-  saleBarter?: TImmobles[];
-};
-
 export default function SiteHome() {
   // const [loading, setLoading] = useState(true);
   // const [immobiles, setImmobiles] = useState<TSiteHome>();
@@ -69,34 +61,35 @@ export default function SiteHome() {
     setBanners(bannerFix.sort(() => Math.random() - 0.5));
   }, [setBanners]);
 
-  const url = `/immobiles/website/list?limit=20&search[city]=${city}&order[created_at]=desc&order[tenant_id]=asc`;
-  const { data: location, error } = useFetch(url);
+  const { data: dataLocation, loading: locationLoading } = useFetch<{
+    data: TImmobles[];
+  }>(
+    `/immobiles/website/list?limit=10&search[city]=${city}&order[created_at]=desc&order[tenant_id]=asc&search[situation]=location`,
+  );
 
-  // const immobiles: TSiteHome = {
-  //   location: data?.data
-  //     ?.filter((immoble: TImmobles) => immoble.situation === "location")
-  //     .slice(0, 10)
-  //     .sort(() => Math.random() - 0.5),
-  //   exchange: data?.data
-  //     ?.filter((immoble: TImmobles) => immoble.situation === "exchange")
-  //     .slice(0, 10)
-  //     .sort(() => Math.random() - 0.5),
-  //   purchase: data?.data
-  //     ?.filter((immoble: TImmobles) => immoble.situation === "purchase")
-  //     .slice(0, 10)
-  //     .sort(() => Math.random() - 0.5),
-  //   sale: data?.data
-  //     ?.filter((immoble: TImmobles) => immoble.situation === "sale")
-  //     .slice(0, 10)
-  //     .sort(() => Math.random() - 0.5),
-  //   saleLease: data?.data
-  //     ?.filter((immoble: TImmobles) => immoble.situation === "sale_lease")
-  //     .slice(0, 10),
-  //   saleBarter: data?.data
-  //     ?.filter((immoble: TImmobles) => immoble.situation === "sale_barter")
-  //     .slice(0, 10)
-  //     .sort(() => Math.random() - 0.5),
-  // };
+  const { data: dataSale, loading: saleLoading } = useFetch<{
+    data: TImmobles[];
+  }>(
+    `/immobiles/website/list?limit=10&search[city]=${city}&order[created_at]=desc&order[tenant_id]=asc&search[situation]=sale`,
+  );
+
+  const { data: dataExchange, loading: exchangeLoading } = useFetch<{
+    data: TImmobles[];
+  }>(
+    `/immobiles/website/list?limit=10&search[city]=${city}&order[created_at]=desc&order[tenant_id]=asc&search[situation]=exchange`,
+  );
+
+  const { data: dataSaleLease, loading: saleLeaseLoading } = useFetch<{
+    data: TImmobles[];
+  }>(
+    `/immobiles/website/list?limit=10&search[city]=${city}&order[created_at]=desc&order[tenant_id]=asc&search[situation]=sale_lease`,
+  );
+
+  const { data: dataSaleBarter, loading: saleBarterLoading } = useFetch<{
+    data: TImmobles[];
+  }>(
+    `/immobiles/website/list?limit=10&search[city]=${city}&order[created_at]=desc&order[tenant_id]=asc&search[situation]=sale_barter`,
+  );
 
   return (
     <>
@@ -109,206 +102,216 @@ export default function SiteHome() {
         robots
       />
       <div className="border-b border-gray-200">
-        <div className="relative">
-          <CarouselIndex banners={banners} />
-          <section className="container flex flex-wrap justify-between items-center md:-mt-10 relative bg-slate-100 p-5 z-50 rounded-md">
-            <Filters variant="row" />
-          </section>
+        <CarouselIndex banners={banners} />
+        <div className="md:-mt-24 z-50 relative">
+          <Filters variant="row" />
         </div>
-        {/* {loading ? (
-          <section className="m-5 container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-5">
-            {[0, 1, 2, 3, 4].map((i) => (
-              <CardSkeleton key={i} />
-            ))}
-          </section>
-        ) : (
-          <>
-            {immobiles?.location && immobiles?.location?.length > 0 && (
-              <>
-                <Title
-                  title={`Casas para Locação`}
-                  style={{
-                    textAlign: "center",
-                    margin: "2em 0 1em 0",
-                    textTransform: "uppercase",
-                    fontSize: "1.5em",
-                  }}
-                />
-                <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-5">
-                  {immobiles?.location?.map((item, k) => (
-                    <Card
-                      key={k}
-                      reference={item.reference}
-                      situation={item.situation}
-                      description={item.description}
-                      buildingArea={item.building_area}
-                      terrainArea={item.terrain_area}
-                      rentPrice={item.rent_price}
-                      salePrice={item.sale_price}
-                      address={[
-                        item.district?.district ?? "",
-                        item.city?.city ?? "",
-                        item.city?.state?.state ?? "",
-                      ]}
-                      tag={item.tags || ""}
-                      tags={tags}
-                      images={item?.photos?.map((f) => f.image_xs) || []}
-                      location={item.tenant_id && true}
-                    />
-                  ))}
-                </section>
-              </>
-            )}
 
-            {immobiles?.sale && immobiles?.sale?.length > 0 && (
-              <>
-                <Title
-                  title={`Casas a Venda`}
-                  style={{
-                    textAlign: "center",
-                    margin: "2em 0 1em 0",
-                    textTransform: "uppercase",
-                    fontSize: "1.5em",
-                  }}
-                />
-                <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-5">
-                  {immobiles?.sale?.map((item, k) => (
-                    <Card
-                      key={k}
-                      reference={item.reference}
-                      situation={item.situation}
-                      description={item.description}
-                      buildingArea={item.building_area}
-                      terrainArea={item.terrain_area}
-                      rentPrice={item.rent_price}
-                      salePrice={item.sale_price}
-                      address={[
-                        item.district?.district ?? "",
-                        item.city?.city ?? "",
-                        item.city?.state.state ?? "",
-                      ]}
-                      tag={item.tags || ""}
-                      tags={tags}
-                      images={item?.photos?.map((f) => f.image_xs) || []}
-                      location={item.tenant_id && true}
-                    />
-                  ))}
-                </section>
-              </>
-            )}
+        {(locationLoading || dataLocation?.data.length) && (
+          <Title
+            title={`Casas para Locação`}
+            style={{
+              textAlign: "center",
+              margin: "2em 0 1em 0",
+              textTransform: "uppercase",
+              fontSize: "1.5em",
+            }}
+          />
+        )}
 
-            {immobiles?.exchange && immobiles?.exchange?.length > 0 && (
-              <>
-                <Title
-                  title={`Casas para Comprar`}
-                  style={{
-                    textAlign: "center",
-                    margin: "2em 0 1em 0",
-                    textTransform: "uppercase",
-                    fontSize: "1.5em",
-                  }}
-                />
-                <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-5">
-                  {immobiles?.exchange?.map((item, k) => (
-                    <Card
-                      key={k}
-                      reference={item.reference}
-                      situation={item.situation}
-                      description={item.description}
-                      buildingArea={item.building_area}
-                      terrainArea={item.terrain_area}
-                      rentPrice={item.rent_price}
-                      salePrice={item.sale_price}
-                      address={[
-                        item.district?.district ?? "",
-                        item.city?.city ?? "",
-                        item.city?.state.state ?? "",
-                      ]}
-                      tag={item.tags || ""}
-                      tags={tags}
-                      images={item?.photos?.map((f) => f.image_xs) || []}
-                      location={item.tenant_id && true}
-                    />
-                  ))}
-                </section>
-              </>
-            )}
+        <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-5">
+          {locationLoading &&
+            [0, 1, 2, 3, 4].map((i) => <CardSkeleton key={i} />)}
 
-            {immobiles?.saleLease && immobiles?.saleLease?.length > 0 && (
-              <>
-                <Title
-                  title={`Casas para Venda e Locação`}
-                  style={{
-                    textAlign: "center",
-                    margin: "2em 0 1em 0",
-                    textTransform: "uppercase",
-                    fontSize: "1.5em",
-                  }}
+          {!locationLoading &&
+            dataLocation?.data
+              .sort(() => Math.random() - 0.5)
+              .map((item, k) => (
+                <Card
+                  key={k}
+                  reference={item.reference}
+                  situation={item.situation}
+                  description={item.description}
+                  buildingArea={item.building_area}
+                  terrainArea={item.terrain_area}
+                  rentPrice={item.rent_price}
+                  salePrice={item.sale_price}
+                  address={[
+                    item.district?.district ?? "",
+                    item.city?.city ?? "",
+                    item.city?.state?.state ?? "",
+                  ]}
+                  tag={item.tags || ""}
+                  tags={tags}
+                  images={item?.photos?.map((f) => f.image_xs) || []}
+                  location={item.tenant_id && true}
                 />
-                <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-5">
-                  {immobiles?.saleLease?.map((item, k) => (
-                    <Card
-                      key={k}
-                      reference={item.reference}
-                      situation={item.situation}
-                      description={item.description}
-                      buildingArea={item.building_area}
-                      terrainArea={item.terrain_area}
-                      rentPrice={item.rent_price}
-                      salePrice={item.sale_price}
-                      address={[
-                        item.district?.district ?? "",
-                        item.city?.city ?? "",
-                        item.city?.state.state ?? "",
-                      ]}
-                      tag={item.tags || ""}
-                      tags={tags}
-                      images={item?.photos?.map((f) => f.image_xs) || []}
-                      location={item.tenant_id && true}
-                    />
-                  ))}
-                </section>
-              </>
-            )}
+              ))}
+        </section>
 
-            {immobiles?.saleBarter && immobiles?.saleBarter?.length > 0 && (
-              <>
-                <Title
-                  title={`Casas para Venda e Permuta`}
-                  style={{
-                    textAlign: "center",
-                    margin: "2em 0 1em 0",
-                    textTransform: "uppercase",
-                    fontSize: "1.5em",
-                  }}
+        {(saleLoading || dataSale?.data.length) && (
+          <Title
+            title={`Casas a Venda`}
+            style={{
+              textAlign: "center",
+              margin: "2em 0 1em 0",
+              textTransform: "uppercase",
+              fontSize: "1.5em",
+            }}
+          />
+        )}
+        <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-5">
+          {saleLoading && [0, 1, 2, 3, 4].map((i) => <CardSkeleton key={i} />)}
+
+          {!saleLoading &&
+            dataSale?.data
+              .sort(() => Math.random() - 0.5)
+              .map((item, k) => (
+                <Card
+                  key={k}
+                  reference={item.reference}
+                  situation={item.situation}
+                  description={item.description}
+                  buildingArea={item.building_area}
+                  terrainArea={item.terrain_area}
+                  rentPrice={item.rent_price}
+                  salePrice={item.sale_price}
+                  address={[
+                    item.district?.district ?? "",
+                    item.city?.city ?? "",
+                    item.city?.state?.state ?? "",
+                  ]}
+                  tag={item.tags || ""}
+                  tags={tags}
+                  images={item?.photos?.map((f) => f.image_xs) || []}
+                  location={item.tenant_id && true}
                 />
-                <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-5">
-                  {immobiles?.saleBarter?.map((item, k) => (
-                    <Card
-                      key={k}
-                      reference={item.reference}
-                      situation={item.situation}
-                      description={item.description}
-                      buildingArea={item.building_area}
-                      terrainArea={item.terrain_area}
-                      rentPrice={item.rent_price}
-                      salePrice={item.sale_price}
-                      address={[
-                        item.district?.district ?? "",
-                        item.city?.city ?? "",
-                        item.city?.state.state ?? "",
-                      ]}
-                      tag={item.tags || ""}
-                      tags={tags}
-                      images={item?.photos?.map((f) => f.image_xs) || []}
-                      location={item.tenant_id && true}
-                    />
-                  ))}
-                </section>
-              </>
-            )}
-          </>
-        )} */}
+              ))}
+        </section>
+
+        {(exchangeLoading || dataExchange?.data.length) && (
+          <Title
+            title={`Casas para Comprar`}
+            style={{
+              textAlign: "center",
+              margin: "2em 0 1em 0",
+              textTransform: "uppercase",
+              fontSize: "1.5em",
+            }}
+          />
+        )}
+        <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-5">
+          {exchangeLoading &&
+            [0, 1, 2, 3, 4].map((i) => <CardSkeleton key={i} />)}
+
+          {!exchangeLoading &&
+            dataExchange?.data
+              .sort(() => Math.random() - 0.5)
+              .map((item, k) => (
+                <Card
+                  key={k}
+                  reference={item.reference}
+                  situation={item.situation}
+                  description={item.description}
+                  buildingArea={item.building_area}
+                  terrainArea={item.terrain_area}
+                  rentPrice={item.rent_price}
+                  salePrice={item.sale_price}
+                  address={[
+                    item.district?.district ?? "",
+                    item.city?.city ?? "",
+                    item.city?.state?.state ?? "",
+                  ]}
+                  tag={item.tags || ""}
+                  tags={tags}
+                  images={item?.photos?.map((f) => f.image_xs) || []}
+                  location={item.tenant_id && true}
+                />
+              ))}
+        </section>
+
+        {(saleLeaseLoading || dataSaleLease?.data.length) && (
+          <Title
+            title={`CASAS PARA VENDA E LOCAÇÃO`}
+            style={{
+              textAlign: "center",
+              margin: "2em 0 1em 0",
+              textTransform: "uppercase",
+              fontSize: "1.5em",
+            }}
+          />
+        )}
+
+        <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-5">
+          {saleLeaseLoading &&
+            [0, 1, 2, 3, 4].map((i) => <CardSkeleton key={i} />)}
+
+          {!saleLeaseLoading &&
+            dataSaleLease?.data
+              .sort(() => Math.random() - 0.5)
+              .map((item, k) => (
+                <Card
+                  key={k}
+                  reference={item.reference}
+                  situation={item.situation}
+                  description={item.description}
+                  buildingArea={item.building_area}
+                  terrainArea={item.terrain_area}
+                  rentPrice={item.rent_price}
+                  salePrice={item.sale_price}
+                  address={[
+                    item.district?.district ?? "",
+                    item.city?.city ?? "",
+                    item.city?.state?.state ?? "",
+                  ]}
+                  tag={item.tags || ""}
+                  tags={tags}
+                  images={item?.photos?.map((f) => f.image_xs) || []}
+                  location={item.tenant_id && true}
+                />
+              ))}
+        </section>
+
+        {(saleBarterLoading || dataSaleBarter?.data.length) && (
+          <Title
+            title={`CASAS PARA VENDA E PERMUTA`}
+            style={{
+              textAlign: "center",
+              margin: "2em 0 1em 0",
+              textTransform: "uppercase",
+              fontSize: "1.5em",
+            }}
+          />
+        )}
+        <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-5">
+          {saleBarterLoading &&
+            [0, 1, 2, 3, 4].map((i) => <CardSkeleton key={i} />)}
+
+          {!saleBarterLoading &&
+            dataSaleBarter?.data
+              .sort(() => Math.random() - 0.5)
+              .map((item, k) => (
+                <Card
+                  key={k}
+                  reference={item.reference}
+                  situation={item.situation}
+                  description={item.description}
+                  buildingArea={item.building_area}
+                  terrainArea={item.terrain_area}
+                  rentPrice={item.rent_price}
+                  salePrice={item.sale_price}
+                  address={[
+                    item.district?.district ?? "",
+                    item.city?.city ?? "",
+                    item.city?.state?.state ?? "",
+                  ]}
+                  tag={item.tags || ""}
+                  tags={tags}
+                  images={item?.photos?.map((f) => f.image_xs) || []}
+                  location={item.tenant_id && true}
+                />
+              ))}
+        </section>
       </div>
     </>
   );

@@ -9,17 +9,12 @@ import { TImmobles } from "../admin-immobiles/types";
 import { maskCurrencyUs } from "../../utils/mask";
 import { SEO } from "../../components/seo/seo";
 import { CardSkeleton } from "../../components/card-skeleton";
+import { useFetch } from "../../hooks/use-fetch";
 
 export default function SiteSearch() {
-  const [loading, setLoading] = useState(true);
-  const [immobiles, setImmobiles] = useState<TPagination<TImmobles[]>>(
-    {} as TPagination<TImmobles[]>,
-  );
-
   const location = useLocation();
 
   const query = parse(location.search);
-  const locationDecodUri = decodeURI(location.search);
   const situation = (query.situation || "") as string;
 
   const price_lte = (query.price_lte || "") as string;
@@ -33,54 +28,27 @@ export default function SiteSearch() {
   const limit = (query.limit || "20") as string;
   const page = (query.page || "1") as string;
 
-  async function loadImmobiles() {
-    setLoading(true);
+  let uri = `page=${page}&limit=${limit}&search[situation]=${situation}&search[category]=${category}&search[reference]=${reference}&search[city]=${city}&search[district]=${district}&order[created_at]=desc&order[tenant_id]=asc`;
 
-    let conveterParse = `page=${page}&limit=${limit}&search[situation]=${situation}&search[category]=${category}&search[reference]=${reference}&search[city]=${city}&search[district]=${district}&order[created_at]=desc&order[tenant_id]=asc`;
-
-    if (situation === "location" && price_lte) {
-      conveterParse = `${conveterParse}&search[rent_price_lte]=${maskCurrencyUs(
-        price_lte,
-      )}`;
-    }
-
-    if (situation === "location" && price_gte) {
-      conveterParse = `${conveterParse}&search[rent_price_gte]=${maskCurrencyUs(
-        price_gte,
-      )}`;
-    }
-
-    if (situation !== "location" && price_lte) {
-      conveterParse = `${conveterParse}&search[sale_price_lte]=${maskCurrencyUs(
-        price_lte,
-      )}`;
-    }
-
-    if (situation !== "location" && price_gte) {
-      conveterParse = `${conveterParse}&search[sale_price_gte]=${maskCurrencyUs(
-        price_gte,
-      )}`;
-    }
-
-    await api
-      .get(
-        `/immobiles/website/list?${decodeURI(
-          stringify({ ...parse(conveterParse) }),
-        )}`,
-      )
-      .then(async (resp) => {
-        const respAll: TPagination<TImmobles[]> = await resp.data;
-        setImmobiles({
-          ...respAll,
-          data: respAll.data?.sort(),
-        });
-      })
-      .finally(() => setLoading(false));
+  if (situation === "location" && price_lte) {
+    uri = `${uri}&search[rent_price_lte]=${maskCurrencyUs(price_lte)}`;
   }
 
-  useEffect(() => {
-    loadImmobiles();
-  }, [locationDecodUri]);
+  if (situation === "location" && price_gte) {
+    uri = `${uri}&search[rent_price_gte]=${maskCurrencyUs(price_gte)}`;
+  }
+
+  if (situation !== "location" && price_lte) {
+    uri = `${uri}&search[sale_price_lte]=${maskCurrencyUs(price_lte)}`;
+  }
+
+  if (situation !== "location" && price_gte) {
+    uri = `${uri}&search[sale_price_gte]=${maskCurrencyUs(price_gte)}`;
+  }
+
+  const { data: immobiles, loading } = useFetch<TPagination<TImmobles[]>>(
+    `/immobiles/website/list?${decodeURI(stringify({ ...parse(uri) }))}`,
+  );
 
   return (
     <>
@@ -94,9 +62,9 @@ export default function SiteSearch() {
       />
 
       <div className="border-b border-gray-200 py-2">
-        {!loading && location.pathname !== "/" && (
+        {location.pathname !== "/" && (
           <section className="container px-4 uppercase font-play mb-7">
-            <div className="flex flex-row bg-white p-4 items-center justify-between">
+            <div className="flex flex-row bg-white p-4 items-center justify-between rounded-md">
               <span>{immobiles?.total} encotrado(s)</span>
               <Pagination
                 total={immobiles?.total || 0}
@@ -108,15 +76,11 @@ export default function SiteSearch() {
           </section>
         )}
 
-        {loading ? (
-          <section className="m-5 container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-5">
-            {[0, 1, 2, 3, 4].map((i) => (
-              <CardSkeleton key={i} />
-            ))}
-          </section>
-        ) : (
-          <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-5">
-            {immobiles?.data?.map((item, k) => (
+        <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-5">
+          {loading && [0, 1, 2, 3, 4].map((i) => <CardSkeleton key={i} />)}
+
+          {!loading &&
+            immobiles?.data?.map((item, k) => (
               <Card
                 key={k}
                 reference={item.reference}
@@ -137,12 +101,11 @@ export default function SiteSearch() {
                 location={item.tenant_id && true}
               />
             ))}
-          </section>
-        )}
+        </section>
 
-        {!loading && location.pathname !== "/" && (
+        {location.pathname !== "/" && (
           <section className="container px-4 uppercase font-play mt-7">
-            <div className="flex flex-row bg-white p-4 items-center justify-between">
+            <div className="flex flex-row bg-white p-4 items-center  rounded-md justify-between">
               <span>{immobiles?.total} encotrado(s)</span>
               <Pagination
                 total={immobiles?.total || 0}

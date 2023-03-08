@@ -1,9 +1,11 @@
 import { api } from "../services/api";
 import { useEffect, useReducer, useRef } from "react";
+import { AxiosHeaders, AxiosRequestConfig, AxiosRequestHeaders } from "axios";
 
 interface State<T> {
   data?: T;
   error?: Error;
+  loading: boolean;
 }
 
 type Cache<T> = { [url: string]: T };
@@ -16,7 +18,7 @@ type Action<T> =
 
 export function useFetch<T = unknown>(
   url?: string,
-  options?: RequestInit,
+  options?: AxiosHeaders,
 ): State<T> {
   const cache = useRef<Cache<T>>({});
 
@@ -24,6 +26,7 @@ export function useFetch<T = unknown>(
   const cancelRequest = useRef<boolean>(false);
 
   const initialState: State<T> = {
+    loading: true,
     error: undefined,
     data: undefined,
   };
@@ -34,9 +37,9 @@ export function useFetch<T = unknown>(
       case "loading":
         return { ...initialState };
       case "fetched":
-        return { ...initialState, data: action.payload };
+        return { ...initialState, data: action.payload, loading: false };
       case "error":
-        return { ...initialState, error: action.payload };
+        return { ...initialState, error: action.payload, loading: false };
       default:
         return state;
     }
@@ -60,16 +63,18 @@ export function useFetch<T = unknown>(
       }
 
       try {
-        const response = await fetch(url, options);
-        if (!response.ok) {
+        // const response = await fetch(url, options);
+        const response = await api.get(url).then(async (res) => res);
+
+        if (response.statusText) {
           throw new Error(response.statusText);
         }
 
-        const data = (await response.json()) as T;
-        cache.current[url] = data;
+        // const data = (await response.json()) as T;
+        cache.current[url] = response.data as T;
         if (cancelRequest.current) return;
 
-        dispatch({ type: "fetched", payload: data });
+        dispatch({ type: "fetched", payload: response.data });
       } catch (error) {
         if (cancelRequest.current) return;
 

@@ -1,4 +1,4 @@
-import { api, tags } from "../../services/api";
+import { tags } from "../../services/api";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Title } from "../../components/title";
@@ -13,43 +13,32 @@ import { CardTags } from "../../components/card-tags";
 import { TImmobles } from "../admin-immobiles/types";
 import { CardCarousel } from "../../components/card-carousel";
 import { CarouselIcons } from "../../components/carousel";
+import { useFetch } from "../../hooks/use-fetch";
 import { SEO } from "../../components/seo/seo";
 
 export default function SiteImmoble() {
-  const [loading, setLoading] = useState(true);
-  const [immobiles, setImmobiles] = useState<TImmobles[]>([]);
-  const [immoble, setImmoble] = useState<TImmobles>({} as TImmobles);
-  const [photos, setPhotos] = useState<string[]>([]);
-  const sort: string[] = [];
-
   const { reference } = useParams<{ reference: string | undefined }>();
 
-  async function loadImmoble(reference: string) {
-    await api.get(`/immobiles/${reference}/reference`).then(async (resp) => {
-      setImmoble(await resp.data);
-      setLoading(false);
-    });
+  const sort: string[] = [];
+  const [photos, setPhotos] = useState<string[]>([]);
+
+  const { data: immoble, loading: loading } = useFetch<TImmobles>(
+    `/immobiles/${reference}/reference`,
+  );
+
+  let uri = "&order[created_at]=desc&order[tenant_id]=asc";
+
+  if (immoble?.situation) {
+    uri = `${uri}&search[situation]=${immoble?.situation}`;
   }
 
-  async function loadImmobles() {
-    let uri = "&order[created_at]=desc&order[tenant_id]=asc";
-
-    if (immoble?.situation) {
-      uri = `${uri}&search[situation]=${immoble?.situation}`;
-    }
-
-    if (immoble?.city) {
-      uri = `${uri}&search[city]=${immoble?.city?.city}`;
-    }
-
-    await api
-      .get(`/immobiles/website/list?limit=20&order[random]=true${uri}`)
-      .then(async (resp) => setImmobiles(await resp.data?.data));
+  if (immoble?.city) {
+    uri = `${uri}&search[city]=${immoble?.city?.city}`;
   }
 
-  useEffect(() => {
-    if (reference) loadImmoble(reference);
-  }, [reference]);
+  const { data: immobiles, loading: loadingImmobiles } = useFetch<{
+    data: TImmobles[];
+  }>(`/immobiles/website/list?limit=20&order[random]=true${uri}`);
 
   useEffect(() => {
     immoble?.photos?.map((r, k) =>
@@ -59,9 +48,8 @@ export default function SiteImmoble() {
   }, [immoble]);
 
   useEffect(() => {
-    if (immoble.id) {
+    if (immoble?.id) {
       window.scrollTo(0, 0);
-      loadImmobles();
     }
   }, [immoble]);
 
@@ -85,7 +73,7 @@ export default function SiteImmoble() {
       </section>
     );
 
-  if (!immoble.id || immoble.tenant_id)
+  if (!immoble?.id || immoble?.tenant_id)
     return (
       <div className="container">
         <div className="divide-y divide-slate-200 bg-white mx-4 sm:mx-0 p-5 pb-7">
@@ -95,7 +83,7 @@ export default function SiteImmoble() {
             abaixo
           </p>
           <div className="pt-5 relative">
-            <CardCarousel id="all" mapping={immobiles} />
+            <CardCarousel id="all" mapping={immobiles?.data} />
           </div>
         </div>
       </div>
@@ -131,8 +119,8 @@ export default function SiteImmoble() {
           robots
         />
 
-        <div className="container">
-          <ul className="divide-y divide-slate-200 bg-white mx-4 sm:mx-0 px-5 pb-7 flex flex-col flex-wrap sm:flex-row">
+        <div className="container px-4">
+          <ul className="divide-y divide-slate-200 bg-white mx-6 sm:mx-0 px-5 pb-7 flex flex-col flex-wrap sm:flex-row">
             <li className="w-full pt-6">
               <Title title={`${immoble?.description}`} variant="text-4xl" />
 
@@ -224,16 +212,24 @@ export default function SiteImmoble() {
               </li>
             )}
           </ul>
-
-          {immobiles.length > 0 && (
-            <section className="container mt-5 px-4 md:px-0">
-              <div className="relative">
-                <Title title={`Veja outros`} />
-                <CardCarousel id="all" mapping={immobiles} />
-              </div>
-            </section>
-          )}
         </div>
+
+        {!loadingImmobiles && (
+          <section className="container px-0 sm:px-4 mt-5">
+            <div className="relative">
+              <Title
+                title={`Veja Outras Opções`}
+                style={{
+                  textAlign: "center",
+                  margin: "2em 0 1em 0",
+                  textTransform: "uppercase",
+                  fontSize: "1.5em",
+                }}
+              />
+              <CardCarousel id="all" mapping={immobiles?.data} />
+            </div>
+          </section>
+        )}
       </>
     </div>
   );

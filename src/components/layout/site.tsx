@@ -10,13 +10,7 @@ export default function Site() {
     <div className="bg-gray-200 flex flex-1 flex-col relative">
       <Header />
 
-      {location.pathname !== "/" && (
-        <div className="bg-slate-100 -mt-2 mb-5">
-          <section className="container p-5">
-            <Filters variant="row" />
-          </section>
-        </div>
-      )}
+      {location.pathname !== "/" && <Filters variant="row" />}
 
       <Outlet />
 

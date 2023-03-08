@@ -28,7 +28,7 @@ export function CardCarousel({ mapping, id }: TCardCarousel) {
 
   return (
     <ReactOwlCarousel id={id} className="owl-theme relative" {...options}>
-      {mapping.map((item, k) => (
+      {mapping?.map((item, k) => (
         <Card
           key={k}
           reference={item.reference}
