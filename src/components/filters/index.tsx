@@ -114,7 +114,7 @@ export function Filters({ variant = "col" }: TFiltersComp) {
   return (
     <>
       <span
-        className="btn-primary rounded-md cursor-pointer inline-block md:hidden fixed top-1 left-4 z-[1010]"
+        className="btn-primary rounded-md cursor-pointer inline-block md:hidden fixed top-4 left-4 z-[1010]"
         onClick={() => setOpenClose(!openClose)}
       >
         <FontAwesomeIcon icon={faBars} />

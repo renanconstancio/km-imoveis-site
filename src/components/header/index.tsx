@@ -15,8 +15,8 @@ import { toNumber } from "../../utils/functions";
 export function Header() {
   return (
     <header className="fixed inset-x-0 top-0 sm:relative z-[1001] border-b border-gray-200 bg-white">
-      <nav className="flex justify-center items-center container mx-auto px-4 py-1 sm:py-3 md:justify-between">
-        <Link to="/" className="w-20 sm:w-52">
+      <nav className="flex justify-center items-center container mx-auto px-4 py-2 sm:py-3 md:justify-between">
+        <Link to="/" className="w-24 sm:w-52">
           <img src={logoSite} alt="Logo" className="max-w-full" />
         </Link>
         <ul className="hidden sm:text-sm sm:flex flex-1 px-4 justify-end gap-3 mx-auto uppercase">
