@@ -120,9 +120,12 @@ export default function SiteImmoble() {
         />
 
         <div className="container px-4">
-          <ul className="divide-y divide-slate-200 bg-white mx-6 sm:mx-0 px-5 pb-7 flex flex-col flex-wrap sm:flex-row">
+          <ul className="divide-y divide-slate-200 bg-white px-5 pb-7 flex flex-col flex-wrap sm:flex-row">
             <li className="w-full pt-6">
-              <Title title={`${immoble?.description}`} variant="text-4xl" />
+              <Title
+                title={`${immoble?.description}`}
+                variant="sm:text-4xl text-2xl"
+              />
 
               <small>CÓD.: {immoble?.reference}</small>
 
@@ -215,7 +218,7 @@ export default function SiteImmoble() {
         </div>
 
         {!loadingImmobiles && (
-          <section className="container px-0 sm:px-4 mt-5">
+          <section className="container px-4 mt-5">
             <div className="relative">
               <Title
                 title={`Veja Outras Opções`}

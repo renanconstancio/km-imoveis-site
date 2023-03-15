@@ -50,6 +50,22 @@ export default function SiteSearch() {
     `/immobiles/website/list?${decodeURI(stringify({ ...parse(uri) }))}`,
   );
 
+  function ComponentPagination() {
+    return (
+      <section className="container px-4 uppercase font-play mb-7">
+        <div className="flex flex-row bg-white p-4 items-center justify-between rounded-md text-xs sm:text-sm">
+          <span>{immobiles?.total} encotrado(s)</span>
+          <Pagination
+            total={immobiles?.total || 0}
+            currentPage={Number(`${page || "1"}`)}
+            perPage={Number(`${limit || "25"}`)}
+            style={{ flex: "0 1 auto" }}
+          />
+        </div>
+      </section>
+    );
+  }
+
   return (
     <>
       <SEO
@@ -62,21 +78,9 @@ export default function SiteSearch() {
       />
 
       <div className="border-b border-gray-200 py-2">
-        {location.pathname !== "/" && (
-          <section className="container px-4 uppercase font-play mb-7">
-            <div className="flex flex-row bg-white p-4 items-center justify-between rounded-md">
-              <span>{immobiles?.total} encotrado(s)</span>
-              <Pagination
-                total={immobiles?.total || 0}
-                currentPage={Number(`${page || "1"}`)}
-                perPage={Number(`${limit || "25"}`)}
-                style={{ flex: "0 1 auto" }}
-              />
-            </div>
-          </section>
-        )}
+        {location.pathname !== "/" && <ComponentPagination />}
 
-        <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-5">
+        <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-5 mb-7">
           {loading && [0, 1, 2, 3, 4].map((i) => <CardSkeleton key={i} />)}
 
           {!loading &&
@@ -103,19 +107,7 @@ export default function SiteSearch() {
             ))}
         </section>
 
-        {location.pathname !== "/" && (
-          <section className="container px-4 uppercase font-play mt-7">
-            <div className="flex flex-row bg-white p-4 items-center  rounded-md justify-between">
-              <span>{immobiles?.total} encotrado(s)</span>
-              <Pagination
-                total={immobiles?.total || 0}
-                currentPage={Number(`${page || "1"}`)}
-                perPage={Number(`${limit || "25"}`)}
-                style={{ flex: "0 1 auto" }}
-              />
-            </div>
-          </section>
-        )}
+        {location.pathname !== "/" && <ComponentPagination />}
       </div>
     </>
   );

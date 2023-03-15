@@ -14,23 +14,12 @@ import { toNumber } from "../../utils/functions";
 
 export function Header() {
   return (
-    <header className="border-b border-gray-200 bg-white">
-      <div className="flex justify-end items-center container mx-auto px-4 gap-1 text-[9px] md:text-[10px]">
-        <a href="http://" target="_blank" rel="noopener noreferrer">
-          <img src={logoFaceBook} alt="Facebook" width={16} />
-        </a>
-        <a href="http://" target="_blank" rel="noopener noreferrer">
-          <img src={logoInstagram} alt="Instagram" width={16} />
-        </a>
-        <span className="uppercase">
-          Avenida Florêncio Terra, 1530 - Centro - Itápolis/SP
-        </span>
-      </div>
-      <nav className="flex justify-center md:justify-between items-center container mx-auto px-4 py-3">
-        <Link to="/" className="w-28 sm:w-52">
+    <header className="fixed inset-x-0 top-0 sm:relative z-[1001] border-b border-gray-200 bg-white">
+      <nav className="flex justify-center items-center container mx-auto px-4 py-1 sm:py-3 md:justify-between">
+        <Link to="/" className="w-20 sm:w-52">
           <img src={logoSite} alt="Logo" className="max-w-full" />
         </Link>
-        <ul className="sm:flex flex-1 justify-end gap-3 mx-auto px-4 uppercase sm:text-sm hidden">
+        <ul className="hidden sm:text-sm sm:flex flex-1 px-4 justify-end gap-3 mx-auto uppercase">
           <li>
             <Link
               to="/"

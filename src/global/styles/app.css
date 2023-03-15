@@ -3,89 +3,45 @@
 @tailwind utilities;
 
 @layer components {
-  /* .btn {
-    @apply ;
-  } */
-  
-  /* [class^=".btn-*"] {
-    @apply inline-block cursor-pointer font-semibold rounded-none border uppercase font-play; 
-  } */
-  
-  
+
   .btn-default {
-    @apply inline-block cursor-pointer font-semibold rounded-none border-none uppercase font-play
-    bg-gray-200 
-    text-white 
-    hover:bg-gray-400 
-    border-gray-200;
+    @apply inline-block cursor-pointer font-semibold rounded-none border-none uppercase font-play text-white bg-gray-200 hover:bg-gray-400 border-gray-200;
   }
+
   .btn-primary {
-    @apply inline-block cursor-pointer font-semibold rounded-none border-none uppercase font-play
-    py-2 px-4 
-    text-white 
-    bg-blue-400 
-    hover:bg-blue-500 
-    border-blue-300;
+    @apply inline-block cursor-pointer font-semibold rounded-none border-none uppercase font-play py-2 px-4 text-white bg-blue-400 hover:bg-blue-500 border-blue-300;
   }
+
   .btn-success {
-    @apply inline-block cursor-pointer font-semibold rounded-none border-none uppercase font-play
-    py-2 px-4 
-    text-white 
-    bg-green-400 
-    hover:bg-green-500 
-    border-green-600;
+    @apply inline-block cursor-pointer font-semibold rounded-none border-none uppercase font-play py-2 px-4 text-white bg-green-400 hover:bg-green-500 border-green-600;
   }
+
   .btn-warning {
-    @apply inline-block cursor-pointer font-semibold rounded-none border-none uppercase font-play
-    py-2 px-4 
-    text-white 
-    bg-yellow-400 
-    hover:bg-yellow-500 
-    border-yellow-600;
+    @apply inline-block cursor-pointer font-semibold rounded-none border-none uppercase font-play py-2 px-4 text-white bg-yellow-400 hover:bg-yellow-500 border-yellow-600;
   }
+
   .btn-danger {
-    @apply inline-block cursor-pointer font-semibold rounded-none border-none uppercase font-play
-    py-2 px-4 
-    text-white 
-    bg-red-400 
-    hover:bg-red-500 
-    border-red-600;
+    @apply inline-block cursor-pointer font-semibold rounded-none border-none uppercase font-play py-2 px-4 text-white bg-red-400 hover:bg-red-500 border-red-600;
   }
+
   .btn-xs {
     @apply py-1.5 px-2.5 text-sm
   }
+
   .btn-ico {
     @apply flex gap-1 items-center
   }
 
   .label-form {
-    @apply block uppercase tracking-wide text-gray-700 text-xs font-semibold mb-1 font-play;
+    @apply block uppercase tracking-wide text-gray-700 text-xs font-semibold mb-1 font-lato;
   }
 
   .input-file {
-    @apply block w-full text-sm text-slate-500
-    file:mr-4 file:py-2 file:px-4
-    file:rounded-none file:border-0
-    file:text-sm file:font-semibold
-    file:bg-orange-50 file:text-orange-700
-    hover:file:bg-orange-100
+    @apply block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-none file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100
   }
 
   .input-form {
-    @apply appearance-none 
-    block 
-    py-2 
-    px-4 
-    w-full 
-    bg-gray-200 
-    text-gray-700 
-    border 
-    border-gray-200 
-    rounded-none 
-    leading-tight 
-    focus:outline-none 
-    focus:bg-white 
-    focus:border-gray-500;
+    @apply appearance-none block py-2 px-4 w-full bg-gray-200 text-gray-700 border border-gray-200 rounded-none leading-tight focus:outline-none focus:bg-white focus:border-gray-500;
   }
 
   .input-form.invalid {
@@ -118,9 +74,8 @@
 
 }
 
-.owl-carousel 
-.owl-stage { 
-  display: flex; 
+.owl-carousel .owl-stage {
+  display: flex;
 }
 
 .owl-theme .owl-dots .owl-dot span {
@@ -140,9 +95,10 @@
 
 @keyframes spin {
   from {
-    transform:rotate(0deg);
+    transform: rotate(0deg);
   }
+
   to {
-    transform:rotate(360deg);
+    transform: rotate(360deg);
   }
 }

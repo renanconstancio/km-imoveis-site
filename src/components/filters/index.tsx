@@ -15,7 +15,7 @@ import { slugiFy } from "../../utils/functions";
 export function Filters({ variant = "col" }: TFiltersComp) {
   const [openClose, setOpenClose] = useState<boolean>(false);
   const [checked, setCheched] = useState<{ [x: string]: boolean }>({
-    locacao: true,
+    todos: true,
   });
   const [neighborhoods, setNeighborhoods] = useState<{ district: string }[]>(
     [],
@@ -57,6 +57,9 @@ export function Filters({ variant = "col" }: TFiltersComp) {
       case "Venda e Permuta":
         data = { ...data, situation: "sale_barter" };
         break;
+      default:
+        data = { ...data, situation: "" };
+        break;
     }
 
     if (geolocation?.city !== data.city)
@@ -91,121 +94,152 @@ export function Filters({ variant = "col" }: TFiltersComp) {
   }
 
   return (
-    <div className="container px-4 mt-5">
-      <form onSubmit={handleSubmit(handleOnSubmit)} id="search">
-        <span
-          className="btn-primary cursor-pointer inline-block md:hidden"
-          onClick={() => setOpenClose(!openClose)}
-        >
-          <FontAwesomeIcon icon={faBars} />
-        </span>
-
-        <div
-          className={`${
-            !openClose ? "hidden md:flex" : ""
-          } items-center bg-transparent`}
-        >
-          {[
-            "Locação",
-            "Venda",
-            "Venda ou Locação",
-            // "Venda e Permuta",
-            // "Compra",
-            // "Permuta",
-          ].map((label, i) => (
-            <React.Fragment key={i}>
-              <input
-                type="radio"
-                value={label}
-                id={`${slugiFy(label)}`}
-                className={`h-0 w-0`}
-                {...register("situation")}
-                onChange={() =>
-                  setCheched({
-                    [slugiFy(label)]: !checked[slugiFy(label)],
-                  })
-                }
-                checked={checked[slugiFy(label)]}
-              />
-              <label
-                htmlFor={`${slugiFy(label)}`}
-                className={`p-4 uppercase font-play text-[10px] md:text-sm cursor-pointer box-border rounded-t-md ml-2 ${
-                  checked[slugiFy(label)] ? "bg-slate-100" : "bg-gray-200"
-                }`}
-              >
-                {label}
-              </label>
-            </React.Fragment>
-          ))}
-        </div>
-
-        <ul
-          className={`${!openClose ? "hidden md:m-0 md:flex" : "flex md:m-0"} ${
-            variant === "col" ? "flex-col" : "flex-col md:flex-row"
-          } aling-end flex-wrap pb-5 rounded-md bg-slate-100 gap-5 p-5`}
-        >
-          <li>
-            <Input
-              list="category"
-              type="search"
-              label="Tipo"
-              className={`input-form`}
-              placeholder={"Tipo de Imoveis"}
-              register={register("category")}
-            />
-            <datalist id="category">
-              {categories?.map(({ id, category }) => (
-                <option value={category} key={id} />
-              ))}
-            </datalist>
-          </li>
-
-          <li>
-            <Input
-              list="cities"
-              type="search"
-              label="Cidade"
-              className={`input-form`}
-              placeholder={"Busca por cidades"}
-              register={register("city")}
-              onChange={(e) => handleChangeCity(e.target.value)}
-              defaultValue=""
-            />
-            <datalist id="cities">
-              {cities?.map(({ city, state }, id) => (
-                <option
-                  value={city && state ? [city, state].join("/") : ""}
-                  key={id}
+    <>
+      <span
+        className="btn-primary rounded-md cursor-pointer inline-block md:hidden fixed top-1 left-4 z-[1010]"
+        onClick={() => setOpenClose(!openClose)}
+      >
+        <FontAwesomeIcon icon={faBars} />
+      </span>
+      <div
+        className={`container relative px-4 mt-5 z-50 ${
+          location.pathname === "/" && "md:-mt-24"
+        }`}
+      >
+        <form onSubmit={handleSubmit(handleOnSubmit)} id="search">
+          <div
+            className={`${
+              !openClose ? "hidden md:flex" : "flex"
+            } flex-col items-stretch  md:items-center bg-transparent z-0 relative`}
+          >
+            {[
+              "Todos",
+              "Locação",
+              "Venda",
+              "Venda ou Locação",
+              "Venda e Permuta",
+              // "Compra",
+              // "Permuta",
+            ].map((label, i) => (
+              <React.Fragment key={i}>
+                <input
+                  type="radio"
+                  value={label}
+                  id={`${slugiFy(label)}`}
+                  className={`h-0 w-0`}
+                  {...register("situation")}
+                  onChange={() =>
+                    setCheched({
+                      [slugiFy(label)]: !checked[slugiFy(label)],
+                    })
+                  }
+                  checked={checked[slugiFy(label)]}
                 />
-              ))}
-            </datalist>
-          </li>
+                <label
+                  htmlFor={`${slugiFy(label)}`}
+                  className={`px-4 py-3 uppercase font-lato font-semibold text-sm cursor-pointer box-border rounded-t-md md:ml-2 h-fit ${
+                    checked[slugiFy(label)]
+                      ? "bg-km-red text-white"
+                      : "bg-gray-200"
+                  }`}
+                >
+                  {label}
+                </label>
+              </React.Fragment>
+            ))}
+          </div>
 
-          <li>
-            <Input
-              list="district"
-              type="search"
-              label="Bairro"
-              className={`input-form`}
-              placeholder={"Busca por Bairros"}
-              register={register("district")}
-            />
-            <datalist id="district">
-              {neighborhoods.map(({ district }, id) => (
-                <option value={district} key={id} />
-              ))}
-            </datalist>
-          </li>
+          <ul
+            className={`${
+              !openClose ? "hidden md:m-0 md:flex" : "flex md:m-0"
+            } ${
+              variant === "col" ? "flex-col" : "flex-col md:flex-row"
+            } aling-end flex-wrap pb-5 rounded-md bg-slate-100 gap-5 p-5 relative`}
+          >
+            <li>
+              <Input
+                list="category"
+                type="search"
+                label="Tipo"
+                className={`input-form`}
+                placeholder={"Tipo de Imoveis"}
+                register={register("category")}
+              />
+              <datalist id="category">
+                {categories?.map(({ id, category }) => (
+                  <option value={category} key={id} />
+                ))}
+              </datalist>
+            </li>
 
-          <li>
-            <Input
-              type="text"
-              label="Código do Imovél"
-              className="input-form"
-              register={register("reference")}
-            />
-          </li>
+            <li>
+              <Input
+                list="cities"
+                type="search"
+                label="Cidade"
+                className={`input-form`}
+                placeholder={"Busca por cidades"}
+                register={register("city")}
+                onChange={(e) => handleChangeCity(e.target.value)}
+                defaultValue=""
+              />
+              <datalist id="cities">
+                {cities?.map(({ city, state }, id) => (
+                  <option
+                    value={city && state ? [city, state].join("/") : ""}
+                    key={id}
+                  />
+                ))}
+              </datalist>
+            </li>
 
+            <li>
+              <Input
+                list="district"
+                type="search"
+                label="Bairro"
+                className={`input-form`}
+                placeholder={"Busca por Bairros"}
+                register={register("district")}
+              />
+              <datalist id="district">
+                {neighborhoods.map(({ district }, id) => (
+                  <option value={district} key={id} />
+                ))}
+              </datalist>
+            </li>
+
+            <li>
+              <Input
+                type="text"
+                label="Código do Imovél"
+                className="input-form"
+                register={register("reference")}
+              />
+            </li>
+
+            <li className="flex gap-5">
+              <span>
+                <Input
+                  type="tel"
+                  label="Valor De"
+                  mask={maskCurrency}
+                  className="input-form text-end"
+                  register={register("price_gte")}
+                />
+              </span>
+              <span>
+                <Input
+                  type="tel"
+                  label="Valor Até"
+                  mask={maskCurrency}
+                  className="input-form text-end"
+                  register={register("price_lte")}
+                />
+              </span>
+            </li>
+
+            {/* 
           <li className="flex gap-5">
             <span>
               <Input
@@ -216,15 +250,25 @@ export function Filters({ variant = "col" }: TFiltersComp) {
                 register={register("price_gte")}
               />
               <datalist id="price_gte">
-                {[...Array(32).keys()].map(
-                  (i: number) =>
-                    i > 0 && (
-                      <option
-                        value={maskCurrency(String(i * 2500000))}
-                        key={i}
-                      />
-                    ),
-                )}
+                {!checked["locacao"]
+                  ? [...Array(32).keys()].map(
+                      (i: number) =>
+                        i > 0 && (
+                          <option
+                            value={maskCurrency(String(i * 2500000))}
+                            key={i}
+                          />
+                        ),
+                    )
+                  : [...Array(25).keys()].map(
+                      (i: number) =>
+                        i > 0 && (
+                          <option
+                            value={maskCurrency(String(400 + 50 * i) + "00")}
+                            key={i}
+                          />
+                        ),
+                    )}
               </datalist>
             </span>
             <span>
@@ -249,24 +293,26 @@ export function Filters({ variant = "col" }: TFiltersComp) {
                 )}
               </datalist>
             </span>
-          </li>
+          </li> 
+          */}
 
-          <li>
-            <label htmlFor="" className="label-form">
-              &nbsp;
-            </label>
-            <button
-              type="submit"
-              className="btn-primary flex gap-2 h-[38px] px-3"
-            >
-              <span>
-                <FontAwesomeIcon icon={faSearch} />
-              </span>
-              <span>PESQUISAR</span>
-            </button>
-          </li>
-        </ul>
-      </form>
-    </div>
+            <li>
+              <label htmlFor="" className="label-form">
+                &nbsp;
+              </label>
+              <button
+                type="submit"
+                className="btn-primary flex gap-2 h-[38px] px-3"
+              >
+                <span>
+                  <FontAwesomeIcon icon={faSearch} />
+                </span>
+                <span>PESQUISAR</span>
+              </button>
+            </li>
+          </ul>
+        </form>
+      </div>
+    </>
   );
 }

@@ -49,8 +49,6 @@ const bannerFix: TBanner[] = [
 ];
 
 export default function SiteHome() {
-  // const [loading, setLoading] = useState(true);
-  // const [immobiles, setImmobiles] = useState<TSiteHome>();
   const [banners, setBanners] = useState<TBanner[]>([]);
 
   const location = useLocation();
@@ -103,9 +101,8 @@ export default function SiteHome() {
       />
       <div className="border-b border-gray-200">
         <CarouselIndex banners={banners} />
-        <div className="md:-mt-24 z-50 relative">
-          <Filters variant="row" />
-        </div>
+
+        <Filters variant="row" />
 
         {(locationLoading || dataLocation?.data.length) && (
           <Title

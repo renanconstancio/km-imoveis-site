@@ -15,5 +15,6 @@ export type TFilters = {
     | "sale"
     | "exchange"
     | "sale_barter"
-    | "sale_lease";
+    | "sale_lease"
+    | "";
 };
