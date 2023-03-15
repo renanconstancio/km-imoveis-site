@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { parse, stringify } from "query-string";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,6 +13,15 @@ import { useFetch } from "../../hooks/use-fetch";
 import { slugiFy } from "../../utils/functions";
 
 export function Filters({ variant = "col" }: TFiltersComp) {
+  const dataSituation = Object.assign({
+    location: "Locação",
+    exchange: "Permuta",
+    purchase: "Compra",
+    sale: "Venda",
+    sale_lease: "Venda ou Locação",
+    sale_barter: "Venda e Permuta",
+  });
+
   const [openClose, setOpenClose] = useState<boolean>(false);
   const [checked, setCheched] = useState<{ [x: string]: boolean }>({
     todos: true,
@@ -93,6 +102,15 @@ export function Filters({ variant = "col" }: TFiltersComp) {
     );
   }
 
+  useEffect(() => {
+    if (!parsed.situation) return;
+
+    const situation = slugiFy(dataSituation[`${parsed.situation}`]);
+    setCheched({
+      [situation]: !checked[situation],
+    });
+  }, []);
+
   return (
     <>
       <span
@@ -103,14 +121,14 @@ export function Filters({ variant = "col" }: TFiltersComp) {
       </span>
       <div
         className={`container relative px-4 mt-5 z-50 ${
-          location.pathname === "/" && "md:-mt-24"
+          location.pathname === "/" && "md:-mt-20"
         }`}
       >
         <form onSubmit={handleSubmit(handleOnSubmit)} id="search">
           <div
             className={`${
               !openClose ? "hidden md:flex" : "flex"
-            } flex-col items-stretch  md:items-center bg-transparent z-0 relative`}
+            } flex-col md:flex-row items-stretch md:items-start bg-transparent z-0 relative`}
           >
             {[
               "Todos",
