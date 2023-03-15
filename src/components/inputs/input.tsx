@@ -16,7 +16,10 @@ export default function Input({
       )}
       <input
         {...register}
-        onBlur={(e) => (e.target.value = `${mask(e.target.value)}`)}
+        // onChange={(e) => (e.target.value = `${mask(e.target.value)}`)}
+        onKeyUp={(e) =>
+          (e.currentTarget.value = `${mask(e.currentTarget.value)}`)
+        }
         {...rest}
       />
       {error && <small className="input-text-invalid">{error.message}</small>}
