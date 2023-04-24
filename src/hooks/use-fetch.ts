@@ -1,6 +1,6 @@
 import { api } from "../services/api";
 import { useEffect, useReducer, useRef } from "react";
-import { AxiosHeaders, AxiosRequestConfig, AxiosRequestHeaders } from "axios";
+import { AxiosHeaders } from "axios";
 
 interface State<T> {
   data?: T;
@@ -18,7 +18,7 @@ type Action<T> =
 
 export function useFetch<T = unknown>(
   url?: string,
-  options?: AxiosHeaders,
+  // options?: AxiosHeaders,
 ): State<T> {
   const cache = useRef<Cache<T>>({});
 

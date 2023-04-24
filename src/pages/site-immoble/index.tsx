@@ -38,20 +38,7 @@ export default function SiteImmoble() {
 
   const { data: immobiles, loading: loadingImmobiles } = useFetch<{
     data: TImmobles[];
-  }>(`/immobiles/website/list?limit=20&order[random]=true${uri}`);
-
-  useEffect(() => {
-    immoble?.photos?.map((r, k) =>
-      sort.push(immoble?.photos?.[k]?.image_lg || ""),
-    );
-    setPhotos(sort);
-  }, [immoble]);
-
-  useEffect(() => {
-    if (immoble?.id) {
-      window.scrollTo(0, 0);
-    }
-  }, [immoble]);
+  }>(`/immobiles/website/list?limit=20${uri}`);
 
   let textCondition = "imóvel alugado";
   if (
@@ -66,28 +53,47 @@ export default function SiteImmoble() {
     textCondition = "imóvel vendido ou alugado";
   }
 
-  if (loading)
+  useEffect(() => {
+    immoble?.photos?.map((r, k) =>
+      sort.push(immoble?.photos?.[k]?.image_lg || ""),
+    );
+    setPhotos(sort);
+  }, [immoble]);
+
+  useEffect(() => {
+    if (immoble?.id) {
+      window.scrollTo(0, 0);
+    }
+  }, [immoble]);
+
+  if (loading) {
     return (
       <section className="py-48">
         <Loading />
       </section>
     );
+  }
 
-  if (!immoble?.id || immoble?.tenant_id)
+  if (!immoble?.id || immoble?.tenant_id) {
     return (
       <div className="container">
-        <div className="divide-y divide-slate-200 bg-white mx-4 sm:mx-0 p-5 pb-7">
-          <Title title="Imóvel Indisponível" />
-          <p className="py-3">
-            Esse imóvel encontra-se Indisponível no momento, veja outras opções
-            abaixo
-          </p>
-          <div className="pt-5 relative">
-            <CardCarousel id="all" mapping={immobiles?.data} />
+        <div className="divide-y divide-slate-200 p-5 pb-7">
+          <div className="bg-white p-5">
+            <Title title="Imóvel Indisponível" />
+            <p className="py-3">
+              Esse imóvel encontra-se Indisponível no momento, veja outras
+              opções abaixo
+            </p>
+            <div className="pt-5 relative">
+              {immobiles?.data.length && (
+                <CardCarousel id="outhers" mapping={immobiles?.data} />
+              )}
+            </div>
           </div>
         </div>
       </div>
     );
+  }
 
   return (
     <div className="border-b border-gray-200 py-2">
