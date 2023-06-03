@@ -208,7 +208,7 @@ export default function SiteImmoble() {
 
             {immoble?.user?.first_name && (
               <li className="w-full sm:w-8/12 flex flex-col gap-2">
-                <Title title="Corretor" variant="text-2xl" />
+                <Title title="Corretor(a)" variant="text-2xl" />
                 {immoble?.user?.first_name && (
                   <span>Nome: {immoble?.user?.first_name}</span>
                 )}
