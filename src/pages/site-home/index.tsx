@@ -104,7 +104,7 @@ export default function SiteHome() {
 
         <Filters variant="row" />
 
-        {(locationLoading || dataLocation?.data.length) && (
+        {!locationLoading && dataLocation?.data.length ? (
           <Title
             title={`Casas para Locação`}
             style={{
@@ -114,7 +114,7 @@ export default function SiteHome() {
               fontSize: "1.5em",
             }}
           />
-        )}
+        ) : null}
 
         <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-5">
           {locationLoading &&
@@ -146,7 +146,7 @@ export default function SiteHome() {
               ))}
         </section>
 
-        {(saleLoading || dataSale?.data.length) && (
+        {!saleLoading && dataSale?.data.length ? (
           <Title
             title={`Casas a Venda`}
             style={{
@@ -156,7 +156,7 @@ export default function SiteHome() {
               fontSize: "1.5em",
             }}
           />
-        )}
+        ) : null}
         <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-5">
           {saleLoading && [0, 1, 2, 3, 4].map((i) => <CardSkeleton key={i} />)}
 
@@ -186,7 +186,7 @@ export default function SiteHome() {
               ))}
         </section>
 
-        {(exchangeLoading || dataExchange?.data.length) && (
+        {!exchangeLoading && dataExchange?.data.length ? (
           <Title
             title={`Casas para Comprar`}
             style={{
@@ -196,7 +196,8 @@ export default function SiteHome() {
               fontSize: "1.5em",
             }}
           />
-        )}
+        ) : null}
+
         <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-5">
           {exchangeLoading &&
             [0, 1, 2, 3, 4].map((i) => <CardSkeleton key={i} />)}
@@ -227,7 +228,7 @@ export default function SiteHome() {
               ))}
         </section>
 
-        {(saleLeaseLoading || dataSaleLease?.data.length) && (
+        {!saleLeaseLoading && dataSaleLease?.data.length ? (
           <Title
             title={`CASAS PARA VENDA E LOCAÇÃO`}
             style={{
@@ -237,7 +238,7 @@ export default function SiteHome() {
               fontSize: "1.5em",
             }}
           />
-        )}
+        ) : null}
 
         <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-5">
           {saleLeaseLoading &&
@@ -269,7 +270,7 @@ export default function SiteHome() {
               ))}
         </section>
 
-        {(saleBarterLoading || dataSaleBarter?.data.length) && (
+        {!saleBarterLoading && dataSaleBarter?.data.length ? (
           <Title
             title={`CASAS PARA VENDA E PERMUTA`}
             style={{
@@ -279,7 +280,7 @@ export default function SiteHome() {
               fontSize: "1.5em",
             }}
           />
-        )}
+        ) : null}
         <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-5">
           {saleBarterLoading &&
             [0, 1, 2, 3, 4].map((i) => <CardSkeleton key={i} />)}
