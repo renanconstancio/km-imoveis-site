@@ -12,10 +12,11 @@ api.interceptors.request.use(
     const token = await JSON.parse(localStorage.getItem("user") || "");
 
     if (token?.token) {
-      response.headers = {
-        ...response.headers,
-        authorization: `Bearer ${token?.token}`,
-      };
+      response.headers["authorization"] = `Bearer ${token?.token}`;
+      // {
+      //   ...response.headers,
+      //   authorization: `Bearer ${token?.token}`,
+      // };
     }
 
     return response;
