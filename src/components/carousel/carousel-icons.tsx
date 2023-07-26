@@ -16,11 +16,11 @@ export default function CarouselIcons({ images, onClick }: CarouselIconsProps) {
       showThumbs={true}
       showStatus={false}
       centerSlidePercentage={100}
-      width={"100%"}
+      className="-mx-5 sm:mx-0"
     >
       {images.map((image) => (
         <div key={image} onClick={onClick} className="cursor-pointer">
-          <img src={image} className="max-w-full" />
+          <img src={image} className="w-full rounded-lg" />
         </div>
       ))}
     </Carousel>
