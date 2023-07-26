@@ -1,5 +1,5 @@
 import { tags } from "../../services/api";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Title } from "../../components/title";
 import { Address } from "../../components/address";
@@ -15,12 +15,16 @@ import { CardCarousel } from "../../components/card-carousel";
 import { CarouselIcons } from "../../components/carousel";
 import { useFetch } from "../../hooks/use-fetch";
 import { SEO } from "../../components/seo/seo";
+import { LightboxReact } from "../../components/lightbox";
+import { LightBoxeContext } from "../../context/lightbox";
 
 export default function SiteImmoble() {
   const { reference } = useParams<{ reference: string | undefined }>();
 
   const sort: string[] = [];
   const [photos, setPhotos] = useState<string[]>([]);
+
+  const { isOpen, openLightBox } = useContext(LightBoxeContext);
 
   const { data: immoble, loading: loading } = useFetch<TImmobles>(
     `/immobiles/${reference}/reference`,
@@ -126,7 +130,7 @@ export default function SiteImmoble() {
         />
 
         <div className="container px-4">
-          <ul className="divide-y divide-slate-200 bg-white px-5 pb-7 flex flex-col flex-wrap sm:flex-row">
+          <ul className="divide-y divide-slate-200 bg-white px-5 pb-7 flex flex-col flex-wrap sm:flex-row rounded-lg overflow-hidden">
             <li className="w-full pt-6">
               <Title
                 title={`${immoble?.description}`}
@@ -143,8 +147,9 @@ export default function SiteImmoble() {
                 ]}
               />
             </li>
-            <li className="pt-5 w-full sm:w-8/12 relative">
-              <ul className="absolute left-0 top-8 h-[auto] w-auto z-[9999] font-play text-white text-lg flex gap-2">
+
+            <li className="pt-0 sm:pt-5 sm:w-8/12 relative -mx-5 sm:mx-auto -order-1 sm:order-none ">
+              <ul className="absolute left-0 top-8 h-[auto] w-auto z-[100] font-play text-white text-lg flex gap-2">
                 <li
                   className={`p-1 ${situationTextClassName(
                     immoble?.situation,
@@ -156,8 +161,11 @@ export default function SiteImmoble() {
                 </li>
               </ul>
 
-              {photos.length && <CarouselIcons images={photos} />}
+              {photos.length && (
+                <CarouselIcons images={photos} onClick={openLightBox} />
+              )}
             </li>
+
             <li className="pt-5 w-full mt-5 sm:mt-0 sm:w-4/12 sm:pl-10">
               {Number(immoble?.sale_price) * 1 > 0 && (
                 <Price
@@ -239,6 +247,8 @@ export default function SiteImmoble() {
             </div>
           </section>
         )}
+
+        <LightboxReact images={photos} isShow={isOpen} />
       </>
     </div>
   );
