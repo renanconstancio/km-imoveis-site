@@ -15,8 +15,8 @@ import { CardCarousel } from "../../components/card-carousel";
 import { CarouselIcons } from "../../components/carousel";
 import { useFetch } from "../../hooks/use-fetch";
 import { SEO } from "../../components/seo/seo";
-import { LightboxReact } from "../../components/lightbox";
 import { LightBoxeContext } from "../../context/lightbox";
+import { LightboxReact } from "../../components/lightbox";
 
 export default function SiteImmoble() {
   const { reference } = useParams<{ reference: string | undefined }>();
