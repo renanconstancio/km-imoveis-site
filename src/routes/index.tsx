@@ -15,6 +15,7 @@ import { Streets, FormStreets } from "../pages/admin-streets";
 import { Tenants, FormTenants } from "../pages/admin-tenant";
 import { Users, FormUsers } from "../pages/admin-users";
 import { Error } from "../pages/error";
+import { LightBoxProvider } from "../context/lightbox";
 
 const SiteHome = lazy(() => import("../pages/site-home"));
 const SiteImmoble = lazy(() => import("../pages/site-immoble"));
@@ -90,7 +91,11 @@ export default function RouteIndex() {
             <Route path="/search" element={<SiteSearch />} />
             <Route
               path="/:situation/imovel/:reference/:desciption"
-              element={<SiteImmoble />}
+              element={
+                <LightBoxProvider>
+                  <SiteImmoble />
+                </LightBoxProvider>
+              }
             />
           </Route>
           <Route path="*" element={<Error />} />

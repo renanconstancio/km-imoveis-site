@@ -9,8 +9,8 @@ const options: Options = {
   margin: 16,
   dots: false,
   navText: [
-    "<span class='text-6xl absolute top-1/2 leading-6 rounded w-10 h-10 bg-gray-400 -left-5 z-10 cursor-pointer'>‹</span>",
-    "<span class='text-6xl absolute top-1/2 leading-6 rounded w-10 h-10 bg-gray-400 -right-5 z-10 cursor-pointer'>›</span>",
+    "<span class='text-6xl absolute top-1/2 leading-6 rounded w-10 h-10 bg-gray-400 -left-2 sm:-left-5 z-10 cursor-pointer'>‹</span>",
+    "<span class='text-6xl absolute top-1/2 leading-6 rounded w-10 h-10 bg-gray-400 -right-2 sm:-right-5 z-10 cursor-pointer'>›</span>",
   ],
   responsive: {
     0: {
