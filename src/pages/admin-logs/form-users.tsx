@@ -43,7 +43,7 @@ export default function FormUsers() {
         )
         .catch(() =>
           changeAlert({
-            message: "Não foi possivel fazer um novo cadastro para o imovél.",
+            message: "Não foi possivel fazer um novo cadastro para o imóvel.",
           }),
         );
       return;
@@ -59,7 +59,7 @@ export default function FormUsers() {
       })
       .catch(() =>
         changeAlert({
-          message: "Não foi possivel fazer um novo cadastro para o imovél.",
+          message: "Não foi possivel fazer um novo cadastro para o imóvel.",
         }),
       );
   }, []);

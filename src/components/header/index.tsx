@@ -30,7 +30,7 @@ export function Header() {
           </li>
           <li>
             <Link to="/search" className="p-2 sm:p-4 bg-slate-100 rounded-lg">
-              <FontAwesomeIcon icon={faSearch} /> Imovéis
+              <FontAwesomeIcon icon={faSearch} /> Imóveis
             </Link>
           </li>
           <li>

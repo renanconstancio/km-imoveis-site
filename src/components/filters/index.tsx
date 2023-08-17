@@ -230,7 +230,7 @@ export function Filters({ variant = "col" }: TFiltersComp) {
             <li>
               <Input
                 type="text"
-                label="Código do Imovél"
+                label="Código do Imóvel"
                 className="input-form"
                 register={register("reference")}
               />

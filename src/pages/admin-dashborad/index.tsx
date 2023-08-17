@@ -99,7 +99,7 @@ export function Dashboard() {
             </span>
             <div className="text-sm">
               <strong className="text-gray-900 leading-none uppercase">
-                Total de Imovéis
+                Total de Imóveis
               </strong>
               <p className="text-gray-600">
                 {totalImmobiles ?? 0} cadastrado(s)
@@ -120,7 +120,7 @@ export function Dashboard() {
             </span>
             <div className="text-sm">
               <strong className="text-gray-900 leading-none uppercase">
-                Imovéis Offline/Alugados
+                Imóveis Offline/Alugados
               </strong>
               <p className="text-gray-600">{totalOffline ?? 0} cadastrado(s)</p>
             </div>
@@ -139,7 +139,7 @@ export function Dashboard() {
             </span>
             <div className="text-sm">
               <strong className="text-gray-900 leading-none uppercase">
-                Imovéis Online
+                Imóveis Online
               </strong>
               <p className="text-gray-600">{totalOnline ?? 0} cadastrado(s)</p>
             </div>

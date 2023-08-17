@@ -53,7 +53,7 @@ export function NavLeft() {
             isActive ? activeClassName : classDefaultName
           }
         >
-          <FontAwesomeIcon icon={faHome} /> Imovéis
+          <FontAwesomeIcon icon={faHome} /> Imóveis
         </NavLink>
         <NavLink
           to="/adm/owners"

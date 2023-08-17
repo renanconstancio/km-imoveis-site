@@ -205,7 +205,7 @@ export default function SiteImmoble() {
 
             {immoble?.description_text && (
               <li className="w-full sm:w-8/12 flex flex-col gap-3 pb-7">
-                <Title title="Descrição do Imovél" variant="text-2xl" />
+                <Title title="Descrição do Imóvel" variant="text-2xl" />
                 <div
                   dangerouslySetInnerHTML={{
                     __html: immoble?.description_text,

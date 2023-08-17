@@ -50,7 +50,7 @@ export default function ModalCategory({ addCategories }: TModalCategory) {
             <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
               <div className="w-full">
                 <label className="label-form" htmlFor="category">
-                  Descrição do Imovél
+                  Descrição do Imóvel
                 </label>
                 <input
                   type="text"
