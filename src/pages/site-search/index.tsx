@@ -1,15 +1,16 @@
-import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Card } from "../../components/card";
+import { useQuery } from "@tanstack/react-query";
 import { parse, stringify } from "query-string";
+
+import { Card } from "../../components/card";
 import { Pagination } from "../../components/pagination";
-import { api, tags } from "../../services/api";
 import { TPagination } from "../../global/types";
 import { TImmobles } from "../admin-immobiles/types";
 import { maskCurrencyUs } from "../../utils/mask";
-import { SEO } from "../../components/seo/seo";
 import { CardSkeleton } from "../../components/card-skeleton";
-import { useFetch } from "../../hooks/use-fetch";
+import { SEO } from "../../components/seo/seo";
+import { api, tags } from "../../services/api";
+
 
 export default function SiteSearch() {
   const location = useLocation();
@@ -46,9 +47,11 @@ export default function SiteSearch() {
     uri = `${uri}&search[sale_price_gte]=${maskCurrencyUs(price_gte)}`;
   }
 
-  const { data: immobiles, loading } = useFetch<TPagination<TImmobles[]>>(
-    `/immobiles/website/list?${decodeURI(stringify({ ...parse(uri) }))}`,
-  );
+  const { data: immobiles, isLoading: loading } = useQuery({
+    queryKey: ['index-sale-barter'],
+    queryFn: () => api.get<TPagination<TImmobles[]>>(
+      `/immobiles/website/list?${decodeURI(stringify({ ...parse(uri) }))}`,).then((res) => res.data)
+    });
 
   function ComponentPagination() {
     return (

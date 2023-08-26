@@ -12,7 +12,6 @@ import { CarouselIndex } from "../../components/carousel";
 import { Filters } from "../../components/filters";
 
 import { CardSkeleton } from "../../components/card-skeleton";
-import { useFetch } from "../../hooks/use-fetch";
 import { api, tags } from "../../services/api";
 
 import banner01 from "../../assets/banners/banner-a.jpg";
