@@ -48,10 +48,9 @@ export default function SiteSearch() {
   }
 
   const { data: immobiles, isLoading: loading } = useQuery({
-    queryKey: ['index-sale-barter'],
-    queryFn: () => api.get<TPagination<TImmobles[]>>(
-      `/immobiles/website/list?${decodeURI(stringify({ ...parse(uri) }))}`,).then((res) => res.data)
-    });
+    queryKey: ['search', { ...parse(uri) }],
+    queryFn: () => api.get<TPagination<TImmobles[]>>(`/immobiles/website/list?${decodeURI(stringify({ ...parse(uri) }))}`).then((res) => res.data)
+  });
 
   function ComponentPagination() {
     return (

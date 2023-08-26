@@ -1,22 +1,24 @@
-import { tags } from "../../services/api";
-import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { faExpand } from "@fortawesome/free-solid-svg-icons";
+
 import { Title } from "../../components/title";
 import { Address } from "../../components/address";
 import { Price } from "../../components/price";
 import { Loading } from "../../components/loading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExpand } from "@fortawesome/free-solid-svg-icons";
 import { situationText, situationTextClassName } from "../../utils/functions";
 import { ButtonWhatsapp } from "../../components/button-whatsapp";
 import { CardTags } from "../../components/card-tags";
 import { TImmobles } from "../admin-immobiles/types";
 import { CardCarousel } from "../../components/card-carousel";
 import { CarouselIcons } from "../../components/carousel";
-import { useFetch } from "../../hooks/use-fetch";
+
 import { SEO } from "../../components/seo/seo";
 import { LightBoxeContext } from "../../context/lightbox";
 import { LightboxReact } from "../../components/lightbox";
+import { api, tags } from "../../services/api";
 
 export default function SiteImmoble() {
   const { reference } = useParams<{ reference: string | undefined }>();
@@ -26,9 +28,10 @@ export default function SiteImmoble() {
 
   const { isOpen, openLightBox } = useContext(LightBoxeContext);
 
-  const { data: immoble, loading: loading } = useFetch<TImmobles>(
-    `/immobiles/${reference}/reference`,
-  );
+  const { data: immoble, isLoading: loading } = useQuery({
+    queryKey: ['immoble', reference],
+    queryFn: () => api.get<TImmobles>(`/immobiles/${reference}/reference`).then((res) => res.data)
+  });
 
   let uri = "&order[created_at]=desc&order[tenant_id]=asc";
 
@@ -36,14 +39,24 @@ export default function SiteImmoble() {
     uri = `${uri}&search[situation]=${immoble?.situation}`;
   }
 
+  if (immoble?.district) {
+    uri = `${uri}&search[district]=${immoble?.district?.district}`;
+  }
+
   if (immoble?.city) {
     uri = `${uri}&search[city]=${immoble?.city?.city}`;
   }
 
-  const { data: immobiles, loading: loadingImmobiles } = useFetch<{
-    data: TImmobles[];
-  }>(`/immobiles/website/list?limit=20${uri}`);
 
+  console.log(uri)
+
+  const { data: immobiles, isLoading: loadingImmobiles } = useQuery({
+    queryKey: ['immobles', reference],
+    queryFn: () => api.get<{
+      data: TImmobles[];
+    }>(`/immobiles/website/list?limit=20${uri}`).then((res) => res.data)
+  });
+  
   let textCondition = "imóvel alugado";
   if (
     immoble?.situation === "sale" ||
