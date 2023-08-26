@@ -1,14 +1,19 @@
-// import { api, tags } from "../../services/api";
-import { parse } from "query-string";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { TImmobles } from "../admin-immobiles/types";
+import { useQuery } from "@tanstack/react-query";
+import { parse } from "query-string";
+
 import { SEO } from "../../components/seo/seo";
+import { TImmobles } from "../admin-immobiles/types";
 import { Card } from "../../components/card";
 import { Title } from "../../components/title";
 import { TBanner } from "../../components/carousel/types";
 import { CarouselIndex } from "../../components/carousel";
 import { Filters } from "../../components/filters";
+
+import { CardSkeleton } from "../../components/card-skeleton";
+import { useFetch } from "../../hooks/use-fetch";
+import { api, tags } from "../../services/api";
 
 import banner01 from "../../assets/banners/banner-a.jpg";
 import banner02 from "../../assets/banners/banner-b.jpg";
@@ -17,9 +22,8 @@ import banner03 from "../../assets/banners/banner-c.jpg";
 import banner01Xs from "../../assets/banners/banner-a-xs.jpg";
 import banner02Xs from "../../assets/banners/banner-b-xs.jpg";
 import banner03Xs from "../../assets/banners/banner-c-xs.jpg";
-import { CardSkeleton } from "../../components/card-skeleton";
-import { useFetch } from "../../hooks/use-fetch";
-import { tags } from "../../services/api";
+
+
 
 const bannerFix: TBanner[] = [
   {
@@ -59,35 +63,40 @@ export default function SiteHome() {
     setBanners(bannerFix.sort(() => Math.random() - 0.5));
   }, [setBanners]);
 
-  const { data: dataLocation, loading: locationLoading } = useFetch<{
-    data: TImmobles[];
-  }>(
-    `/immobiles/website/list?limit=10&search[city]=${city}&order[created_at]=desc&order[tenant_id]=asc&search[situation]=location`,
-  );
+  const { data: dataLocation, isLoading: locationLoading } = useQuery({
+    queryKey: ['index-location'],
+    queryFn: () => api.get<{ data: TImmobles[] }>(
+      `/immobiles/website/list?limit=10&search[city]=${city}&order[created_at]=desc&order[tenant_id]=asc&search[situation]=location`
+    ).then((res) => res.data)
+  });
 
-  const { data: dataSale, loading: saleLoading } = useFetch<{
-    data: TImmobles[];
-  }>(
-    `/immobiles/website/list?limit=10&search[city]=${city}&order[created_at]=desc&order[tenant_id]=asc&search[situation]=sale`,
-  );
+  const { data: dataSale, isLoading: saleLoading } = useQuery({
+    queryKey: ['index-sale'],
+    queryFn: () => api.get<{ data: TImmobles[] }>(
+      `/immobiles/website/list?limit=10&search[city]=${city}&order[created_at]=desc&order[tenant_id]=asc&search[situation]=sale`
+    ).then((res) => res.data)
+  });
 
-  const { data: dataExchange, loading: exchangeLoading } = useFetch<{
-    data: TImmobles[];
-  }>(
-    `/immobiles/website/list?limit=10&search[city]=${city}&order[created_at]=desc&order[tenant_id]=asc&search[situation]=exchange`,
-  );
+  const { data: dataExchange, isLoading: exchangeLoading } = useQuery({
+    queryKey: ['index-exchange'],
+    queryFn: () => api.get<{ data: TImmobles[] }>(
+      `/immobiles/website/list?limit=10&search[city]=${city}&order[created_at]=desc&order[tenant_id]=asc&search[situation]=exchange`,
+    ).then((res) => res.data)
+  });
 
-  const { data: dataSaleLease, loading: saleLeaseLoading } = useFetch<{
-    data: TImmobles[];
-  }>(
-    `/immobiles/website/list?limit=10&search[city]=${city}&order[created_at]=desc&order[tenant_id]=asc&search[situation]=sale_lease`,
-  );
+  const { data: dataSaleLease, isLoading: saleLeaseLoading } = useQuery({
+    queryKey: ['index-sale-lease'],
+    queryFn: () => api.get<{ data: TImmobles[] }>(
+      `/immobiles/website/list?limit=10&search[city]=${city}&order[created_at]=desc&order[tenant_id]=asc&search[situation]=sale_lease`,
+    ).then((res) => res.data)
+  });
 
-  const { data: dataSaleBarter, loading: saleBarterLoading } = useFetch<{
-    data: TImmobles[];
-  }>(
-    `/immobiles/website/list?limit=10&search[city]=${city}&order[created_at]=desc&order[tenant_id]=asc&search[situation]=sale_barter`,
-  );
+  const { data: dataSaleBarter, isLoading: saleBarterLoading } = useQuery({
+    queryKey: ['index-sale-barter'],
+    queryFn: () => api.get<{ data: TImmobles[] }>(
+      `/immobiles/website/list?limit=10&search[city]=${city}&order[created_at]=desc&order[tenant_id]=asc&search[situation]=sale_barter`,
+    ).then((res) => res.data)
+  });
 
   return (
     <>
