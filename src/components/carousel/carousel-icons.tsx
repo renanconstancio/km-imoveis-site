@@ -20,7 +20,7 @@ export default function CarouselIcons({ images, onClick }: CarouselIconsProps) {
     >
       {images.map((image) => (
         <div key={image} onClick={onClick} className="cursor-pointer">
-          <img src={image} className="w-full rounded-lg" />
+          <img src={image} className="w-full rounded-md" />
         </div>
       ))}
     </Carousel>

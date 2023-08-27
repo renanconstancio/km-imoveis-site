@@ -7,7 +7,7 @@ export default function Site() {
   const location = useLocation();
 
   return (
-    <div className="bg-gray-200 flex flex-1 flex-col relative pt-14 sm:p-0">
+    <div className="bg-neutral-50 flex flex-1 flex-col relative pt-14 sm:p-0">
       <Header />
 
       {location.pathname !== "/" && <Filters variant="row" />}

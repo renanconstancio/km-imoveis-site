@@ -16,15 +16,15 @@ import RouteIndex from "./routes";
 
 // Create a client
 const queryClient = new QueryClient({
-  
   defaultOptions: {
-    
     queries: {
+      retry: 2,
+      retryDelay: 5000,
       refetchOnWindowFocus: false,
-      cacheTime: 1000 * 30 * 60
-    }
-  }
-})
+      cacheTime: 1000 * 30 * 60,
+    },
+  },
+});
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

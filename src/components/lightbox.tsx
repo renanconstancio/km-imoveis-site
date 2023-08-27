@@ -26,8 +26,8 @@ export function LightboxReact({ images, isShow }: LightboxReact) {
         onClick={closeLightBox}
         className="right-5 top-5 absolute text-3xl cursor-pointer z-10"
       />
-      <div className="flex bg-white w-full max-w-5xl rounded-lg p-5 relative">
-        <img src={images[indexOfImages]} className="w-full rounded-lg" />
+      <div className="flex bg-white w-full max-w-5xl rounded-md p-5 relative">
+        <img src={images[indexOfImages]} className="w-full rounded-md" />
       </div>
       <FontAwesomeIcon
         className="left-5 top-2/4 absolute text-3xl cursor-pointer"

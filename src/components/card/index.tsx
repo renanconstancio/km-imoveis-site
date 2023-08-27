@@ -45,7 +45,7 @@ export function Card({
       to={`/${slugiFy(
         `${situationText(situation)}`,
       )}/imovel/${reference}/${slugiFy(`${description}`)}`}
-      className={`block relative bg-white overflow-hidden h-full rounded-lg ${
+      className={`block relative bg-white overflow-hidden h-full rounded-md shadow-md ${
         location && "opacity-70"
       }`}
     >

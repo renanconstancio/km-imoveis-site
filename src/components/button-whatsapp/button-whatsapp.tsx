@@ -10,7 +10,7 @@ export default function ButtonWhatsapp(T: TWhatsapp) {
       )}&text=${encodeURI(T.text)}`}
       target="_blank"
       rel="noreferrer"
-      className="bg-green-600 rounded-full flex items-center justify-center gap-2 px-3 py-1 uppercase text-white font-play bold"
+      className="bg-green-600 rounded-lg shadow-md flex items-center justify-center gap-2 px-4 py-2 uppercase text-white font-play bold"
     >
       <img src={faWhatsapp} alt="" style={{ width: 32 }} />
       <span>Entrar em Contato</span>

@@ -23,20 +23,20 @@ export function Header() {
           <li>
             <Link
               to="/"
-              className="p-2 sm:p-4 bg-slate-100 rounded-lg hidden md:inline"
+              className="p-2 sm:p-4 bg-slate-100 rounded-md hidden md:inline"
             >
               <FontAwesomeIcon icon={faHome} /> Inicio
             </Link>
           </li>
           <li>
-            <Link to="/search" className="p-2 sm:p-4 bg-slate-100 rounded-lg">
+            <Link to="/search" className="p-2 sm:p-4 bg-slate-100 rounded-md">
               <FontAwesomeIcon icon={faSearch} /> Imóveis
             </Link>
           </li>
           <li>
             <Link
               to="/"
-              className="p-2 sm:p-4 bg-slate-100 rounded-lg hidden md:inline"
+              className="p-2 sm:p-4 bg-slate-100 rounded-md hidden md:inline"
             >
               <FontAwesomeIcon icon={faInfo} /> Quem Somos
             </Link>
@@ -48,7 +48,7 @@ export function Header() {
               )}&text=`}
               target="_blank"
               rel="noreferrer"
-              className="p-2 sm:p-4 bg-slate-100 rounded-lg"
+              className="p-2 sm:p-4 bg-slate-100 rounded-md"
             >
               <FontAwesomeIcon icon={faEnvelope} /> Contato
             </a>

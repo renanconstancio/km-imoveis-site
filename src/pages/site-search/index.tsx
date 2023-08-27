@@ -11,7 +11,6 @@ import { CardSkeleton } from "../../components/card-skeleton";
 import { SEO } from "../../components/seo/seo";
 import { api, tags } from "../../services/api";
 
-
 export default function SiteSearch() {
   const location = useLocation();
 
@@ -48,14 +47,19 @@ export default function SiteSearch() {
   }
 
   const { data: immobiles, isLoading: loading } = useQuery({
-    queryKey: ['search', { ...parse(uri) }],
-    queryFn: () => api.get<TPagination<TImmobles[]>>(`/immobiles/website/list?${decodeURI(stringify({ ...parse(uri) }))}`).then((res) => res.data)
+    queryKey: ["search", { ...parse(uri) }],
+    queryFn: () =>
+      api
+        .get<TPagination<TImmobles[]>>(
+          `/immobiles/website/list?${decodeURI(stringify({ ...parse(uri) }))}`,
+        )
+        .then((res) => res.data),
   });
 
   function ComponentPagination() {
     return (
       <section className="container px-4 uppercase font-play mb-7">
-        <div className="flex flex-row bg-white p-4 items-center justify-between rounded-md text-xs sm:text-sm">
+        <div className="flex flex-row bg-white p-4 items-center justify-between rounded-md shadow-md text-xs sm:text-sm">
           <span>{immobiles?.total} encotrado(s)</span>
           <Pagination
             total={immobiles?.total || 0}
@@ -79,38 +83,36 @@ export default function SiteSearch() {
         robots
       />
 
-      <div className="border-b border-gray-200 py-2">
-        {location.pathname !== "/" && <ComponentPagination />}
+      {location.pathname !== "/" && <ComponentPagination />}
 
-        <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-5 mb-7">
-          {loading && [0, 1, 2, 3, 4].map((i) => <CardSkeleton key={i} />)}
+      <section className="container px-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-5 mb-7">
+        {loading && [0, 1, 2, 3, 4].map((i) => <CardSkeleton key={i} />)}
 
-          {!loading &&
-            immobiles?.data?.map((item, k) => (
-              <Card
-                key={k}
-                reference={item.reference}
-                situation={item.situation}
-                description={item.description}
-                buildingArea={item.building_area}
-                terrainArea={item.terrain_area}
-                rentPrice={item.rent_price}
-                salePrice={item.sale_price}
-                address={[
-                  item.district?.district ?? "",
-                  item.city?.city ?? "",
-                  item.city?.state?.state ?? "",
-                ]}
-                tag={item.tags || ""}
-                tags={tags}
-                images={item?.photos?.map((f) => f.image_xs) || []}
-                location={item.tenant_id && true}
-              />
-            ))}
-        </section>
+        {!loading &&
+          immobiles?.data?.map((item, k) => (
+            <Card
+              key={k}
+              reference={item.reference}
+              situation={item.situation}
+              description={item.description}
+              buildingArea={item.building_area}
+              terrainArea={item.terrain_area}
+              rentPrice={item.rent_price}
+              salePrice={item.sale_price}
+              address={[
+                item.district?.district ?? "",
+                item.city?.city ?? "",
+                item.city?.state?.state ?? "",
+              ]}
+              tag={item.tags || ""}
+              tags={tags}
+              images={item?.photos?.map((f) => f.image_xs) || []}
+              location={item.tenant_id && true}
+            />
+          ))}
+      </section>
 
-        {location.pathname !== "/" && <ComponentPagination />}
-      </div>
+      {location.pathname !== "/" && <ComponentPagination />}
     </>
   );
 }

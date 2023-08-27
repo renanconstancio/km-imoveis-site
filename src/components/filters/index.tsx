@@ -3,14 +3,17 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { parse, stringify } from "query-string";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { useForm } from "react-hook-form";
+
 import { useGeolocation } from "../../hooks/use-geolocation";
-import { TFilters, TFiltersComp } from "./types";
 import { TCategories } from "../../pages/admin-categories/types";
 import { maskCurrency, maskCurrencyUs } from "../../utils/mask";
-import { useForm } from "react-hook-form";
 import { Input } from "../inputs";
-import { useFetch } from "../../hooks/use-fetch";
 import { slugiFy } from "../../utils/functions";
+import { useQuery } from "@tanstack/react-query";
+import { TFilters, TFiltersComp } from "./types";
+
+import { api } from "../../services/api";
 
 export function Filters({ variant = "col" }: TFiltersComp) {
   const dataSituation = Object.assign({
@@ -31,11 +34,25 @@ export function Filters({ variant = "col" }: TFiltersComp) {
   );
   const { geolocation } = useGeolocation();
 
-  const { data: categories } = useFetch<TCategories[]>("/categories");
+  const { data: categories } = useQuery({
+    queryKey: ["site-categories"],
+    queryFn: () =>
+      api.get<TCategories[]>("/categories").then(async (res) => res.data),
+  });
 
-  const { data: cities } = useFetch<
-    { city: string; state: string; neighborhoods: { district: string }[] }[]
-  >("/immobiles/website/filter");
+  const { data: cities } = useQuery({
+    queryKey: ["site-cities"],
+    queryFn: () =>
+      api
+        .get<
+          {
+            city: string;
+            state: string;
+            neighborhoods: { district: string }[];
+          }[]
+        >("/immobiles/website/filter")
+        .then(async (res) => res.data),
+  });
 
   const { register, handleSubmit } = useForm<TFilters>();
 
@@ -120,8 +137,8 @@ export function Filters({ variant = "col" }: TFiltersComp) {
         <FontAwesomeIcon icon={faBars} />
       </span>
       <div
-        className={`container relative px-4 mt-5 z-50 ${
-          location.pathname === "/" && "md:-mt-20"
+        className={`container relative px-4 mt-5 z-50 sm:mb-7 ${
+          location.pathname === "/" && "md:-mt-28"
         }`}
       >
         <form onSubmit={handleSubmit(handleOnSubmit)} id="search">
@@ -155,10 +172,10 @@ export function Filters({ variant = "col" }: TFiltersComp) {
                 />
                 <label
                   htmlFor={`${slugiFy(label)}`}
-                  className={`px-4 py-3 uppercase font-lato font-semibold text-sm cursor-pointer box-border rounded-t-md md:ml-2 h-fit ${
+                  className={`px-4 py-4 uppercase font-lato font-semibold text-sm cursor-pointer box-border rounded-t-md md:ml-2 h-fit ${
                     checked[slugiFy(label)]
                       ? "bg-km-red text-white"
-                      : "bg-gray-200"
+                      : "bg-neutral-100"
                   }`}
                 >
                   {label}
@@ -172,7 +189,7 @@ export function Filters({ variant = "col" }: TFiltersComp) {
               !openClose ? "hidden md:m-0 md:flex" : "flex md:m-0"
             } ${
               variant === "col" ? "flex-col" : "flex-col md:flex-row"
-            } aling-end flex-wrap pb-5 rounded-md bg-slate-100 gap-5 p-5 relative`}
+            } aling-end flex-wrap bg-neutral-100 rounded-md shadow-md gap-5 p-10 relative`}
           >
             <li>
               <Input
