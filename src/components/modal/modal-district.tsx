@@ -2,29 +2,45 @@ import { api } from "../../services/api";
 import { useForm } from "react-hook-form";
 import { useModal } from "../../hooks/use-modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { TNeighborhoods } from "../../pages/admin-neighborhoods/types";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import {
+  Neighborhood,
+  schemaNeighborhood,
+} from "../../pages/admin/neighborhoods/form";
 
 export type TModalDistrict = {
-  addDistricts: (data: any) => void;
+  addDistricts?: (data: any) => void;
 };
 
 export default function ModalDistrict({ addDistricts }: TModalDistrict) {
   const { openNeighborhoods, closeNeighborhoods } = useModal();
 
+  const queryClient = useQueryClient();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TNeighborhoods>();
+  } = useForm<Neighborhood>({
+    resolver: zodResolver(schemaNeighborhood),
+  });
 
-  async function onSubmit(data: TNeighborhoods) {
-    await api.patch(`/neighborhoods`, data).then(async (res) => {
-      const category = await res.data;
-      addDistricts((old: any) => [...old, category]);
-      closeNeighborhoods(!openNeighborhoods);
-    });
-  }
+  const { mutate } = useMutation({
+    mutationFn: async (data: Neighborhood) => {
+      return await api.patch(`/neighborhoods`, { ...data });
+    },
+    onError: (error) => {
+      toast.error("Não foi possivel fazer o cadastro!");
+      console.log(`${error}`);
+    },
+    onSuccess: async () => {
+      toast.success("Cadastro salvo com sucesso!");
+      queryClient.invalidateQueries({ queryKey: ["neighborhoods"] });
+    },
+  });
 
   return (
     <div className={`${openNeighborhoods ? "" : "hidden"} modal`}>
@@ -42,7 +58,10 @@ export default function ModalDistrict({ addDistricts }: TModalDistrict) {
             <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-white">
               Cadatrar Bairros
             </h3>
-            <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+            <form
+              className="space-y-6"
+              onSubmit={handleSubmit(async (data) => mutate(data))}
+            >
               <div className="w-full">
                 <label className="label-form" htmlFor="district">
                   Nome do bairro.

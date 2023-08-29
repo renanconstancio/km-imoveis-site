@@ -3,23 +3,42 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { Admin, Site } from "../components/layout";
 import { LoadingFull } from "../components/loading";
-import { Categories, FormCategories } from "../pages/admin-categories";
-import { Cities, FormCities } from "../pages/admin-cities";
+
 import { Dashboard } from "../pages/admin-dashborad";
 import { Immobiles, FormImmobiles } from "../pages/admin-immobiles";
 import { Logs } from "../pages/admin-logs";
-import { Neighborhoods, FormNeighborhoods } from "../pages/admin-neighborhoods";
-import { Owners, FormOwners } from "../pages/admin-owners";
-import { States, FormStates } from "../pages/admin-states";
-import { Streets, FormStreets } from "../pages/admin-streets";
-import { Tenants, FormTenants } from "../pages/admin-tenant";
+
 import { Users, FormUsers } from "../pages/admin-users";
 import { Error } from "../pages/error";
 import { LightBoxProvider } from "../context/lightbox";
 
-const SiteHome = lazy(() => import("../pages/site-home"));
-const SiteImmoble = lazy(() => import("../pages/site-immoble"));
-const SiteSearch = lazy(() => import("../pages/site-search"));
+const Tenants = lazy(() => import("../pages/admin/tenant/list"));
+const FormTenants = lazy(() => import("../pages/admin/tenant/form"));
+
+const Owners = lazy(() => import("../pages/admin/owners/list"));
+const FormOwners = lazy(() => import("../pages/admin/owners/form"));
+
+const Neighborhoods = lazy(() => import("../pages/admin/neighborhoods/list"));
+const FormNeighborhoods = lazy(
+  () => import("../pages/admin/neighborhoods/form"),
+);
+
+const Streets = lazy(() => import("../pages/admin/streets/list"));
+const FormStreets = lazy(() => import("../pages/admin/streets/form"));
+
+const States = lazy(() => import("../pages/admin/states/list"));
+const FormStates = lazy(() => import("../pages/admin/states/form"));
+
+const Cities = lazy(() => import("../pages/admin/cities/list"));
+const FormCities = lazy(() => import("../pages/admin/cities/form"));
+
+const Categories = lazy(() => import("../pages/admin/categories/list"));
+const FormCategories = lazy(() => import("../pages/admin/categories/form"));
+
+const SiteHome = lazy(() => import("../pages/site/home"));
+const SiteImmoble = lazy(() => import("../pages/site/immoble"));
+const SiteSearch = lazy(() => import("../pages/site/search"));
+const SiteQuemSomos = lazy(() => import("../pages/site/quem-somos"));
 
 export default function RouteIndex() {
   return (
@@ -89,6 +108,7 @@ export default function RouteIndex() {
           <Route element={<Site />}>
             <Route index element={<SiteHome />} />
             <Route path="/search" element={<SiteSearch />} />
+            <Route path="/quem-somos" element={<SiteQuemSomos />} />
             <Route
               path="/:situation/imovel/:reference/:desciption"
               element={

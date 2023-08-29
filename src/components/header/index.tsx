@@ -35,7 +35,7 @@ export function Header() {
           </li>
           <li>
             <Link
-              to="/"
+              to="/quem-somos"
               className="p-2 sm:p-4 bg-slate-100 rounded-md hidden md:inline"
             >
               <FontAwesomeIcon icon={faInfo} /> Quem Somos

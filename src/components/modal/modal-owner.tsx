@@ -5,11 +5,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { maskCPF, maskPhone } from "../../utils/mask";
 import { findSearch } from "../../utils/functions";
-import { TStreets } from "../../pages/admin-streets/types";
+import { TStreets } from "../../pages/streets/types";
 import { TNeighborhoods } from "../../pages/admin-neighborhoods/types";
-import { TCities } from "../../pages/admin-cities/types";
+import { TCities } from "../../pages/cities/types";
 import { Input } from "../inputs";
-import { TOwners } from "../../pages/admin-owners/types";
+import { TOwners } from "../../pages/owners/types";
 
 export type TModalOwner = {
   addOwner: (data: any) => void;

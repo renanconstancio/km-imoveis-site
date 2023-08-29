@@ -1,18 +1,26 @@
-import { api } from "../../services/api";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
-import { useAlert } from "../../hooks/use-alert";
-import { Input } from "../../components/inputs";
-import { maskCep } from "../../utils/mask";
-import { TStreets } from "./types";
-import { SEO } from "../../components/seo/seo";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import { z } from "zod";
+
+import { Input } from "../../../components/inputs";
+import { SEO } from "../../../components/seo/seo";
+import { api } from "../../../services/api";
+import { maskCep } from "../../../utils/mask";
+
+export const schemaStreet = z.object({
+  id: z.string().optional(),
+  street: z.string().min(1, { message: "Campo obrigatório!" }),
+  zip_code: z.string().optional(),
+});
+
+export type Street = z.infer<typeof schemaStreet>;
 
 export default function FormStreets() {
-  const { changeAlert } = useAlert();
-
   const navigate = useNavigate();
 
   const { streetId } = useParams<{ streetId: string | undefined }>();
@@ -22,55 +30,38 @@ export default function FormStreets() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TStreets>();
+  } = useForm<Street>({
+    resolver: zodResolver(schemaStreet),
+  });
 
-  async function onSubmit(data: TStreets) {
-    const newData = {
-      ...data,
-    };
-
-    await api
-      .patch(`/streets`, newData)
-      .then(async (resp) => {
-        changeAlert({
-          message: "Dados salvos com sucesso.",
-        });
-        navigate({ pathname: `/adm/streets/${(await resp.data).id}/edit` });
-      })
-      .catch((error) => {
-        changeAlert({
-          title: "Atenção",
-          message: "Não foi possivel fazer o cadastro!",
-          variant: "danger",
-        });
-
-        if (error.response.status === 422)
-          changeAlert({
-            title: "Atenção",
-            variant: "danger",
-            message: `${error.response.data.message}`,
-          });
+  const { mutate } = useMutation({
+    mutationFn: async (data: Street) => {
+      return await api.patch(`/streets`, { ...data });
+    },
+    onError: (error) => {
+      toast.error("Não foi possivel fazer o cadastro!");
+      console.log(`${error}`);
+    },
+    onSuccess: async (resp) => {
+      toast.success("Cadastro salvo com sucesso!");
+      navigate({
+        pathname: `/adm/streets/${await resp.data?.id}/edit`,
       });
-  }
+    },
+  });
 
-  async function loadStreets() {
-    await api
-      .get(`/streets/${streetId}`)
-      .then(async (res) =>
-        reset({
-          ...(await res.data),
-        }),
-      )
-      .catch(() =>
-        changeAlert({
-          message: "Não foi possivel conectar ao servidor.",
-        }),
-      );
-  }
-
-  useEffect(() => {
-    if (streetId) loadStreets();
-  }, [streetId]);
+  useQuery({
+    queryKey: ["street", streetId],
+    queryFn: () => {
+      if (!streetId) return null;
+      return api
+        .get<Street>(`/streets/${streetId}`)
+        .then(async (res) => res.data);
+    },
+    onSuccess: (data) => {
+      if (data) reset(data);
+    },
+  });
 
   return (
     <>
@@ -94,7 +85,7 @@ export default function FormStreets() {
         <form
           id="form"
           className="basis-full"
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(async (data) => mutate(data))}
         >
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="basis-full md:basis-4/12 px-3">
@@ -103,12 +94,7 @@ export default function FormStreets() {
                 label="Rua, Avenida, Apto. *"
                 className={`input-form ${errors.street && "invalid"}`}
                 error={errors.street}
-                register={register("street", {
-                  required: {
-                    value: true,
-                    message: "Campo é obrigatório",
-                  },
-                })}
+                register={register("street")}
               />
             </div>
             <div className="basis-full mb-6"></div>
@@ -119,12 +105,7 @@ export default function FormStreets() {
                 label="CEP *"
                 className={`input-form ${errors.zip_code && "invalid"}`}
                 error={errors.zip_code}
-                register={register("zip_code", {
-                  required: {
-                    value: false,
-                    message: "Campo é obrigatório",
-                  },
-                })}
+                register={register("zip_code")}
               />
             </div>
           </div>

@@ -1,51 +1,53 @@
 import { api } from "../../services/api";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
 import { useModal } from "../../hooks/use-modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { TCities } from "../../pages/admin-cities/types";
+import { City, schemaCity } from "../../pages/admin/cities/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { State } from "../../pages/admin/states/form";
+import { toast } from "react-toastify";
 
 export type TModalCity = {
-  addCities: (data: any) => void;
+  addCities?: (data: any) => void;
 };
 
 export default function ModalCity({ addCities }: TModalCity) {
-  const [states, setSates] = useState([]);
-  const [statesId, setSatesId] = useState();
   const { openCity, closeCity } = useModal();
+
+  const queryClient = useQueryClient();
+
+  const { data: states } = useQuery({
+    queryKey: ["states"],
+    queryFn: () => api.get<State[]>(`/states`).then(async (res) => res.data),
+  });
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TCities>();
+  } = useForm<City>({
+    resolver: zodResolver(schemaCity),
+  });
 
-  const handleChangeList = (event: any) => {
-    const { id }: any = states.find(
-      (e: { state: string }) => e.state === event.target.value,
-    );
-
-    setSatesId(id);
-  };
-
-  async function onSubmit(data: TCities) {
-    await api
-      .patch(`/cities`, { city: data.city, states_id: statesId })
-      .then(async (res) => {
-        const cities = await res.data;
-        addCities((old: any) => [...old, cities]);
-        closeCity(!openCity);
-      });
-  }
-
-  async function loadStates() {
-    await api.get("/states").then(async (res) => setSates(await res.data));
-  }
-
-  useEffect(() => {
-    loadStates();
-  }, []);
+  const { mutate } = useMutation({
+    mutationFn: async (data: City) => {
+      const newData = {
+        ...data,
+        states_id: states?.find((item) => item.state === data.states_id)?.id,
+      };
+      return await api.patch(`/cities`, { ...newData });
+    },
+    onError: (error) => {
+      toast.error("Não foi possivel fazer o cadastro!");
+      console.log(`${error}`);
+    },
+    onSuccess: async () => {
+      toast.success("Cadastro salvo com sucesso!");
+      queryClient.invalidateQueries({ queryKey: ["cities"] });
+    },
+  });
 
   return (
     <div className={`${openCity ? "" : "hidden"} modal`}>
@@ -65,7 +67,7 @@ export default function ModalCity({ addCities }: TModalCity) {
             </h3>
             <form
               className="flex flex-wrap -mx-3"
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={handleSubmit(async (data) => mutate(data))}
             >
               <div className="basis-full md:basis-5/12 px-3 mb-5">
                 <label className="label-form" htmlFor="situation">
@@ -78,7 +80,6 @@ export default function ModalCity({ addCities }: TModalCity) {
                     placeholder="Pesquisar..."
                     className={`input-form ${errors.states_id && "invalid"}`}
                     {...register("states_id", { required: true })}
-                    onChange={handleChangeList}
                   />
                 </div>
                 {errors.states_id && (
@@ -87,9 +88,10 @@ export default function ModalCity({ addCities }: TModalCity) {
                   </small>
                 )}
                 <datalist id="states">
-                  {states.map(({ id, state }) => (
-                    <option key={id} value={state} />
-                  ))}
+                  {states &&
+                    states?.map(({ id, state }) => (
+                      <option key={id} value={state} />
+                    ))}
                 </datalist>
               </div>
               <div className="basis-full md:basis-9/12 px-3">

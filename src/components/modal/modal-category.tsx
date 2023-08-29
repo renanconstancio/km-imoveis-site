@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useModal } from "../../hooks/use-modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { TCategories } from "../../pages/admin-categories/types";
+import { TCategories } from "../../pages/categories/types";
 
 export type TModalCategory = {
   addCategories: (data: any) => void;

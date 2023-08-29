@@ -1,10 +1,12 @@
 import "react-responsive-carousel/lib/styles/carousel.css";
+import "./global/styles/app.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
 import "owl.carousel/dist/assets/owl.carousel.css";
-import "./global/styles/app.css";
+import "react-toastify/dist/ReactToastify.css";
 
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { ToastContainer } from "react-toastify";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from "react-helmet-async";
@@ -39,5 +41,6 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         </AuthProvider>
       </HelmetProvider>
     </QueryClientProvider>
+    <ToastContainer position="top-center" />
   </React.StrictMode>,
 );

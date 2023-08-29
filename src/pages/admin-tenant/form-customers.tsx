@@ -14,9 +14,9 @@ import { maskCPF, maskPhone } from "../../utils/mask";
 import { useModal } from "../../hooks/use-modal";
 import { ModalCity, ModalDistrict, ModalStreet } from "../../components/modal";
 import { findSearch } from "../../utils/functions";
-import { TCities } from "../admin-cities/types";
+import { TCities } from "../cities/types";
 import { TNeighborhoods } from "../admin-neighborhoods/types";
-import { TStreets } from "../admin-streets/types";
+import { TStreets } from "../streets/types";
 import { TTenant } from "./types";
 import { SEO } from "../../components/seo/seo";
 

@@ -1,4 +1,3 @@
-import { api } from "../../services/api";
 import {
   faFolderOpen,
   faSave,
@@ -7,23 +6,79 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
-import { useAlert } from "../../hooks/use-alert";
-import { maskCPF, maskPhone } from "../../utils/mask";
-import { Input } from "../../components/inputs";
-import { useModal } from "../../hooks/use-modal";
-import { ModalCity, ModalDistrict, ModalStreet } from "../../components/modal";
-import { findSearch } from "../../utils/functions";
-import { TCities } from "../admin-cities/types";
-import { TNeighborhoods } from "../admin-neighborhoods/types";
-import { TStreets } from "../admin-streets/types";
-import { TOwners } from "./types";
-import { SEO } from "../../components/seo/seo";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-toastify";
+import { z } from "zod";
 
-export default function FormCustomers() {
-  const [cities, setCities] = useState<TCities[]>([]);
-  const [neighborhoods, setNeighborhoods] = useState<TNeighborhoods[]>([]);
-  const [streets, setStreets] = useState<TStreets[]>([]);
+import {
+  ModalStreet,
+  ModalDistrict,
+  ModalCity,
+} from "../../../components/modal";
+import { Input } from "../../../components/inputs";
+import { SEO } from "../../../components/seo/seo";
+import { useModal } from "../../../hooks/use-modal";
+import { maskCPF, maskPhone } from "../../../utils/mask";
+import { Neighborhood, schemaNeighborhood } from "../neighborhoods/form";
+import { Street, schemaStreet } from "../streets/form";
+import { City, schemaCity } from "../cities/form";
+import { api } from "../../../services/api";
+
+export const schema = {
+  id: z.string().optional(),
+  type: z.enum(["owner", "tenant"]).default("owner").optional(),
+  first_name: z.string().min(1, { message: "Campo é obrigatório" }),
+  last_name: z.string().min(1, { message: "Campo é obrigatório" }),
+  email: z.string().optional(),
+  cpf: z.string().optional(),
+  rg: z.string().optional(),
+  cnpj: z.string().optional(),
+  ie: z.string().optional(),
+  phone: z.string().min(1, { message: "Campo é obrigatório" }),
+  cc_bank: z.string().optional(),
+  ag_bank: z.string().optional(),
+  pix_bank: z.string().optional(),
+  rent_value: z.string().optional(),
+  rental_value: z.string().optional(),
+  number: z.string().optional(),
+
+  streets_id: z.string().optional(),
+  neighborhoods_id: z.string().optional(),
+  cities_id: z.string().optional(),
+};
+
+export const schemaOwner = z.object({ ...schema });
+export const schemaOwnerCreated = z.object({
+  ...schema,
+  city: schemaCity.optional(),
+  street: schemaStreet.optional(),
+  district: schemaNeighborhood.optional(),
+});
+
+export type Owner = z.infer<typeof schemaOwner>;
+export type OwnerCreated = z.infer<typeof schemaOwnerCreated>;
+
+export default function FormOwners() {
+  const { data: cities } = useQuery({
+    queryKey: ["cities"],
+    queryFn: () =>
+      api.get<City[] | []>(`/cities`).then(async (res) => res.data),
+  });
+
+  const { data: neighborhoods } = useQuery({
+    queryKey: ["neighborhoods"],
+    queryFn: () =>
+      api
+        .get<Neighborhood[] | []>(`/neighborhoods`)
+        .then(async (res) => res.data),
+  });
+
+  const { data: streets } = useQuery({
+    queryKey: ["streets"],
+    queryFn: () =>
+      api.get<Street[] | []>(`/streets`).then(async (res) => res.data),
+  });
 
   const {
     openStreet,
@@ -34,8 +89,6 @@ export default function FormCustomers() {
     closeCity,
   } = useModal();
 
-  const { changeAlert } = useAlert();
-
   const navigate = useNavigate();
 
   const { ownerId } = useParams<{ ownerId: string | undefined }>();
@@ -45,100 +98,66 @@ export default function FormCustomers() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TOwners>();
+  } = useForm<OwnerCreated>({
+    resolver: zodResolver(schemaOwner),
+  });
 
-  async function onSubmit(data: TOwners) {
-    const rwsStreet = findSearch(streets, data.streets_id, "street");
-    const rwsDistrict = findSearch(
-      neighborhoods,
-      data.neighborhoods_id,
-      "district",
-    );
-    const rwsCity = cities.find(
-      (item) => [item.city, item.state.state].join("/") === data.cities_id,
-    );
-
-    const newData = {
-      ...data,
-      type: "owner",
-      cities_id: rwsCity?.id,
-      neighborhoods_id: rwsDistrict?.id,
-      streets_id: rwsStreet?.id,
-      rent_value: "0",
-      rental_value: "0",
-      email: "",
-    };
-
-    await api
-      .patch(`/customers`, newData)
-      .then(async (resp) => {
-        changeAlert({
-          message: "Dados salvos com sucesso.",
-        });
-        navigate({ pathname: `/adm/owners/${(await resp.data).id}/edit` });
-      })
-      .catch((error) => {
-        changeAlert({
-          title: "Atenção",
-          message: "Não foi possivel fazer o cadastro!",
-          variant: "danger",
-        });
-
-        if (error.response.status === 422)
-          changeAlert({
-            title: "Atenção",
-            variant: "danger",
-            message: `${error.response.data.message}`,
-          });
+  const { mutate } = useMutation({
+    mutationFn: async (data: OwnerCreated) => {
+      const newData = {
+        ...data,
+        type: "owner",
+        streets_id: streets?.find((item) => item.street === data.streets_id)
+          ?.id,
+        cities_id: cities?.find(
+          (item) => [item.city, item.state?.state].join("/") === data.cities_id,
+        )?.id,
+        neighborhoods_id: neighborhoods?.find(
+          (item) => item.district === data.neighborhoods_id,
+        )?.id,
+      };
+      console.log(newData);
+      return await api.patch(`/customers`, { ...newData });
+    },
+    onError: (error) => {
+      toast.error("Não foi possivel fazer o cadastro!");
+      console.log(`${error}`);
+    },
+    onSuccess: async (resp) => {
+      toast.success("Cadastro salvo com sucesso!");
+      navigate({
+        pathname: `/adm/owners/${await resp.data?.id}/edit`,
       });
-  }
+    },
+  });
 
-  async function loadCustomers() {
-    await api
-      .get(`/customers/${ownerId}`)
-      .then(async (res) => {
-        const customer: TOwners = await res.data;
-        reset({
-          ...customer,
-          neighborhoods_id: customer?.district?.district,
-          streets_id: customer.street?.street,
-          cities_id:
-            customer.city?.city && customer.city?.state.state
-              ? [customer.city?.city, customer.city?.state.state].join("/")
-              : "",
-        });
-      })
-      .catch(() => {
-        changeAlert({
-          message: "Não foi possivel conectar ao servidor.",
-        });
-      });
-  }
+  useQuery({
+    queryKey: ["owners", ownerId],
+    queryFn: () => {
+      if (!ownerId) return null;
+      return api
+        .get<OwnerCreated>(`/customers/${ownerId}`)
+        .then(async (res) => res.data);
+    },
+    onSuccess: (data) => {
+      if (data) {
+        const newData = {
+          ...data,
+          streets_id: streets?.find((item) => item.id === data.streets_id)
+            ?.street,
+          cities_id: [
+            cities?.find((item) => item.id === data.cities_id)?.city,
+            cities?.find((item) => item.id === data.cities_id)?.state?.state,
+          ].join("/"),
+          neighborhoods_id: neighborhoods?.find(
+            (item) => item.id === data.neighborhoods_id,
+          )?.district,
+        };
 
-  useEffect(() => {
-    (async () =>
-      await api
-        .get("/cities")
-        .then(async (res) => setCities(await res.data)))();
-  }, []);
-
-  useEffect(() => {
-    (async () =>
-      await api
-        .get("/neighborhoods")
-        .then(async (res) => setNeighborhoods(await res.data)))();
-  }, []);
-
-  useEffect(() => {
-    (async () =>
-      await api
-        .get("/streets")
-        .then(async (res) => setStreets(await res.data)))();
-  }, []);
-
-  useEffect(() => {
-    if (ownerId) loadCustomers();
-  }, [ownerId]);
+        reset(newData);
+      }
+    },
+  });
 
   return (
     <>
@@ -159,9 +178,9 @@ export default function FormCustomers() {
           </Link>
         </div>
         <form
-          className="basis-full"
           id="form"
-          onSubmit={handleSubmit(onSubmit)}
+          className="basis-full"
+          onSubmit={handleSubmit(async (data) => mutate(data))}
         >
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="basis-full md:basis-5/12 px-3">
@@ -170,12 +189,7 @@ export default function FormCustomers() {
                 label="Nome. *"
                 className={`input-form ${errors.first_name && "invalid"}`}
                 error={errors.first_name}
-                register={register("first_name", {
-                  required: {
-                    value: true,
-                    message: "Campo é obrigatório",
-                  },
-                })}
+                register={register("first_name")}
               />
             </div>
             <div className="basis-full md:basis-5/12 px-3">
@@ -184,12 +198,7 @@ export default function FormCustomers() {
                 label="Sobrenome * "
                 className={`input-form ${errors.last_name && "invalid"}`}
                 error={errors.last_name}
-                register={register("last_name", {
-                  required: {
-                    value: true,
-                    message: "Campo é obrigatório",
-                  },
-                })}
+                register={register("last_name")}
               />
             </div>
           </div>
@@ -200,12 +209,7 @@ export default function FormCustomers() {
                 label="E-mail"
                 className={`input-form ${errors.email && "invalid"}`}
                 error={errors.email}
-                register={register("email", {
-                  required: {
-                    value: false,
-                    message: "Campo é obrigatório",
-                  },
-                })}
+                register={register("email")}
               />
             </div>
           </div>
@@ -216,12 +220,7 @@ export default function FormCustomers() {
                 label="CNPJ"
                 className={`input-form ${errors.cnpj && "invalid"}`}
                 error={errors.cnpj}
-                register={register("cnpj", {
-                  required: {
-                    value: false,
-                    message: "Campo é obrigatório",
-                  },
-                })}
+                register={register("cnpj")}
               />
             </div>
             <div className="basis-full md:basis-3/12 px-3 mb-6">
@@ -230,12 +229,7 @@ export default function FormCustomers() {
                 label="IE "
                 className={`input-form ${errors.ie && "invalid"}`}
                 error={errors.ie}
-                register={register("ie", {
-                  required: {
-                    value: false,
-                    message: "Campo é obrigatório",
-                  },
-                })}
+                register={register("ie")}
               />
             </div>
             <div className="basis-full md:basis-3/12 px-3 mb-6">
@@ -244,12 +238,7 @@ export default function FormCustomers() {
                 label="RG "
                 className={`input-form ${errors.rg && "invalid"}`}
                 error={errors.rg}
-                register={register("rg", {
-                  required: {
-                    value: false,
-                    message: "Campo é obrigatório",
-                  },
-                })}
+                register={register("rg")}
               />
             </div>
             <div className="basis-full md:basis-3/12 px-3 mb-6">
@@ -259,12 +248,7 @@ export default function FormCustomers() {
                 label="CPF "
                 className={`input-form ${errors.cpf && "invalid"}`}
                 error={errors.cpf}
-                register={register("cpf", {
-                  required: {
-                    value: false,
-                    message: "Campo é obrigatório",
-                  },
-                })}
+                register={register("cpf")}
               />
             </div>
             <div className="basis-full md:basis-3/12 px-3 mb-6">
@@ -274,12 +258,7 @@ export default function FormCustomers() {
                 label="Telefone *"
                 className={`input-form ${errors.phone && "invalid"}`}
                 error={errors.phone}
-                register={register("phone", {
-                  required: {
-                    value: true,
-                    message: "Campo é obrigatório",
-                  },
-                })}
+                register={register("phone")}
               />
             </div>
 
@@ -294,7 +273,7 @@ export default function FormCustomers() {
                     type="search"
                     className={`input-form ${errors.streets_id && "invalid"}`}
                     placeholder="Pesquisar..."
-                    {...register("streets_id", { required: false })}
+                    {...register("streets_id")}
                   />
                 </span>
                 <span
@@ -308,9 +287,10 @@ export default function FormCustomers() {
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
               <datalist id="streets_id">
-                {streets.map(({ id, street }) => (
-                  <option key={id} value={street} />
-                ))}
+                {streets &&
+                  streets?.map(({ id, street }) => (
+                    <option key={id} value={street} />
+                  ))}
               </datalist>
             </div>
             <div className="basis-full md:basis-2/12 px-3">
@@ -319,12 +299,7 @@ export default function FormCustomers() {
                 label="Número Casa"
                 className={`input-form ${errors.number && "invalid"}`}
                 error={errors.number}
-                register={register("number", {
-                  required: {
-                    value: false,
-                    message: "Campo é obrigatório",
-                  },
-                })}
+                register={register("number")}
               />
             </div>
             <div className="basis-full md:basis-4/12 px-3 mb-6">
@@ -340,7 +315,7 @@ export default function FormCustomers() {
                       errors.neighborhoods_id && "invalid"
                     }`}
                     placeholder="Pesquisar..."
-                    {...register("neighborhoods_id", { required: false })}
+                    {...register("neighborhoods_id")}
                   />
                 </span>
                 <span
@@ -354,9 +329,10 @@ export default function FormCustomers() {
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
               <datalist id="neighborhoods_id">
-                {neighborhoods.map(({ id, district }) => (
-                  <option key={id} value={[district].join(", ")} />
-                ))}
+                {neighborhoods &&
+                  neighborhoods?.map(({ id, district }) => (
+                    <option key={id} value={[district].join(", ")} />
+                  ))}
               </datalist>
             </div>
             <div className="basis-full md:basis-4/12 px-3 mb-6">
@@ -370,7 +346,7 @@ export default function FormCustomers() {
                     type="search"
                     className={`input-form ${errors.cities_id && "invalid"}`}
                     placeholder="Pesquisar..."
-                    {...register("cities_id", { required: false })}
+                    {...register("cities_id")}
                   />
                 </span>
                 <span
@@ -384,15 +360,16 @@ export default function FormCustomers() {
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
               <datalist id="cities_id">
-                {cities.map((city) => (
-                  <option
-                    key={city.id}
-                    value={[city.city, city?.state?.state].join("/")}
-                  />
-                ))}
+                {cities &&
+                  cities?.map((city) => (
+                    <option
+                      key={city.id}
+                      value={[city.city, city?.state?.state].join("/")}
+                    />
+                  ))}
               </datalist>
             </div>
-            <div className="basis-full font-bold uppercase font-play pt-5 px-3">
+            {/* <div className="basis-full font-bold uppercase font-play pt-5 px-3">
               Dados da Conta Bancária <hr className="my-5" />
             </div>
             <div className="basis-full md:basis-2/12 px-3">
@@ -401,12 +378,7 @@ export default function FormCustomers() {
                 label="Agência"
                 className={`input-form ${errors.ag_bank && "invalid"}`}
                 error={errors.ag_bank}
-                register={register("ag_bank", {
-                  required: {
-                    value: false,
-                    message: "Campo é obrigatório",
-                  },
-                })}
+                register={register("ag_bank")}
               />
             </div>
             <div className="basis-full md:basis-4/12 px-3">
@@ -415,12 +387,7 @@ export default function FormCustomers() {
                 label="Conta Corrente"
                 className={`input-form ${errors.cc_bank && "invalid"}`}
                 error={errors.cc_bank}
-                register={register("cc_bank", {
-                  required: {
-                    value: false,
-                    message: "Campo é obrigatório",
-                  },
-                })}
+                register={register("cc_bank")}
               />
             </div>
             <div className="basis-full md:basis-4/12 px-3">
@@ -429,20 +396,15 @@ export default function FormCustomers() {
                 label="Chave Pix"
                 className={`input-form ${errors.pix_bank && "invalid"}`}
                 error={errors.pix_bank}
-                register={register("pix_bank", {
-                  required: {
-                    value: false,
-                    message: "Campo é obrigatório",
-                  },
-                })}
+                register={register("pix_bank")}
               />
-            </div>
+            </div> */}
           </div>
         </form>
       </div>
-      <ModalStreet addStreets={setStreets} />
-      <ModalDistrict addDistricts={setNeighborhoods} />
-      <ModalCity addCities={setCities} />
+      <ModalStreet />
+      <ModalDistrict />
+      <ModalCity />
     </>
   );
 }

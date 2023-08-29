@@ -1,4 +1,3 @@
-import { api } from "../../services/api";
 import {
   faEdit,
   faSort,
@@ -7,19 +6,30 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { parse, stringify } from "query-string";
-import { KeyboardEvent, useEffect, useState } from "react";
+import { KeyboardEvent, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Loading } from "../../components/loading";
-import { Pagination } from "../../components/pagination";
-import { TOwners } from "./types";
-import { TPagination } from "../../global/types";
-import { SEO } from "../../components/seo/seo";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { schemaTenantCreated } from "./form";
+import { z } from "zod";
 
-export default function Customers() {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [customers, setCustomers] = useState<TPagination<TOwners[]>>(
-    {} as TPagination<TOwners[]>,
-  );
+import { Loading } from "../../../components/loading";
+import { Pagination } from "../../../components/pagination";
+import { SEO } from "../../../components/seo/seo";
+import { api } from "../../../services/api";
+
+const schema = z.object({
+  limit: z.number(),
+  page: z.number(),
+  total: z.number(),
+  data: z.array(schemaTenantCreated),
+});
+
+export type TenantPaginated = z.output<typeof schema>;
+
+export default function Tenants() {
+  const [textInput, setTextInput] = useState<string>("");
+
+  const queryClient = useQueryClient();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,11 +40,16 @@ export default function Customers() {
   const limit = (query.limit || "25") as string;
   const page = (query.page || "1") as string;
 
+  function handleClearSearch() {
+    navigate({ search: `?q=` });
+    setTextInput("");
+  }
+
   function handleSearch(event: KeyboardEvent<EventTarget & HTMLInputElement>) {
-    if (event.currentTarget.value) {
+    if (textInput) {
       if (event.code === "Enter" || event.keyCode === 13) {
         navigate({
-          search: `?q=${event.currentTarget.value}`,
+          search: `?q=${textInput}`,
         });
       }
     }
@@ -42,39 +57,30 @@ export default function Customers() {
 
   function handleOrder(orderString: string) {
     const qsParse = parse(orderString);
-
     navigate({
       search: decodeURI(stringify({ ...query, ...qsParse })),
     });
   }
 
-  async function handleDelete(data: TOwners) {
-    if (!confirm(`Você deseja excluir ${data.first_name}?`)) return;
+  const { mutate } = useMutation({
+    mutationFn: async (id: string) => api.delete(`/customers/${id}`),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: ["tenant", page, limit, qs],
+      }),
+  });
 
-    setLoading(true);
+  const { data: tenant, isLoading } = useQuery({
+    queryKey: ["tenant", page, limit, qs],
+    queryFn: () =>
+      api
+        .get<TenantPaginated>(
+          `/customers?page=${page}&limit=${limit}&search[type]=tenant&search[last_name]=${qs}&search[first_name]=${qs}&search[cpf]=${qs}`,
+        )
+        .then(async (res) => res.data),
+  });
 
-    await api
-      .delete(`/customers/${data.id}`)
-      .then(() => loadCustomers())
-      .finally(() => setLoading(false));
-  }
-
-  async function loadCustomers() {
-    const conveterParse = parse(
-      `page=${page}&limit=${limit}&search[type]=owner&search[last_name]=${qs}&search[first_name]=${qs}&search[cpf]=${qs}`,
-    );
-
-    await api
-      .get(`/customers?${decodeURI(stringify({ ...query, ...conveterParse }))}`)
-      .then(async (resp) => setCustomers(await resp.data))
-      .finally(() => setLoading(false));
-  }
-
-  useEffect(() => {
-    loadCustomers();
-  }, [locationDecodURI]);
-
-  if (loading) return <Loading />;
+  if (isLoading) return <Loading />;
 
   return (
     <>
@@ -90,13 +96,18 @@ export default function Customers() {
               <input
                 type="text"
                 className="input-form"
-                defaultValue={`${query.q || ""}`}
+                value={textInput}
+                onChange={(e) => setTextInput(e.currentTarget.value)}
                 onKeyDown={handleSearch}
               />
-              {qs && (
-                <Link className="btn-default text-black" to="/adm/owners">
+              {textInput && (
+                <button
+                  className="btn text-black w-8 h-8"
+                  type="button"
+                  onClick={handleClearSearch}
+                >
                   <FontAwesomeIcon icon={faTimes} />
-                </Link>
+                </button>
               )}
             </aside>
             <nav>
@@ -107,7 +118,7 @@ export default function Customers() {
           </section>
           <nav>
             <Pagination
-              total={customers?.total || 0}
+              total={tenant?.total || 0}
               currentPage={Number(`${query.page || "1"}`)}
               perPage={Number(`${query.limit || "25"}`)}
             />
@@ -146,36 +157,40 @@ export default function Customers() {
           <span className="basis-3/12">Telefone.</span>
         </li>
 
-        {customers?.data?.map((rws) => (
-          <li key={rws.id} className="list-orders">
-            <span className="flex gap-1 basis-1/12">
-              <Link
-                className="btn-primary btn-xs"
-                to={`/adm/owners/${rws.id}/edit`}
-              >
-                <FontAwesomeIcon icon={faEdit} />
-              </Link>
-              <span
-                className="btn-danger btn-xs"
-                onClick={() => handleDelete(rws)}
-              >
-                <FontAwesomeIcon icon={faTrash} />
+        {tenant?.total &&
+          tenant?.data?.map((rws) => (
+            <li key={rws.id} className="list-orders">
+              <span className="flex gap-1 basis-1/12">
+                <Link
+                  className="btn-primary btn-xs"
+                  to={`/adm/owners/${rws.id}/edit`}
+                >
+                  <FontAwesomeIcon icon={faEdit} />
+                </Link>
+                <span
+                  className="btn-danger btn-xs"
+                  onClick={() => {
+                    if (confirm(`Você deseja excluir ${rws.first_name}?`))
+                      mutate(`${rws.id}`);
+                  }}
+                >
+                  <FontAwesomeIcon icon={faTrash} />
+                </span>
               </span>
-            </span>
-            <span className="basis-4/12">{rws.first_name}</span>
-            <span className="basis-4/12">{rws.last_name}</span>
-            <span className="basis-3/12">{rws.phone}</span>
-          </li>
-        ))}
+              <span className="basis-4/12">{rws.first_name}</span>
+              <span className="basis-4/12">{rws.last_name}</span>
+              <span className="basis-3/12">{rws.phone}</span>
+            </li>
+          ))}
 
-        {!customers?.data?.length && (
+        {!tenant?.total && (
           <li className="py-3 px-6 text-center">Nenhum cliente encontado</li>
         )}
 
         <li className="flex justify-end mt-5">
           <nav>
             <Pagination
-              total={customers?.total || 0}
+              total={tenant?.total || 0}
               currentPage={Number(`${query.page || "1"}`)}
               perPage={Number(`${query.limit || "25"}`)}
             />

@@ -6,7 +6,7 @@ import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
 
 import { useGeolocation } from "../../hooks/use-geolocation";
-import { TCategories } from "../../pages/admin-categories/types";
+import { TCategories } from "../../pages/categories/types";
 import { maskCurrency, maskCurrencyUs } from "../../utils/mask";
 import { Input } from "../inputs";
 import { slugiFy } from "../../utils/functions";

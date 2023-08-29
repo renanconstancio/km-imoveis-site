@@ -3,30 +3,44 @@ import { useForm } from "react-hook-form";
 import { useModal } from "../../hooks/use-modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import { Street, schemaStreet } from "../../pages/admin/streets/form";
+
 import { Input } from "../inputs";
 import { maskCep } from "../../utils/mask";
-import { TStreets } from "../../pages/admin-streets/types";
 
 type TModalStreet = {
-  addStreets: (data: any) => void;
+  addStreets?: (data: any) => void;
 };
 
 export default function ModalStreet({ addStreets }: TModalStreet) {
   const { openStreet, closeStreet } = useModal();
 
+  const queryClient = useQueryClient();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TStreets>();
+  } = useForm<Street>({
+    resolver: zodResolver(schemaStreet),
+  });
 
-  async function onSubmit(data: TStreets) {
-    await api.patch(`/streets`, data).then(async (res) => {
-      const category = await res.data;
-      addStreets((old: any) => [...old, category]);
-      closeStreet(!openStreet);
-    });
-  }
+  const { mutate } = useMutation({
+    mutationFn: async (data: Street) => {
+      return await api.patch(`/streets`, { ...data });
+    },
+    onError: (error) => {
+      toast.error("Não foi possivel fazer o cadastro!");
+      console.log(`${error}`);
+    },
+    onSuccess: async () => {
+      toast.success("Cadastro salvo com sucesso!");
+      queryClient.invalidateQueries({ queryKey: ["streets"] });
+    },
+  });
 
   return (
     <div className={`${openStreet ? "" : "hidden"} modal`}>
@@ -44,19 +58,17 @@ export default function ModalStreet({ addStreets }: TModalStreet) {
             <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-white">
               Cadastrar Ruas, Avenidas, Aptos
             </h3>
-            <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+            <form
+              className="space-y-6"
+              onSubmit={handleSubmit(async (data) => mutate(data))}
+            >
               <div className="w-full">
                 <Input
                   type="text"
                   label="Rua, Avenida, Apto. *"
                   className={`input-form ${errors.street && "invalid"}`}
                   error={errors.street}
-                  register={register("street", {
-                    required: {
-                      value: true,
-                      message: "Campo é obrigatório",
-                    },
-                  })}
+                  register={register("street")}
                 />
               </div>
               <div className="w-full">
@@ -66,12 +78,7 @@ export default function ModalStreet({ addStreets }: TModalStreet) {
                   label="CEP *"
                   className={`input-form ${errors.zip_code && "invalid"}`}
                   error={errors.zip_code}
-                  register={register("zip_code", {
-                    required: {
-                      value: false,
-                      message: "Campo é obrigatório",
-                    },
-                  })}
+                  register={register("zip_code")}
                 />
               </div>
               <button className="btn-primary" type="submit">
