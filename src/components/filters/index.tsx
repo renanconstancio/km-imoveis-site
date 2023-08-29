@@ -6,7 +6,6 @@ import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
 
 import { useGeolocation } from "../../hooks/use-geolocation";
-import { TCategories } from "../../pages/categories/types";
 import { maskCurrency, maskCurrencyUs } from "../../utils/mask";
 import { Input } from "../inputs";
 import { slugiFy } from "../../utils/functions";
@@ -14,6 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import { TFilters, TFiltersComp } from "./types";
 
 import { api } from "../../services/api";
+import { Category } from "../../pages/admin/categories/form";
 
 export function Filters({ variant = "col" }: TFiltersComp) {
   const dataSituation = Object.assign({
@@ -37,7 +37,7 @@ export function Filters({ variant = "col" }: TFiltersComp) {
   const { data: categories } = useQuery({
     queryKey: ["site-categories"],
     queryFn: () =>
-      api.get<TCategories[]>("/categories").then(async (res) => res.data),
+      api.get<Category[]>("/categories").then(async (res) => res.data),
   });
 
   const { data: cities } = useQuery({
