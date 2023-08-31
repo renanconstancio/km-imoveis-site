@@ -1,73 +1,75 @@
-import { api } from "../../services/api";
 import { useForm } from "react-hook-form";
-import { useModal } from "../../hooks/use-modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { maskCPF, maskPhone } from "../../utils/mask";
-import { findSearch } from "../../utils/functions";
-import { TStreets } from "../../pages/streets/types";
-import { TNeighborhoods } from "../../pages/admin-neighborhoods/types";
-import { TCities } from "../../pages/cities/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+
 import { Input } from "../inputs";
-import { TTenant } from "../../pages/admin-tenant/types";
-import { useCallback } from "react";
+import { maskCPF, maskPhone } from "../../utils/mask";
+import { City } from "../../pages/admin/cities/form";
+import { TenantCreated, schemaTenant } from "../../pages/admin/tenant/form";
+import { Neighborhood } from "../../pages/admin/neighborhoods/form";
+import { Street } from "../../pages/admin/streets/form";
+import { useModal } from "../../hooks/use-modal";
+import { api } from "../../services/api";
 
-type TModalTenant = {
-  addTenant: (data: any) => void;
-  streets: TStreets[];
-  neighborhoods: TNeighborhoods[];
-  cities: TCities[];
-};
-
-export default function ModalTenant({
-  addTenant,
-  cities,
-  neighborhoods,
-  streets,
-}: TModalTenant) {
+export default function ModalTenant() {
   const { openTenant, closeTenant } = useModal();
+
+  const { data: cities } = useQuery<City[] | []>({
+    queryKey: ["cities"],
+    queryFn: () => api.get(`/cities`).then(async (res) => res.data),
+  });
+
+  const { data: neighborhoods } = useQuery<Neighborhood[] | []>({
+    queryKey: ["neighborhoods"],
+    queryFn: () => api.get(`/neighborhoods`).then(async (res) => res.data),
+  });
+
+  const { data: streets } = useQuery<Street[] | []>({
+    queryKey: ["streets"],
+    queryFn: () => api.get(`/streets`).then(async (res) => res.data),
+  });
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TTenant>();
+  } = useForm<TenantCreated>({
+    resolver: zodResolver(schemaTenant),
+  });
 
-  async function onSubmit(data: TTenant) {
-    const rwsStreet = findSearch(streets, data.streets_id, "street");
-    const rwsDistrict = findSearch(
-      neighborhoods,
-      data.neighborhoods_id,
-      "district",
-    );
-    const rwsCity = cities.find(
-      (item) => [item.city, item.state.state].join("/") === data.cities_id,
-    );
-
-    const newPostData = {
-      ...data,
-      type: "tenant",
-      cities_id: rwsCity?.id,
-      neighborhoods_id: rwsDistrict?.id,
-      streets_id: rwsStreet?.id,
-      cc_bank: "",
-      ag_bank: "",
-      pix_bank: "",
-      rent_value: "0",
-      rental_value: "0",
-    };
-
-    await api.patch(`/customers`, newPostData).then(async (res) => {
-      const customers = await res.data;
-      addTenant((old: any) => [...old, customers]);
-      closeTenant(!openTenant);
-    });
-  }
+  const { mutate } = useMutation({
+    mutationFn: async (data: TenantCreated) => {
+      const newData = {
+        ...data,
+        type: "tenant",
+        streets_id: streets?.find((item) => item.street === data.streets_id)
+          ?.id,
+        cities_id: cities?.find(
+          (item) => [item.city, item.state?.state].join("/") === data.cities_id,
+        )?.id,
+        neighborhoods_id: neighborhoods?.find(
+          (item) => item.district === data.neighborhoods_id,
+        )?.id,
+      };
+      console.log(newData);
+      return await api.patch(`/customers`, { ...newData });
+    },
+    onError: (error) => {
+      toast.error("Não foi possivel fazer o cadastro!");
+      console.log(`${error}`);
+    },
+    onSuccess: async (resp) => {
+      toast.success("Cadastro salvo com sucesso!");
+    },
+  });
 
   return (
     <div className={`${openTenant ? "" : "hidden"} modal`}>
       <div className="modal-content max-w-4xl">
-        <div className="modal-body">
+        <div className="modal-body rounded-lg">
           <button
             type="button"
             className="modal-close"
@@ -83,7 +85,7 @@ export default function ModalTenant({
             <form
               className="w-full"
               id="formTenant"
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={handleSubmit(async (data) => mutate(data))}
             >
               <button
                 className="btn-success btn-ico mb-5"
@@ -228,7 +230,7 @@ export default function ModalTenant({
                     </small>
                   )}
                   <datalist id="streets_id">
-                    {streets.map(({ id, street }) => (
+                    {streets?.map(({ id, street }) => (
                       <option key={id} value={street} />
                     ))}
                   </datalist>
@@ -269,7 +271,7 @@ export default function ModalTenant({
                     </small>
                   )}
                   <datalist id="neighborhoods_id">
-                    {neighborhoods.map(({ id, district }) => (
+                    {neighborhoods?.map(({ id, district }) => (
                       <option key={id} value={[district].join(", ")} />
                     ))}
                   </datalist>
@@ -292,7 +294,7 @@ export default function ModalTenant({
                     </small>
                   )}
                   <datalist id="cities_id">
-                    {cities.map((city) => (
+                    {cities?.map((city) => (
                       <option
                         key={city.id}
                         value={[city.city, city?.state?.state].join("/")}

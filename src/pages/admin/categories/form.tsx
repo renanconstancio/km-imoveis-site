@@ -11,7 +11,7 @@ import { Input } from "../../../components/inputs";
 import { SEO } from "../../../components/seo/seo";
 import { api } from "../../../services/api";
 
-const schemaCategory = z.object({
+export const schemaCategory = z.object({
   id: z.string().optional(),
   category: z.string().min(1, { message: "Campo obrigatório!" }),
   filter: z.boolean().default(true).optional(),

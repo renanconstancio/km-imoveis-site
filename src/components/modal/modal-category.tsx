@@ -1,40 +1,46 @@
 import { api } from "../../services/api";
 import { useForm } from "react-hook-form";
 import { useModal } from "../../hooks/use-modal";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { TCategories } from "../../pages/categories/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
-export type TModalCategory = {
-  addCategories: (data: any) => void;
-};
+import { Category, schemaCategory } from "../../pages/admin/categories/form";
 
-export default function ModalCategory({ addCategories }: TModalCategory) {
+export default function ModalCategory() {
   const { openCategory, closeCategory } = useModal();
+
+  const queryClient = useQueryClient();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TCategories>();
+  } = useForm<Category>({
+    resolver: zodResolver(schemaCategory),
+  });
 
-  async function onSubmit(data: TCategories) {
-    await api
-      .patch(`/categories`, {
-        ...data,
-        filter: data.filter === "yes" ? true : false,
-      })
-      .then(async (res) => {
-        const category = await res.data;
-        addCategories((old: any) => [...old, category]);
-        closeCategory(!openCategory);
-      });
-  }
+  const { mutate } = useMutation({
+    mutationFn: async (data: Category) => {
+      return await api.patch(`/categories`, data);
+    },
+    onError: (error) => {
+      toast.error("Não foi possivel fazer o cadastro!");
+      console.log(`${error}`);
+    },
+    onSuccess: async () => {
+      toast.success("Cadastro salvo com sucesso!");
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+  });
 
   return (
     <div className={`${openCategory ? "" : "hidden"} modal`}>
       <div className="modal-content">
-        <div className="modal-body">
+        <div className="modal-body rounded-lg">
           <button
             type="button"
             className="modal-close"
@@ -47,10 +53,13 @@ export default function ModalCategory({ addCategories }: TModalCategory) {
             <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-white">
               Cadastrar Nova Categoria
             </h3>
-            <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+            <form
+              className="space-y-6"
+              onSubmit={handleSubmit(async (data) => mutate(data))}
+            >
               <div className="w-full">
                 <label className="label-form" htmlFor="category">
-                  Descrição do Imóvel
+                  Descrição da Categoria *
                 </label>
                 <input
                   type="text"

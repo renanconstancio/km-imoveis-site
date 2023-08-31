@@ -1,20 +1,18 @@
-import { api } from "../../services/api";
+import { api } from "../../../services/api";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
-import { useAlert } from "../../hooks/use-alert";
-import { Input } from "../../components/inputs";
-import { maskPhone } from "../../utils/mask";
-import { useAuth } from "../../hooks/use-auth";
+import { Input } from "../../../components/inputs";
+import { maskPhone } from "../../../utils/mask";
+import { useAuth } from "../../../hooks/use-auth";
 import { TUsers } from "./types";
-import { SEO } from "../../components/seo/seo";
+import { SEO } from "../../../components/seo/seo";
 
 export default function FormUsers() {
   const navigate = useNavigate();
 
-  const { changeAlert } = useAlert();
   const { auth } = useAuth();
 
   const { userId } = useParams<{ userId: string | undefined }>();
@@ -36,44 +34,18 @@ export default function FormUsers() {
       newData.password = data.password;
     }
 
-    await api
-      .patch(`/users`, newData)
-      .then(async (resp) => {
-        changeAlert({
-          message: "Dados salvos com sucesso.",
-        }),
-          navigate({ pathname: `/adm/users/${(await resp.data).id}/edit` });
-      })
-      .catch((error) => {
-        changeAlert({
-          title: "Atenção",
-          message: "Não foi possivel fazer o cadastro!",
-          variant: "danger",
-        });
-
-        if (error.response.status === 422)
-          changeAlert({
-            title: "Atenção",
-            variant: "danger",
-            message: `${error.response.data.message}`,
-          });
-      });
+    await api.patch(`/users`, newData).then(async (resp) => {
+      navigate({ pathname: `/adm/users/${(await resp.data).id}/edit` });
+    });
   }
 
   async function loadStreets() {
-    await api
-      .get(`/users/${userId}`)
-      .then(async (res) => {
-        const resp: TUsers = await res.data;
-        reset({
-          ...resp,
-        });
-      })
-      .catch(() =>
-        changeAlert({
-          message: "Não foi possivel conectar ao servidor.",
-        }),
-      );
+    await api.get(`/users/${userId}`).then(async (res) => {
+      const resp: TUsers = await res.data;
+      reset({
+        ...resp,
+      });
+    });
   }
 
   useEffect(() => {

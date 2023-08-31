@@ -11,11 +11,7 @@ import { Street, schemaStreet } from "../../pages/admin/streets/form";
 import { Input } from "../inputs";
 import { maskCep } from "../../utils/mask";
 
-type TModalStreet = {
-  addStreets?: (data: any) => void;
-};
-
-export default function ModalStreet({ addStreets }: TModalStreet) {
+export default function ModalStreet() {
   const { openStreet, closeStreet } = useModal();
 
   const queryClient = useQueryClient();
@@ -45,7 +41,7 @@ export default function ModalStreet({ addStreets }: TModalStreet) {
   return (
     <div className={`${openStreet ? "" : "hidden"} modal`}>
       <div className="modal-content">
-        <div className="modal-body">
+        <div className="modal-body rounded-lg">
           <button
             type="button"
             className="modal-close"
@@ -75,7 +71,7 @@ export default function ModalStreet({ addStreets }: TModalStreet) {
                 <Input
                   mask={maskCep}
                   type="text"
-                  label="CEP *"
+                  label="CEP"
                   className={`input-form ${errors.zip_code && "invalid"}`}
                   error={errors.zip_code}
                   register={register("zip_code")}

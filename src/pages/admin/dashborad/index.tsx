@@ -1,4 +1,3 @@
-import { api } from "../../services/api";
 import {
   faCashRegister,
   faExchange,
@@ -8,9 +7,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import { SEO } from "../../components/seo/seo";
+import { SEO } from "../../../components/seo/seo";
+import { api } from "../../../services/api";
 
-export function Dashboard() {
+export default function Dashboard() {
   const [totalImmobiles, setTotal] = useState<number>(0);
   const [totalLocation, setTotalLocation] = useState<number>(0);
   const [totalSaleBarter, setTotalSaleBarter] = useState<number>(0);

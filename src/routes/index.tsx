@@ -1,16 +1,20 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { LightBoxProvider } from "../context/lightbox";
 
 import { Admin, Site } from "../components/layout";
 import { LoadingFull } from "../components/loading";
 
-import { Dashboard } from "../pages/admin-dashborad";
-import { Immobiles, FormImmobiles } from "../pages/admin-immobiles";
-import { Logs } from "../pages/admin-logs";
-
-import { Users, FormUsers } from "../pages/admin-users";
 import { Error } from "../pages/error";
-import { LightBoxProvider } from "../context/lightbox";
+
+const Logs = lazy(() => import("../pages/admin/logs/list"));
+const Dashboard = lazy(() => import("../pages/admin/dashborad"));
+
+const Users = lazy(() => import("../pages/admin/users/list"));
+const FormUsers = lazy(() => import("../pages/admin/users/form"));
+
+const Immobiles = lazy(() => import("../pages/admin/immobiles/list"));
+const FormImmobiles = lazy(() => import("../pages/admin/immobiles/form"));
 
 const Tenants = lazy(() => import("../pages/admin/tenant/list"));
 const FormTenants = lazy(() => import("../pages/admin/tenant/form"));

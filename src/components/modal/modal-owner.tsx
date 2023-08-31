@@ -4,66 +4,71 @@ import { useModal } from "../../hooks/use-modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { maskCPF, maskPhone } from "../../utils/mask";
-import { findSearch } from "../../utils/functions";
-import { TStreets } from "../../pages/streets/types";
-import { TNeighborhoods } from "../../pages/admin-neighborhoods/types";
-import { TCities } from "../../pages/cities/types";
 import { Input } from "../inputs";
-import { TOwners } from "../../pages/owners/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import { City } from "../../pages/admin/cities/form";
+import { Neighborhood } from "../../pages/admin/neighborhoods/form";
+import { Street } from "../../pages/admin/streets/form";
+import { OwnerCreated, schemaOwner } from "../../pages/admin/owners/form";
 
-export type TModalOwner = {
-  addOwner: (data: any) => void;
-  streets: TStreets[];
-  neighborhoods: TNeighborhoods[];
-  cities: TCities[];
-};
-
-export default function ModalOwner({
-  addOwner,
-  cities,
-  neighborhoods,
-  streets,
-}: TModalOwner) {
+export default function ModalOwner() {
   const { openOwner, closeOwner } = useModal();
+
+  const { data: cities } = useQuery<City[] | []>({
+    queryKey: ["cities"],
+    queryFn: () => api.get(`/cities`).then(async (res) => res.data),
+  });
+
+  const { data: neighborhoods } = useQuery<Neighborhood[] | []>({
+    queryKey: ["neighborhoods"],
+    queryFn: () => api.get(`/neighborhoods`).then(async (res) => res.data),
+  });
+
+  const { data: streets } = useQuery<Street[] | []>({
+    queryKey: ["streets"],
+    queryFn: () => api.get(`/streets`).then(async (res) => res.data),
+  });
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TOwners>();
+  } = useForm<OwnerCreated>({
+    resolver: zodResolver(schemaOwner),
+  });
 
-  async function onSubmit(data: TOwners) {
-    const rwsStreet = findSearch(streets, data.streets_id, "street");
-    const rwsDistrict = findSearch(
-      neighborhoods,
-      data.neighborhoods_id,
-      "district",
-    );
-    const rwsCity = cities.find(
-      (item) => [item.city, item.state.state].join("/") === data.cities_id,
-    );
-
-    const newPostData = {
-      ...data,
-      type: "owner",
-      cities_id: rwsCity?.id,
-      neighborhoods_id: rwsDistrict?.id,
-      streets_id: rwsStreet?.id,
-      rent_value: "0",
-      rental_value: "0",
-    };
-
-    await api.patch(`/customers`, newPostData).then(async (res) => {
-      const customers = await res.data;
-      addOwner((old: any) => [...old, customers]);
-      closeOwner(!openOwner);
-    });
-  }
+  const { mutate } = useMutation({
+    mutationFn: async (data: OwnerCreated) => {
+      const newData = {
+        ...data,
+        type: "tenant",
+        streets_id: streets?.find((item) => item.street === data.streets_id)
+          ?.id,
+        cities_id: cities?.find(
+          (item) => [item.city, item.state?.state].join("/") === data.cities_id,
+        )?.id,
+        neighborhoods_id: neighborhoods?.find(
+          (item) => item.district === data.neighborhoods_id,
+        )?.id,
+      };
+      console.log(newData);
+      return await api.patch(`/customers`, { ...newData });
+    },
+    onError: (error) => {
+      toast.error("Não foi possivel fazer o cadastro!");
+      console.log(`${error}`);
+    },
+    onSuccess: async (resp) => {
+      toast.success("Cadastro salvo com sucesso!");
+    },
+  });
 
   return (
     <div className={`${openOwner ? "" : "hidden"} modal`}>
       <div className="modal-content max-w-4xl">
-        <div className="modal-body">
+        <div className="modal-body rounded-lg">
           <button
             type="button"
             className="modal-close"
@@ -79,7 +84,7 @@ export default function ModalOwner({
             <form
               className="w-full"
               id="formOwner"
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={handleSubmit(async (data) => mutate(data))}
             >
               <button
                 className="btn-success btn-ico mb-5"
@@ -96,12 +101,7 @@ export default function ModalOwner({
                     label="Nome. *"
                     className={`input-form ${errors.first_name && "invalid"}`}
                     error={errors.first_name}
-                    register={register("first_name", {
-                      required: {
-                        value: true,
-                        message: "Campo é obrigatório",
-                      },
-                    })}
+                    register={register("first_name")}
                   />
                 </div>
                 <div className="basis-full md:basis-5/12 px-3">
@@ -110,12 +110,7 @@ export default function ModalOwner({
                     label="Sobrenome * "
                     className={`input-form ${errors.last_name && "invalid"}`}
                     error={errors.last_name}
-                    register={register("last_name", {
-                      required: {
-                        value: true,
-                        message: "Campo é obrigatório",
-                      },
-                    })}
+                    register={register("last_name")}
                   />
                 </div>
               </div>
@@ -126,12 +121,7 @@ export default function ModalOwner({
                     label="E-mail "
                     className={`input-form ${errors.email && "invalid"}`}
                     error={errors.email}
-                    register={register("email", {
-                      required: {
-                        value: false,
-                        message: "Campo é obrigatório",
-                      },
-                    })}
+                    register={register("email")}
                   />
                 </div>
                 <div className="basis-full md:basis-3/12 px-3 mb-6">
@@ -140,12 +130,7 @@ export default function ModalOwner({
                     label="CNPJ"
                     className={`input-form ${errors.cnpj && "invalid"}`}
                     error={errors.cnpj}
-                    register={register("cnpj", {
-                      required: {
-                        value: false,
-                        message: "Campo é obrigatório",
-                      },
-                    })}
+                    register={register("cnpj")}
                   />
                 </div>
                 <div className="basis-full md:basis-3/12 px-3 mb-6">
@@ -154,12 +139,7 @@ export default function ModalOwner({
                     label="IE "
                     className={`input-form ${errors.ie && "invalid"}`}
                     error={errors.ie}
-                    register={register("ie", {
-                      required: {
-                        value: false,
-                        message: "Campo é obrigatório",
-                      },
-                    })}
+                    register={register("ie")}
                   />
                 </div>
                 <div className="basis-full md:basis-3/12 px-3 mb-6">
@@ -168,12 +148,7 @@ export default function ModalOwner({
                     label="RG "
                     className={`input-form ${errors.rg && "invalid"}`}
                     error={errors.rg}
-                    register={register("rg", {
-                      required: {
-                        value: false,
-                        message: "Campo é obrigatório",
-                      },
-                    })}
+                    register={register("rg")}
                   />
                 </div>
                 <div className="basis-full md:basis-3/12 px-3 mb-6">
@@ -183,12 +158,7 @@ export default function ModalOwner({
                     label="CPF *"
                     className={`input-form ${errors.cpf && "invalid"}`}
                     error={errors.cpf}
-                    register={register("cpf", {
-                      required: {
-                        value: false,
-                        message: "Campo é obrigatório",
-                      },
-                    })}
+                    register={register("cpf")}
                   />
                 </div>
                 <div className="basis-full md:basis-3/12 px-3 mb-6">
@@ -198,12 +168,7 @@ export default function ModalOwner({
                     label="Telefone"
                     className={`input-form ${errors.phone && "invalid"}`}
                     error={errors.phone}
-                    register={register("phone", {
-                      required: {
-                        value: false,
-                        message: "Campo é obrigatório",
-                      },
-                    })}
+                    register={register("phone")}
                   />
                 </div>
 
@@ -216,7 +181,7 @@ export default function ModalOwner({
                     type="search"
                     className={`input-form ${errors.streets_id && "invalid"}`}
                     placeholder="Pesquisar..."
-                    {...register("streets_id", { required: false })}
+                    {...register("streets_id")}
                   />
                   {errors.streets_id && (
                     <small className="input-text-invalid">
@@ -224,7 +189,7 @@ export default function ModalOwner({
                     </small>
                   )}
                   <datalist id="streets_id">
-                    {streets.map(({ id, street }) => (
+                    {streets?.map(({ id, street }) => (
                       <option key={id} value={street} />
                     ))}
                   </datalist>
@@ -236,7 +201,7 @@ export default function ModalOwner({
                   <input
                     type="text"
                     className={`input-form ${errors.number && "invalid"}`}
-                    {...register("number", { required: false })}
+                    {...register("number")}
                   />
                   {errors.number && (
                     <small className="input-text-invalid">
@@ -255,7 +220,7 @@ export default function ModalOwner({
                       errors.neighborhoods_id && "invalid"
                     }`}
                     placeholder="Pesquisar..."
-                    {...register("neighborhoods_id", { required: false })}
+                    {...register("neighborhoods_id")}
                   />
 
                   {errors.neighborhoods_id && (
@@ -264,7 +229,7 @@ export default function ModalOwner({
                     </small>
                   )}
                   <datalist id="neighborhoods_id">
-                    {neighborhoods.map(({ id, district }) => (
+                    {neighborhoods?.map(({ id, district }) => (
                       <option key={id} value={[district].join(", ")} />
                     ))}
                   </datalist>
@@ -278,7 +243,7 @@ export default function ModalOwner({
                     type="search"
                     className={`input-form ${errors.cities_id && "invalid"}`}
                     placeholder="Pesquisar..."
-                    {...register("cities_id", { required: false })}
+                    {...register("cities_id")}
                   />
                   {errors.cities_id && (
                     <small className="input-text-invalid">
@@ -286,7 +251,7 @@ export default function ModalOwner({
                     </small>
                   )}
                   <datalist id="cities_id">
-                    {cities.map((city) => (
+                    {cities?.map((city) => (
                       <option
                         key={city.id}
                         value={[city.city, city?.state?.state].join("/")}
@@ -303,12 +268,7 @@ export default function ModalOwner({
                     label="Agência"
                     className={`input-form ${errors.ag_bank && "invalid"}`}
                     error={errors.ag_bank}
-                    register={register("ag_bank", {
-                      required: {
-                        value: false,
-                        message: "Campo é obrigatório",
-                      },
-                    })}
+                    register={register("ag_bank")}
                   />
                 </div>
                 <div className="basis-full md:basis-4/12 px-3">
@@ -317,12 +277,7 @@ export default function ModalOwner({
                     label="Conta Corrente"
                     className={`input-form ${errors.cc_bank && "invalid"}`}
                     error={errors.cc_bank}
-                    register={register("cc_bank", {
-                      required: {
-                        value: false,
-                        message: "Campo é obrigatório",
-                      },
-                    })}
+                    register={register("cc_bank")}
                   />
                 </div>
                 <div className="basis-full md:basis-4/12 px-3">
@@ -331,12 +286,7 @@ export default function ModalOwner({
                     label="Chave Pix"
                     className={`input-form ${errors.pix_bank && "invalid"}`}
                     error={errors.pix_bank}
-                    register={register("pix_bank", {
-                      required: {
-                        value: false,
-                        message: "Campo é obrigatório",
-                      },
-                    })}
+                    register={register("pix_bank")}
                   />
                 </div>
               </div>

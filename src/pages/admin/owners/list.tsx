@@ -16,7 +16,6 @@ import { Loading } from "../../../components/loading";
 import { Pagination } from "../../../components/pagination";
 import { SEO } from "../../../components/seo/seo";
 import { api } from "../../../services/api";
-import customers from "../../admin-tenant/customers";
 
 const schema = z.object({
   limit: z.number(),

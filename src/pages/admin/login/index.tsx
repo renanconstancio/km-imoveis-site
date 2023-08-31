@@ -1,18 +1,21 @@
-import { useAuth } from "../../hooks/use-auth";
+import { useAuth } from "../../../hooks/use-auth";
 
-import bgLogin from "../../assets/0cuf0u.jpg";
-import bgLogo from "../../assets/logo.svg";
-import { useAlert } from "../../hooks/use-alert";
+import bgLogin from "../../../assets/0cuf0u.jpg";
+import bgLogo from "../../../assets/logo.svg";
+
 import { useForm } from "react-hook-form";
-import { Input } from "../../components/inputs";
-import { Alert } from "../../components/alert";
-import { api } from "../../services/api";
-import { TUserLogin } from "./types";
-import { SEO } from "../../components/seo/seo";
+import { Input } from "../../../components/inputs";
+import { api } from "../../../services/api";
+import { SEO } from "../../../components/seo/seo";
 
-export function Login() {
+export type TUserLogin = {
+  email: string;
+  password: string;
+};
+
+export default function Login() {
   const { login } = useAuth();
-  const { alert, changeAlert } = useAlert();
+
   const {
     register,
     handleSubmit,
@@ -20,23 +23,16 @@ export function Login() {
   } = useForm<TUserLogin>();
 
   async function onHandleSubmit(data: TUserLogin) {
-    await api
-      .post(`/users/login`, data)
-      .then(async (resp) => {
-        const { user, token } = await resp.data;
-        login({
-          id: user.id,
-          name: user.first_name,
-          type: user.type,
-          token: token,
-          roles: [],
-        });
-      })
-      .catch(() =>
-        changeAlert({
-          message: "E-mail/Senha incorreto!.",
-        }),
-      );
+    await api.post(`/users/login`, data).then(async (resp) => {
+      const { user, token } = await resp.data;
+      login({
+        id: user.id,
+        name: user.first_name,
+        type: user.type,
+        token: token,
+        roles: [],
+      });
+    });
   }
 
   return (
@@ -93,11 +89,11 @@ export function Login() {
                 Fazer Login
               </button>
 
-              {alert.message && (
+              {/* {alert.message && (
                 <div className="mt-7">
                   <Alert message={alert.message} title={alert.title} />
                 </div>
-              )}
+              )} */}
             </form>
           </div>
         </div>

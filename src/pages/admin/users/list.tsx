@@ -1,12 +1,12 @@
-import { api } from "../../services/api";
+import { api } from "../../../services/api";
 import { parse } from "query-string";
 import { KeyboardEvent, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Loading } from "../../components/loading";
+import { Loading } from "../../../components/loading";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TUsers } from "./types";
-import { SEO } from "../../components/seo/seo";
+import { SEO } from "../../../components/seo/seo";
 
 export default function Users() {
   const [clear, setClear] = useState<boolean>(false);

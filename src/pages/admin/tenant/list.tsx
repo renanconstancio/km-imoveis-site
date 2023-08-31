@@ -66,12 +66,12 @@ export default function Tenants() {
     mutationFn: async (id: string) => api.delete(`/customers/${id}`),
     onSuccess: () =>
       queryClient.invalidateQueries({
-        queryKey: ["tenant", page, limit, qs],
+        queryKey: ["tenants", page, limit, qs],
       }),
   });
 
   const { data: tenant, isLoading } = useQuery({
-    queryKey: ["tenant", page, limit, qs],
+    queryKey: ["tenants", page, limit, qs],
     queryFn: () =>
       api
         .get<TenantPaginated>(
@@ -111,7 +111,7 @@ export default function Tenants() {
               )}
             </aside>
             <nav>
-              <Link className="btn-success" to="/adm/owners/new">
+              <Link className="btn-success" to="/adm/tenants/new">
                 <FontAwesomeIcon icon={faEdit} /> Criar
               </Link>
             </nav>
@@ -163,7 +163,7 @@ export default function Tenants() {
               <span className="flex gap-1 basis-1/12">
                 <Link
                   className="btn-primary btn-xs"
-                  to={`/adm/owners/${rws.id}/edit`}
+                  to={`/adm/tenants/${rws.id}/edit`}
                 >
                   <FontAwesomeIcon icon={faEdit} />
                 </Link>

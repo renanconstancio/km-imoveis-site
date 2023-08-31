@@ -11,11 +11,7 @@ import {
   schemaNeighborhood,
 } from "../../pages/admin/neighborhoods/form";
 
-export type TModalDistrict = {
-  addDistricts?: (data: any) => void;
-};
-
-export default function ModalDistrict({ addDistricts }: TModalDistrict) {
+export default function ModalDistrict() {
   const { openNeighborhoods, closeNeighborhoods } = useModal();
 
   const queryClient = useQueryClient();
@@ -45,7 +41,7 @@ export default function ModalDistrict({ addDistricts }: TModalDistrict) {
   return (
     <div className={`${openNeighborhoods ? "" : "hidden"} modal`}>
       <div className="modal-content">
-        <div className="modal-body">
+        <div className="modal-body rounded-lg">
           <button
             type="button"
             className="modal-close"
@@ -64,7 +60,7 @@ export default function ModalDistrict({ addDistricts }: TModalDistrict) {
             >
               <div className="w-full">
                 <label className="label-form" htmlFor="district">
-                  Nome do bairro.
+                  Nome do bairro *
                 </label>
                 <input
                   type="text"

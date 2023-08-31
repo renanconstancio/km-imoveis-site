@@ -9,11 +9,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { State } from "../../pages/admin/states/form";
 import { toast } from "react-toastify";
 
-export type TModalCity = {
-  addCities?: (data: any) => void;
-};
-
-export default function ModalCity({ addCities }: TModalCity) {
+export default function ModalCity() {
   const { openCity, closeCity } = useModal();
 
   const queryClient = useQueryClient();
@@ -52,7 +48,7 @@ export default function ModalCity({ addCities }: TModalCity) {
   return (
     <div className={`${openCity ? "" : "hidden"} modal`}>
       <div className="modal-content">
-        <div className="modal-body">
+        <div className="modal-body rounded-lg">
           <button
             type="button"
             className="modal-close"

@@ -27,7 +27,7 @@ import { api } from "../../../services/api";
 
 export const schema = {
   id: z.string().optional(),
-  type: z.enum(["owner", "tenant"]).default("owner").optional(),
+  type: z.enum(["tenant", "tenant"]).default("tenant").optional(),
   first_name: z.string().min(1, { message: "Campo é obrigatório" }),
   last_name: z.string().min(1, { message: "Campo é obrigatório" }),
   email: z.string().optional(),
@@ -60,24 +60,19 @@ export type Tenant = z.infer<typeof schemaTenant>;
 export type TenantCreated = z.infer<typeof schemaTenantCreated>;
 
 export default function FormTenants() {
-  const { data: cities } = useQuery({
+  const { data: cities } = useQuery<City[] | []>({
     queryKey: ["cities"],
-    queryFn: () =>
-      api.get<City[] | []>(`/cities`).then(async (res) => res.data),
+    queryFn: () => api.get(`/cities`).then(async (res) => res.data),
   });
 
-  const { data: neighborhoods } = useQuery({
+  const { data: neighborhoods } = useQuery<Neighborhood[] | []>({
     queryKey: ["neighborhoods"],
-    queryFn: () =>
-      api
-        .get<Neighborhood[] | []>(`/neighborhoods`)
-        .then(async (res) => res.data),
+    queryFn: () => api.get(`/neighborhoods`).then(async (res) => res.data),
   });
 
-  const { data: streets } = useQuery({
+  const { data: streets } = useQuery<Street[] | []>({
     queryKey: ["streets"],
-    queryFn: () =>
-      api.get<Street[] | []>(`/streets`).then(async (res) => res.data),
+    queryFn: () => api.get(`/streets`).then(async (res) => res.data),
   });
 
   const {
@@ -91,7 +86,7 @@ export default function FormTenants() {
 
   const navigate = useNavigate();
 
-  const { ownerId } = useParams<{ ownerId: string | undefined }>();
+  const { tenantId } = useParams<{ tenantId: string | undefined }>();
 
   const {
     reset,
@@ -106,7 +101,7 @@ export default function FormTenants() {
     mutationFn: async (data: TenantCreated) => {
       const newData = {
         ...data,
-        type: "owner",
+        type: "tenant",
         streets_id: streets?.find((item) => item.street === data.streets_id)
           ?.id,
         cities_id: cities?.find(
@@ -116,6 +111,7 @@ export default function FormTenants() {
           (item) => item.district === data.neighborhoods_id,
         )?.id,
       };
+      console.log(newData);
       return await api.patch(`/customers`, { ...newData });
     },
     onError: (error) => {
@@ -125,17 +121,17 @@ export default function FormTenants() {
     onSuccess: async (resp) => {
       toast.success("Cadastro salvo com sucesso!");
       navigate({
-        pathname: `/adm/tenant/${await resp.data?.id}/edit`,
+        pathname: `/adm/tenants/${await resp.data?.id}/edit`,
       });
     },
   });
 
   useQuery({
-    queryKey: ["tenant", ownerId],
+    queryKey: ["tenants", tenantId],
     queryFn: () => {
-      if (!ownerId) return null;
+      if (!tenantId) return null;
       return api
-        .get<TenantCreated>(`/customers/${ownerId}`)
+        .get<TenantCreated>(`/customers/${tenantId}`)
         .then(async (res) => res.data);
     },
     onSuccess: (data) => {
@@ -144,13 +140,12 @@ export default function FormTenants() {
           ...data,
           streets_id: streets?.find((item) => item.id === data.streets_id)
             ?.street,
-          cities_id: cities
-            ? [
-                cities?.find((item) => item.id === data.cities_id)?.city,
-                cities?.find((item) => item.id === data.cities_id)?.state
-                  ?.state,
-              ].join("/")
-            : "",
+          cities_id:
+            cities?.find((item) => item.id === data.cities_id) &&
+            [
+              cities?.find((item) => item.id === data.cities_id)?.city,
+              cities?.find((item) => item.id === data.cities_id)?.state?.state,
+            ].join("/"),
           neighborhoods_id: neighborhoods?.find(
             (item) => item.id === data.neighborhoods_id,
           )?.district,
@@ -164,7 +159,7 @@ export default function FormTenants() {
   return (
     <>
       <SEO
-        title={`${ownerId ? "Editar " : "Cadastrar"} Proprietários`}
+        title={`${tenantId ? "Editar " : "Cadastrar"} Locatários`}
         siteTitle={import.meta.env.VITE_TITLE}
       />
 
@@ -174,7 +169,7 @@ export default function FormTenants() {
             <FontAwesomeIcon icon={faSave} />
             <span>Salvar</span>
           </button>
-          <Link className="btn-warning btn-ico" to="/adm/owners">
+          <Link className="btn-warning btn-ico" to="/adm/tenants">
             <FontAwesomeIcon icon={faUndo} />
             <span>Voltar</span>
           </Link>
@@ -371,7 +366,7 @@ export default function FormTenants() {
                   ))}
               </datalist>
             </div>
-            <div className="basis-full font-bold uppercase font-play pt-5 px-3">
+            {/* <div className="basis-full font-bold uppercase font-play pt-5 px-3">
               Dados da Conta Bancária <hr className="my-5" />
             </div>
             <div className="basis-full md:basis-2/12 px-3">
@@ -400,7 +395,7 @@ export default function FormTenants() {
                 error={errors.pix_bank}
                 register={register("pix_bank")}
               />
-            </div>
+            </div> */}
           </div>
         </form>
       </div>

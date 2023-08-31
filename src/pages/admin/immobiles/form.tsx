@@ -1,4 +1,7 @@
-import { api, tags } from "../../services/api";
+import { useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { Editor } from "@tinymce/tinymce-react";
+import { useForm } from "react-hook-form";
 import {
   faFolderOpen,
   faImage,
@@ -28,6 +31,8 @@ import {
   faSolarPanel,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useMutation, useQuery } from "@tanstack/react-query";
+
 import {
   ModalCategory,
   ModalStreet,
@@ -36,39 +41,34 @@ import {
   ModalPhoto,
   ModalTenant,
   ModalOwner,
-} from "../../components/modal";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useAlert } from "../../hooks/use-alert";
-import { useModal } from "../../hooks/use-modal";
-import { findSearch } from "../../utils/functions";
-import { maskCurrency, maskCurrencyUs } from "../../utils/mask";
-import { Editor } from "@tinymce/tinymce-react";
-import { OptionSituation } from "../../components/option-situation";
-import { TCategories } from "../categories/types";
-import { TCities } from "../cities/types";
-import { Input } from "../../components/inputs";
-import { TNeighborhoods } from "../admin-neighborhoods/types";
-import { TStreets } from "../streets/types";
-import { TTenant } from "../admin-tenant/types";
-import { TOwners } from "../owners/types";
-import { TUsers } from "../admin-users/types";
-import { TImmobles } from "./types";
-import { SEO } from "../../components/seo/seo";
+} from "../../../components/modal";
+
+import { maskCurrency, maskCurrencyUs } from "../../../utils/mask";
+import { TUsers } from "../users/types";
+import { SEO } from "../../../components/seo/seo";
+import { api, tags } from "../../../services/api";
+
+import { City } from "../cities/form";
+import { Neighborhood } from "../neighborhoods/form";
+import { Street } from "../streets/form";
+import { Category } from "../categories/form";
+import { Tenant } from "../tenant/form";
+import { Owner } from "../owners/form";
+import { useModal } from "../../../hooks/use-modal";
+import { Input } from "../../../components/inputs";
+import { OptionSituation } from "../../../components/option-situation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Immobile,
+  ImmobileValidation,
+  schemaImmobleValidation,
+} from "./schema";
+import { toast } from "react-toastify";
 
 export default function FormImmobles() {
-  const [codeReference, setCodeRefence] = useState<string>("");
-  const [cities, setCities] = useState<TCities[]>([]);
-  const [neighborhoods, setNeighborhoods] = useState<TNeighborhoods[]>([]);
-  const [streets, setStreets] = useState<TStreets[]>([]);
-  const [categories, setCategories] = useState<TCategories[]>([]);
-  const [tenants, setTenant] = useState<TTenant[]>([]);
-  const [owners, setOwner] = useState<TOwners[]>([]);
-  const [users, setUsers] = useState<TUsers[]>([]);
+  const [descriptionText, setDescriptionText] = useState<string>("");
   const [tagsSite, setTagsSite] = useState<string[]>([]);
   const [onOff, setOnOff] = useState<boolean>(false);
-  const [descriptionText, setDescriptionText] = useState<string>("");
 
   const {
     openCategory,
@@ -88,7 +88,6 @@ export default function FormImmobles() {
   } = useModal();
 
   const navigate = useNavigate();
-  const { changeAlert } = useAlert();
 
   const { immobleId } = useParams<{ immobleId: string | undefined }>();
 
@@ -98,195 +97,150 @@ export default function FormImmobles() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TImmobles>();
+  } = useForm<Immobile>({
+    resolver: zodResolver(schemaImmobleValidation),
+  });
 
-  async function onSubmit(data: TImmobles) {
-    const rwsUser = users.find((item) => item.first_name === data.users_id);
-    const rwsOwner = owners.find(
-      (item) => [item.first_name, item.last_name].join(" ") === data.owner_id,
-    );
-    const rwsTenant = tenants.find(
-      (item) => [item.first_name, item.last_name].join(" ") === data.tenant_id,
-    );
-    const rwsCity = cities.find(
-      (item) => [item.city, item.state.state].join("/") === data.cities_id,
-    );
-    const rwsStreet = findSearch(streets, data.streets_id, "street");
-    const rwsDistrict = findSearch(
-      neighborhoods,
-      data.neighborhoods_id,
-      "district",
-    );
-    const rwsCategory = findSearch(categories, data.categories_id, "category");
-    const existsTags = tagsSite.length ? tagsSite.join(",") : "";
+  const { data: cities } = useQuery<City[]>({
+    queryKey: ["cities"],
+    queryFn: () => api.get(`/cities`).then(async (res) => res.data),
+  });
 
-    const newData = {
-      ...data,
-      sale_price: maskCurrencyUs(`${data.sale_price || 0}`),
-      rent_price: maskCurrencyUs(`${data.rent_price || 0}`),
-      tags: existsTags,
-      published: onOff,
-      description_text: descriptionText,
-      cities_id: rwsCity?.id ?? null,
-      categories_id: rwsCategory?.id ?? null,
-      neighborhoods_id: rwsDistrict?.id ?? null,
-      streets_id: rwsStreet?.id ?? null,
-      tenant_id: rwsTenant?.id ?? null,
-      owner_id: rwsOwner?.id ?? null,
-      users_id: rwsUser?.id ?? null,
-    };
+  const { data: neighborhoods } = useQuery<Neighborhood[]>({
+    queryKey: ["neighborhoods"],
+    queryFn: () => api.get(`/neighborhoods`).then(async (res) => res.data),
+  });
 
-    await api
-      .patch(`/immobiles`, newData)
-      .then(async (resp) => {
-        changeAlert({
-          message: "Dados salvos com sucesso.",
-        });
-        navigate({ pathname: `/adm/immobiles/${(await resp.data).id}/edit` });
-      })
-      .catch((error) => {
-        changeAlert({
-          title: "Atenção",
-          message: "Não foi possivel fazer o cadastro!",
-          variant: "danger",
-        });
+  const { data: streets } = useQuery<Street[]>({
+    queryKey: ["streets"],
+    queryFn: () => api.get(`/streets`).then(async (res) => res.data),
+  });
 
-        if (error.response.status === 422)
-          changeAlert({
-            title: "Atenção",
-            variant: "danger",
-            message: `${error.response.data.message}`,
-          });
-      });
-  }
+  const { data: categories } = useQuery<Category[]>({
+    queryKey: ["categories"],
+    queryFn: () => api.get(`/categories`).then(async (res) => res.data),
+  });
 
-  async function loadImmoble() {
-    await api
-      .get(`/immobiles/${immobleId}`)
-      .then(async (res) => {
-        const immoble: TImmobles = await res.data;
+  const { data: tenants } = useQuery<{ data: Tenant[] }>({
+    queryKey: ["tenants"],
+    queryFn: () =>
+      api
+        .get(`/customers?limit=10000&search[type]=tenant`)
+        .then(async (res) => res.data?.data),
+  });
 
-        reset({
-          ...immoble,
-          sale_price: `${maskCurrency(immoble.sale_price)}`,
-          rent_price: `${maskCurrency(immoble.rent_price)}`,
-          users_id: immoble.user?.first_name,
-          categories_id: immoble.category?.category,
-          neighborhoods_id: immoble?.district?.district,
-          streets_id: immoble.street?.street,
-          cities_id:
-            immoble.city?.city && immoble.city?.state?.state
-              ? [immoble.city?.city, immoble.city?.state?.state].join("/")
-              : "",
-          owner_id:
-            immoble.owner?.first_name && immoble.owner?.last_name
-              ? [immoble.owner?.first_name, immoble.owner?.last_name]
-                  .join(" ")
-                  .trim()
-              : "",
-          tenant_id:
-            immoble.tenant?.first_name && immoble.tenant?.last_name
-              ? [immoble.tenant?.first_name, immoble.tenant?.last_name]
-                  .join(" ")
-                  .trim()
-              : "",
-        });
+  const { data: owners } = useQuery<{ data: Owner[] }>({
+    queryKey: ["owners"],
+    queryFn: () =>
+      api
+        .get(`/customers?limit=10000&search[type]=owner`)
+        .then(async (res) => res.data?.data),
+  });
 
-        setTagsSite(immoble?.tags?.split(",") || "");
-        setDescriptionText(immoble?.description_text);
-        setOnOff(immoble?.published);
-      })
-      .catch(() => {
-        changeAlert({
-          message: "Não foi possivel conectar ao servidor.",
-        });
-      });
-  }
+  const { data: users } = useQuery<TUsers[]>({
+    queryKey: ["users"],
+    queryFn: () => api.get(`/users`).then(async (res) => res.data),
+  });
 
-  async function loadEendImmobleCode() {
-    await api
-      .get(`/immobiles?limit=1&order[reference]=desc`)
-      .then(async (res) =>
-        setCodeRefence(
+  const { data: codeReference } = useQuery<string>({
+    queryKey: ["codeReference"],
+    queryFn: () =>
+      api
+        .get(`/immobiles?limit=1&order[reference]=desc`)
+        .then(async (res) =>
           `${Number((await res.data)?.data?.[0]?.reference) + 1}`.padStart(
             3,
             "0",
           ),
         ),
-      );
-  }
+  });
 
-  async function loadCategories() {
-    await api
-      .get("/categories")
-      .then(async (res) => setCategories(await res.data));
-  }
+  const { mutate } = useMutation({
+    mutationFn: async (data: ImmobileValidation) => {
+      const tags = tagsSite.length && tagsSite.join(",");
 
-  async function loadCities() {
-    await api.get("/cities").then(async (res) => setCities(await res.data));
-  }
+      const newData = {
+        ...data,
+        sale_price: maskCurrencyUs(`${data.sale_price || 0}`),
+        rent_price: maskCurrencyUs(`${data.rent_price || 0}`),
+        tags: tags,
+        published: onOff,
+        description_text: descriptionText,
+        streets_id: streets?.find((item) => item.street === data.streets_id)
+          ?.id,
+        cities_id: cities?.find(
+          (item) => [item.city, item.state?.state].join("/") === data.cities_id,
+        )?.id,
+        neighborhoods_id: neighborhoods?.find(
+          (item) => item.district === data.neighborhoods_id,
+        )?.id,
+        categories_id: categories?.find(
+          (item) => item.category === data.categories_id,
+        )?.id,
+        tenant_id: tenants?.data?.find(
+          (item) => item.first_name === data.tenant_id,
+        )?.id,
+        owner_id: owners?.data?.find(
+          (item) => item.first_name === data.owner_id,
+        )?.id,
+        users_id: users?.find((item) => item.first_name === data.users_id)?.id,
+      };
+      console.log(newData);
+      return await api.patch(`/immobiles`, { ...newData });
+    },
+    onError: (error) => {
+      toast.error("Não foi possivel fazer o cadastro!");
+      console.log(`${error}`);
+    },
+    onSuccess: async (resp) => {
+      toast.success("Cadastro salvo com sucesso!");
+      navigate({
+        pathname: `/adm/immobiles/${await resp.data?.id}/edit`,
+      });
+    },
+  });
 
-  async function loadNeighborhoods() {
-    await api
-      .get("/neighborhoods")
-      .then(async (res) => setNeighborhoods(await res.data));
-  }
+  useQuery({
+    queryKey: ["immobiles", immobleId],
+    queryFn: () => {
+      if (!immobleId) return null;
+      return api
+        .get<Immobile>(`/immobiles/${immobleId}`)
+        .then(async (res) => res.data);
+    },
+    onSuccess: (data) => {
+      if (data) {
+        const newData = {
+          ...data,
+          sale_price: maskCurrency(`${data.sale_price}`),
+          rent_price: maskCurrency(`${data.rent_price}`),
+          users_id: data.user?.first_name,
+          categories_id: data.category?.category,
+          neighborhoods_id: data?.district?.district,
+          streets_id: data.street?.street,
+          cities_id:
+            data.city?.city &&
+            data.city?.state?.state &&
+            [data.city?.city, data.city?.state?.state].join("/"),
+          owner_id:
+            data.owner?.first_name &&
+            data.owner?.last_name &&
+            [data.owner?.first_name, data.owner?.last_name].join(" ").trim(),
+          tenant_id:
+            data.tenant?.first_name &&
+            data.tenant?.last_name &&
+            [data.tenant?.first_name, data.tenant?.last_name].join(" ").trim(),
+        };
 
-  async function loadStreets() {
-    await api.get("/streets").then(async (res) => setStreets(await res.data));
-  }
+        reset(newData);
 
-  async function loadTenants() {
-    await api
-      .get("/customers?limit=10000&search[type]=tenant")
-      .then(async (res) => setTenant(await res.data?.data));
-  }
-
-  async function loadOwners() {
-    await api
-      .get("/customers?limit=10000&search[type]=owner")
-      .then(async (res) => setOwner(await res.data?.data));
-  }
-
-  async function loadUsers() {
-    await api.get("/users").then(async (res) => setUsers(await res.data));
-  }
-
-  useEffect(() => {
-    loadCategories();
-  }, []);
-
-  useEffect(() => {
-    loadCities();
-  }, []);
-
-  useEffect(() => {
-    loadNeighborhoods();
-  }, []);
-
-  useEffect(() => {
-    loadStreets();
-  }, []);
-
-  useEffect(() => {
-    loadTenants();
-  }, []);
-
-  useEffect(() => {
-    loadOwners();
-  }, []);
-
-  useEffect(() => {
-    loadUsers();
-  }, []);
-
-  useEffect(() => {
-    loadEendImmobleCode();
-  }, []);
-
-  useEffect(() => {
-    if (immobleId) loadImmoble();
-  }, [immobleId]);
+        const tags: string[] = data?.tags?.split(",") || [];
+        setTagsSite(tags);
+        setDescriptionText(data?.description_text);
+        setOnOff(data?.published);
+      }
+    },
+  });
 
   return (
     <>
@@ -336,7 +290,7 @@ export default function FormImmobles() {
         <form
           className="basis-full"
           id="form"
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(async (data) => mutate(data))}
         >
           <div className="flex flex-wrap -mx-3">
             <div className="basis-full md:basis-2/12 px-3">
@@ -348,12 +302,7 @@ export default function FormImmobles() {
                 } text-end`}
                 error={errors.reference}
                 defaultValue={codeReference}
-                register={register("reference", {
-                  required: {
-                    value: true,
-                    message: "Campo é obrigatório",
-                  },
-                })}
+                register={register("reference")}
               />
             </div>
             <div className="basis-full md:basis-6/12 px-3">
@@ -362,12 +311,7 @@ export default function FormImmobles() {
                 label="Descrição do Imóvel * "
                 className={`input-form ${errors.description && "invalid"}`}
                 error={errors.description}
-                register={register("description", {
-                  required: {
-                    value: true,
-                    message: "Campo é obrigatório",
-                  },
-                })}
+                register={register("description")}
               />
             </div>
             <div className="basis-full md:basis-3/12 px-3">
@@ -375,10 +319,7 @@ export default function FormImmobles() {
                 Situação
               </label>
               <div className="relative">
-                <select
-                  className="input-form"
-                  {...register("situation", { required: false })}
-                >
+                <select className="input-form" {...register("situation")}>
                   <OptionSituation />
                 </select>
               </div>
@@ -396,7 +337,7 @@ export default function FormImmobles() {
                     type="search"
                     className={`input-form ${errors.users_id && "invalid"}`}
                     placeholder="Pesquisar..."
-                    {...register("users_id", { required: false })}
+                    {...register("users_id")}
                   />
                 </span>
               </div>
@@ -404,11 +345,12 @@ export default function FormImmobles() {
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
               <datalist id="users_id">
-                {users
-                  .filter((f) => f.type !== "root")
-                  .map(({ id, first_name }) => (
-                    <option key={id} value={first_name} />
-                  ))}
+                {users &&
+                  users
+                    ?.filter((f) => f.type !== "root")
+                    .map(({ id, first_name }) => (
+                      <option key={id} value={first_name} />
+                    ))}
               </datalist>
             </div>
             <div className="basis-full md:basis-4/12 px-3">
@@ -417,12 +359,7 @@ export default function FormImmobles() {
                 label="Captador/Outros"
                 className={`input-form ${errors.pickup && "invalid"}`}
                 error={errors.pickup}
-                register={register("pickup", {
-                  required: {
-                    value: false,
-                    message: "Campo é obrigatório",
-                  },
-                })}
+                register={register("pickup")}
               />
             </div>
           </div>
@@ -433,12 +370,7 @@ export default function FormImmobles() {
                 label="Área de Construção (m²)"
                 className={`input-form ${errors.building_area && "invalid"}`}
                 error={errors.building_area}
-                register={register("building_area", {
-                  required: {
-                    value: false,
-                    message: "Campo é obrigatório",
-                  },
-                })}
+                register={register("building_area")}
               />
             </div>
             <div className="basis-full md:basis-3/12 px-3  mb-6">
@@ -447,12 +379,7 @@ export default function FormImmobles() {
                 label="Área Terrea (m²)"
                 className={`input-form ${errors.terrain_area && "invalid"}`}
                 error={errors.terrain_area}
-                register={register("terrain_area", {
-                  required: {
-                    value: false,
-                    message: "Campo é obrigatório",
-                  },
-                })}
+                register={register("terrain_area")}
               />
             </div>
             <div className="basis-full md:basis-2/12 px-3  mb-6">
@@ -462,12 +389,7 @@ export default function FormImmobles() {
                 label="Pr.Venda."
                 className={`input-form ${errors.sale_price && "invalid"}`}
                 error={errors.sale_price}
-                register={register("sale_price", {
-                  required: {
-                    value: false,
-                    message: "Campo é obrigatório",
-                  },
-                })}
+                register={register("sale_price")}
               />
             </div>
             <div className="basis-full md:basis-2/12 px-3  mb-6">
@@ -477,12 +399,7 @@ export default function FormImmobles() {
                 label="Pr.Aluguel."
                 className={`input-form ${errors.rent_price && "invalid"}`}
                 error={errors.rent_price}
-                register={register("rent_price", {
-                  required: {
-                    value: false,
-                    message: "Campo é obrigatório",
-                  },
-                })}
+                register={register("rent_price")}
               />
             </div>
 
@@ -499,7 +416,7 @@ export default function FormImmobles() {
                       errors.categories_id && "invalid"
                     }`}
                     placeholder="Pesquisar..."
-                    {...register("categories_id", { required: true })}
+                    {...register("categories_id")}
                   />
                 </span>
                 <span
@@ -513,7 +430,7 @@ export default function FormImmobles() {
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
               <datalist id="categories_id">
-                {categories.map(({ id, category }) => (
+                {categories?.map(({ id, category }) => (
                   <option key={id} value={[category].join(", ")} />
                 ))}
               </datalist>
@@ -531,7 +448,7 @@ export default function FormImmobles() {
                     type="search"
                     className={`input-form ${errors.streets_id && "invalid"}`}
                     placeholder="Pesquisar..."
-                    {...register("streets_id", { required: false })}
+                    {...register("streets_id")}
                   />
                 </span>
                 <span
@@ -545,7 +462,7 @@ export default function FormImmobles() {
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
               <datalist id="streets_id">
-                {streets.map(({ id, street }) => (
+                {streets?.map(({ id, street }) => (
                   <option key={id} value={street} />
                 ))}
               </datalist>
@@ -557,7 +474,7 @@ export default function FormImmobles() {
               <input
                 type="text"
                 className={`input-form ${errors.number && "invalid"}`}
-                {...register("number", { required: false })}
+                {...register("number")}
               />
               {errors.number && (
                 <small className="input-text-invalid">Campo obrigatório</small>
@@ -577,7 +494,7 @@ export default function FormImmobles() {
                       errors.neighborhoods_id && "invalid"
                     }`}
                     placeholder="Pesquisar..."
-                    {...register("neighborhoods_id", { required: false })}
+                    {...register("neighborhoods_id")}
                   />
                 </span>
                 <span
@@ -591,7 +508,7 @@ export default function FormImmobles() {
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
               <datalist id="neighborhoods_id">
-                {neighborhoods.map(({ id, district }) => (
+                {neighborhoods?.map(({ id, district }) => (
                   <option key={id} value={[district].join(", ")} />
                 ))}
               </datalist>
@@ -607,7 +524,7 @@ export default function FormImmobles() {
                     type="search"
                     className={`input-form ${errors.cities_id && "invalid"}`}
                     placeholder="Pesquisar..."
-                    {...register("cities_id", { required: false })}
+                    {...register("cities_id")}
                   />
                 </span>
                 <span
@@ -621,7 +538,7 @@ export default function FormImmobles() {
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
               <datalist id="cities_id">
-                {cities.map((city) => (
+                {cities?.map((city) => (
                   <option
                     key={city.id}
                     value={[city.city, city?.state?.state].join("/")}
@@ -641,7 +558,7 @@ export default function FormImmobles() {
                     type="search"
                     className={`input-form ${errors.tenant_id && "invalid"}`}
                     placeholder="Pesquisar..."
-                    {...register("tenant_id", { required: false })}
+                    {...register("tenant_id")}
                   />
                 </span>
                 <span
@@ -655,7 +572,7 @@ export default function FormImmobles() {
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
               <datalist id="tenant_id">
-                {tenants.map(({ id, first_name, last_name }) => (
+                {tenants?.data?.map(({ id, first_name, last_name }) => (
                   <option key={id} value={[first_name, last_name].join(" ")} />
                 ))}
               </datalist>
@@ -671,7 +588,7 @@ export default function FormImmobles() {
                     type="search"
                     className={`input-form ${errors.owner_id && "invalid"}`}
                     placeholder="Pesquisar..."
-                    {...register("owner_id", { required: false })}
+                    {...register("owner_id")}
                   />
                 </span>
                 <span
@@ -685,7 +602,7 @@ export default function FormImmobles() {
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
               <datalist id="owner_id">
-                {owners.map(({ id, first_name, last_name }) => (
+                {owners?.data?.map(({ id, first_name, last_name }) => (
                   <option key={id} value={[first_name, last_name].join(" ")} />
                 ))}
               </datalist>
@@ -697,7 +614,7 @@ export default function FormImmobles() {
                 {tags.map((label, k) => (
                   <div key={k} className="basis-1/4 capitalize">
                     <span
-                      className={`p-3 block m-1 ${
+                      className={`p-3 block rounded-md m-1 ${
                         tagsSite?.includes(label.tag)
                           ? "bg-green-200"
                           : "hover:bg-green-300"
@@ -825,35 +742,16 @@ export default function FormImmobles() {
                     "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
                 }}
               />
-              {/* <textarea
-                cols={30}
-                rows={17}
-                className={`input-form`}
-                placeholder="Pesquisar..."
-                onChange={e => setDescriptionText(e.target.value)}
-              >
-                {descriptionText}
-              </textarea> */}
             </div>
           </div>
         </form>
       </div>
-      <ModalTenant
-        addTenant={setTenant}
-        streets={streets}
-        neighborhoods={neighborhoods}
-        cities={cities}
-      />
-      <ModalOwner
-        addOwner={setOwner}
-        streets={streets}
-        neighborhoods={neighborhoods}
-        cities={cities}
-      />
-      <ModalCategory addCategories={setCategories} />
-      <ModalStreet addStreets={setStreets} />
-      <ModalDistrict addDistricts={setNeighborhoods} />
-      <ModalCity addCities={setCities} />
+      <ModalCategory />
+      <ModalStreet />
+      <ModalDistrict />
+      <ModalCity />
+      <ModalTenant />
+      <ModalOwner />
       <ModalPhoto
         immobleId={immobleId || ""}
         addPhotos={watch("photos") || []}

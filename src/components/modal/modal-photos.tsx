@@ -1,26 +1,24 @@
 import { api } from "../../services/api";
 import { useModal } from "../../hooks/use-modal";
 import { ChangeEvent, useEffect, useState } from "react";
-import { useAlert } from "../../hooks/use-alert";
 import { ReactSortable } from "react-sortablejs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Loading } from "../loading";
-import { TImmoblesPhotos } from "../../pages/admin-immobiles/types";
+import { Photos } from "../../pages/admin/immobiles/schema";
 
 export type TModalPhoto = {
-  addPhotos: TImmoblesPhotos[];
+  addPhotos: Photos[];
   immobleId: string | null;
 };
 
 export default function ModalPhoto({ immobleId, addPhotos }: TModalPhoto) {
-  const { changeAlert } = useAlert();
   const { openPhoto, closePhoto } = useModal();
   const [loading, setLoading] = useState<boolean>(false);
-  const [photos, setPhotoModal] = useState<TImmoblesPhotos[]>([]);
+  const [photos, setPhotoModal] = useState<Photos[]>([]);
   const [endEvent, setEndEvent] = useState<boolean>(false);
 
-  async function handleSortImage(listSort: TImmoblesPhotos[]) {
+  async function handleSortImage(listSort: Photos[]) {
     setPhotoModal(listSort);
 
     if (endEvent) {
@@ -30,13 +28,13 @@ export default function ModalPhoto({ immobleId, addPhotos }: TModalPhoto) {
     }
   }
 
-  async function handleDeleteImage(item: TImmoblesPhotos) {
+  async function handleDeleteImage(item: Photos) {
     if (!confirm(`Você deseja excluir?`)) return;
 
     await api
       .delete(`/immobiles/${item.id}/photos`)
       .then(() =>
-        setPhotoModal(photos.filter((f: { id: string }) => f.id !== item.id)),
+        setPhotoModal(photos.filter((photo) => photo.id !== item.id)),
       );
   }
 
@@ -60,12 +58,7 @@ export default function ModalPhoto({ immobleId, addPhotos }: TModalPhoto) {
           setPhotoModal(data.photos);
           setLoading(false);
         }
-      })
-      .catch(() =>
-        changeAlert({
-          message: "Não foi possivel conectar ao servidor.",
-        }),
-      );
+      });
   }
 
   useEffect(() => {
@@ -75,7 +68,7 @@ export default function ModalPhoto({ immobleId, addPhotos }: TModalPhoto) {
   return (
     <div className={`${openPhoto ? "" : "hidden"} modal`}>
       <div className="modal-content max-w-5xl">
-        <div className="modal-body">
+        <div className="modal-body rounded-lg">
           <button
             type="button"
             className="modal-close"
@@ -110,8 +103,8 @@ export default function ModalPhoto({ immobleId, addPhotos }: TModalPhoto) {
                 >
                   {photos.map((item, index) => (
                     <li
-                      id={item.id}
                       key={index}
+                      id={item.id}
                       className="basis-full md:basis-4/12 p-2"
                     >
                       <section className="relative border p-3">

@@ -116,7 +116,6 @@ export default function FormOwners() {
           (item) => item.district === data.neighborhoods_id,
         )?.id,
       };
-      console.log(newData);
       return await api.patch(`/customers`, { ...newData });
     },
     onError: (error) => {
@@ -126,13 +125,13 @@ export default function FormOwners() {
     onSuccess: async (resp) => {
       toast.success("Cadastro salvo com sucesso!");
       navigate({
-        pathname: `/adm/owners/${await resp.data?.id}/edit`,
+        pathname: `/adm/tenant/${await resp.data?.id}/edit`,
       });
     },
   });
 
   useQuery({
-    queryKey: ["owners", ownerId],
+    queryKey: ["tenant", ownerId],
     queryFn: () => {
       if (!ownerId) return null;
       return api
@@ -145,10 +144,12 @@ export default function FormOwners() {
           ...data,
           streets_id: streets?.find((item) => item.id === data.streets_id)
             ?.street,
-          cities_id: [
-            cities?.find((item) => item.id === data.cities_id)?.city,
-            cities?.find((item) => item.id === data.cities_id)?.state?.state,
-          ].join("/"),
+          cities_id:
+            cities?.find((item) => item.id === data.cities_id) &&
+            [
+              cities?.find((item) => item.id === data.cities_id)?.city,
+              cities?.find((item) => item.id === data.cities_id)?.state?.state,
+            ].join("/"),
           neighborhoods_id: neighborhoods?.find(
             (item) => item.id === data.neighborhoods_id,
           )?.district,
@@ -369,7 +370,7 @@ export default function FormOwners() {
                   ))}
               </datalist>
             </div>
-            {/* <div className="basis-full font-bold uppercase font-play pt-5 px-3">
+            <div className="basis-full font-bold uppercase font-play pt-5 px-3">
               Dados da Conta Bancária <hr className="my-5" />
             </div>
             <div className="basis-full md:basis-2/12 px-3">
@@ -398,7 +399,7 @@ export default function FormOwners() {
                 error={errors.pix_bank}
                 register={register("pix_bank")}
               />
-            </div> */}
+            </div>
           </div>
         </form>
       </div>

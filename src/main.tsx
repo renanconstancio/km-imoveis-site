@@ -12,7 +12,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from "react-helmet-async";
 
 import { AuthProvider } from "./context/auth";
-import { AlertProvider } from "./context/alert";
 import { ModalProvider } from "./context/modal";
 import RouteIndex from "./routes";
 
@@ -33,11 +32,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <QueryClientProvider client={queryClient}>
       <HelmetProvider>
         <AuthProvider>
-          <AlertProvider>
-            <ModalProvider>
-              <RouteIndex />
-            </ModalProvider>
-          </AlertProvider>
+          <ModalProvider>
+            <RouteIndex />
+          </ModalProvider>
         </AuthProvider>
       </HelmetProvider>
     </QueryClientProvider>
