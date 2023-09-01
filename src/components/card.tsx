@@ -2,16 +2,46 @@ import {
   situationText,
   situationTextClassName,
   slugiFy,
-} from "../../utils/functions";
+} from "../utils/functions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import { faExpand } from "@fortawesome/free-solid-svg-icons";
-import { CardTags } from "../card-tags";
-import { Address } from "../address";
-import { Price } from "../price";
-import { Title } from "../title";
-import { LazyImage } from "../lazy-image";
+import { CardTags } from "./card-tags";
+import { Address } from "./address";
+import { Price } from "./price";
+import { Title } from "./title";
+import { LazyImage } from "./lazy-image";
 import logoSite from "../../assets/logo.png";
+
+export type TCard = React.HTMLAttributes<HTMLLIElement> & {
+  location: boolean;
+  reference: string;
+  description: string;
+  terrainArea: string;
+  buildingArea: string;
+  address: string[];
+  salePrice: string;
+  rentPrice: string;
+  images: string[];
+  situation:
+    | "exchange"
+    | "location"
+    | "purchase"
+    | "sale"
+    | "sale_barter"
+    | "sale_lease";
+  // city?: {
+  //   city: string;
+  //   state: {
+  //     state: string;
+  //   };
+  // };
+  tags: {
+    tag: string;
+    icon: string;
+  }[];
+  tag: string;
+};
 
 export function Card({
   situation,

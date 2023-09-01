@@ -6,7 +6,7 @@ import bgLogo from "../../../assets/logo.svg";
 import { useForm } from "react-hook-form";
 import { Input } from "../../../components/inputs";
 import { api } from "../../../services/api";
-import { SEO } from "../../../components/seo/seo";
+import { SEO } from "../../../components/seo";
 
 export type TUserLogin = {
   email: string;

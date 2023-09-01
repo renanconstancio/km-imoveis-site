@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { z } from "zod";
 
 import { Input } from "../../../components/inputs";
-import { SEO } from "../../../components/seo/seo";
+import { SEO } from "../../../components/seo";
 import { api } from "../../../services/api";
 import { maskCep } from "../../../utils/mask";
 

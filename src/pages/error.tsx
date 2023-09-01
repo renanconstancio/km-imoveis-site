@@ -1,6 +1,6 @@
-import { Filters } from "../../components/filters";
-import { Footer } from "../../components/footer";
-import { Header } from "../../components/header";
+import { Filters } from "../components/filters";
+import { Footer } from "../components/footer";
+import { Header } from "../components/header";
 
 export function Error() {
   // const error: any = useRouteError();

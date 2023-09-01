@@ -17,7 +17,7 @@ import {
   ModalCity,
 } from "../../../components/modal";
 import { Input } from "../../../components/inputs";
-import { SEO } from "../../../components/seo/seo";
+import { SEO } from "../../../components/seo";
 import { useModal } from "../../../hooks/use-modal";
 import { maskCPF, maskPhone } from "../../../utils/mask";
 import { Neighborhood, schemaNeighborhood } from "../neighborhoods/form";

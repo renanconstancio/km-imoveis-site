@@ -8,8 +8,8 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { useAuth } from "../../hooks/use-auth";
-import { greetingMessage } from "../../utils/functions";
+import { useAuth } from "../hooks/use-auth";
+import { greetingMessage } from "../utils/functions";
 
 export function NavDropDown() {
   const { auth, logout } = useAuth();

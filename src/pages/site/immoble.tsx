@@ -12,10 +12,10 @@ import { situationText, situationTextClassName } from "../../utils/functions";
 import { ButtonWhatsapp } from "../../components/button-whatsapp";
 import { CardTags } from "../../components/card-tags";
 import { TImmobles } from "../admin-immobiles/types";
-import { CardCarousel } from "../../components/card-carousel";
+import { CardCarousel } from "../../components/card-carousel/card-carousel";
 import { CarouselIcons } from "../../components/carousel";
 
-import { SEO } from "../../components/seo/seo";
+import { SEO } from "../../components/seo";
 import { LightBoxeContext } from "../../context/lightbox";
 import { LightboxReact } from "../../components/lightbox";
 import { api, tags } from "../../services/api";

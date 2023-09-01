@@ -1,4 +1,4 @@
-import { SEO } from "../../components/seo/seo";
+import { SEO } from "../../components/seo";
 
 export default function QuemSomos() {
   return (

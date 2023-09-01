@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { z } from "zod";
 
 import { State, schemaState } from "../states/form";
-import { SEO } from "../../../components/seo/seo";
+import { SEO } from "../../../components/seo";
 import { Input } from "../../../components/inputs";
 import { api } from "../../../services/api";
 

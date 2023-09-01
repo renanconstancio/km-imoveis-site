@@ -1,5 +1,13 @@
 import { Helmet } from "react-helmet-async";
-import { TSeo } from "./types";
+
+export type TSeo = {
+  title?: string;
+  description?: string;
+  keywords?: string;
+  image?: string;
+  siteTitle: string;
+  robots?: boolean;
+};
 
 export function SEO({
   title,

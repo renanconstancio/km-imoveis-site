@@ -6,7 +6,7 @@ import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
 
 import { State } from "../states/form";
 import { Loading } from "../../../components/loading";
-import { SEO } from "../../../components/seo/seo";
+import { SEO } from "../../../components/seo";
 import { api } from "../../../services/api";
 
 export default function States() {

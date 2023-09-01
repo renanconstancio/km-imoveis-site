@@ -1,5 +1,8 @@
-import { maskCurrency } from "../../utils/mask";
-import { TPrice } from "./types";
+import { maskCurrency } from "../utils/mask";
+
+export type TPrice = React.HTMLAttributes<HTMLSpanElement> & {
+  price: string;
+};
 
 export function Price({ price, ...rest }: TPrice) {
   return (

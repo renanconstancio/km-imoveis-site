@@ -45,7 +45,7 @@ import {
 
 import { maskCurrency, maskCurrencyUs } from "../../../utils/mask";
 import { TUsers } from "../users/types";
-import { SEO } from "../../../components/seo/seo";
+import { SEO } from "../../../components/seo";
 import { api, tags } from "../../../services/api";
 
 import { City } from "../cities/form";

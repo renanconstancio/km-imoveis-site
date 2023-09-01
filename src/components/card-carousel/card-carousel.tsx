@@ -1,7 +1,7 @@
-import { tags } from "../../services/api";
 import ReactOwlCarousel, { Options } from "react-owl-carousel";
-import { TCardCarousel } from "./types";
+import { tags } from "../../services/api";
 import { Card } from "../card";
+import { Immobile } from "../../pages/admin/immobiles/schema";
 
 const options: Options = {
   nav: true,
@@ -23,6 +23,11 @@ const options: Options = {
       items: 5,
     },
   },
+};
+
+export type TCardCarousel = {
+  mapping?: Immobile[];
+  id: string;
 };
 
 export function CardCarousel({ mapping, id }: TCardCarousel) {

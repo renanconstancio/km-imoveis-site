@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { SEO } from "../../../components/seo/seo";
+import { SEO } from "../../../components/seo";
 import { Loading } from "../../../components/loading";
 import { Link } from "react-router-dom";
 import { api } from "../../../services/api";

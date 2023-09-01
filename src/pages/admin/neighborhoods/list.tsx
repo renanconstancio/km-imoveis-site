@@ -5,7 +5,7 @@ import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { Loading } from "../../../components/loading";
-import { SEO } from "../../../components/seo/seo";
+import { SEO } from "../../../components/seo";
 import { api } from "../../../services/api";
 import { Neighborhood } from "./form";
 

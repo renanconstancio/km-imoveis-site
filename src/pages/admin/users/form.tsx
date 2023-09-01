@@ -7,7 +7,7 @@ import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { Input } from "../../../components/inputs";
 import { maskPhone } from "../../../utils/mask";
 import { useAuth } from "../../../hooks/use-auth";
-import { SEO } from "../../../components/seo/seo";
+import { SEO } from "../../../components/seo";
 import { User } from "./list";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";

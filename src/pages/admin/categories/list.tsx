@@ -6,7 +6,7 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 
 import { Category } from "./form";
 import { Loading } from "../../../components/loading";
-import { SEO } from "../../../components/seo/seo";
+import { SEO } from "../../../components/seo";
 import { api } from "../../../services/api";
 
 export default function Categories() {

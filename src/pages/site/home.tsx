@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { parse } from "query-string";
 
-import { SEO } from "../../components/seo/seo";
+import { SEO } from "../../components/seo";
 import { TImmobles } from "../admin-immobiles/types";
 import { Card } from "../../components/card";
 import { Title } from "../../components/title";

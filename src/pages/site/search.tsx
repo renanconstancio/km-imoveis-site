@@ -8,7 +8,7 @@ import { TPagination } from "../../global/types";
 import { TImmobles } from "../admin-immobiles/types";
 import { maskCurrencyUs } from "../../utils/mask";
 import { CardSkeleton } from "../../components/card-skeleton";
-import { SEO } from "../../components/seo/seo";
+import { SEO } from "../../components/seo";
 import { api, tags } from "../../services/api";
 
 export default function SiteSearch() {

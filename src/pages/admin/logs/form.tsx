@@ -1,19 +1,16 @@
-import { api } from "../../../services/api";
+import { useCallback, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
+
 import { Input } from "../../../components/inputs";
+import { api } from "../../../services/api";
 import { maskPhone } from "../../../utils/mask";
-import { useAuth } from "../../../hooks/use-auth";
-import { TUsers } from "./types";
-import { SEO } from "../../../components/seo/seo";
+import { TUsers } from "../users/types";
 
 export default function FormUsers() {
   const navigate = useNavigate();
-
-  const { auth } = useAuth();
 
   const { userId } = useParams<{ userId: string | undefined }>();
 
@@ -25,28 +22,33 @@ export default function FormUsers() {
     formState: { errors },
   } = useForm<TUsers & { password: string }>();
 
-  async function onSubmit(data: TUsers & { password: string }) {
-    const newData = {
+  const onSubmit = useCallback(async (data: TUsers & { password: string }) => {
+    const newPostData = {
       ...data,
     };
 
     if (data.password) {
-      newData.password = data.password;
+      newPostData.password = data.password;
     }
 
-    await api.patch(`/users`, newData).then(async (resp) => {
+    if (userId) {
+      await api.put(`/users/${userId}`, newPostData);
+
+      return;
+    }
+
+    await api.post(`/users`, newPostData).then(async (resp) => {
       navigate({ pathname: `/adm/users/${(await resp.data).id}/edit` });
     });
-  }
+  }, []);
 
-  async function loadStreets() {
-    await api.get(`/users/${userId}`).then(async (res) => {
-      const resp: TUsers = await res.data;
+  const loadStreets = useCallback(async () => {
+    await api.get(`/users/${userId}`).then(async (res) =>
       reset({
-        ...resp,
-      });
-    });
-  }
+        ...(await res.data),
+      }),
+    );
+  }, []);
 
   useEffect(() => {
     if (userId) loadStreets();
@@ -54,11 +56,6 @@ export default function FormUsers() {
 
   return (
     <>
-      <SEO
-        title={`${userId ? "Editar" : "Cadastrar"} Usuários`}
-        siteTitle={import.meta.env.VITE_TITLE}
-      />
-
       <div className="overflow-x-auto rounded-sm bg-white p-6">
         <div className="border-b pb-3 mb-5 flex gap-3">
           <button className="btn-success btn-ico" type="submit" form="form">
@@ -88,7 +85,7 @@ export default function FormUsers() {
                 >
                   <option value="admin">Adiministrador</option>
                   <option value="user">Usuários</option>
-                  {auth?.type === "root" && <option value="root">Root</option>}
+                  <option value="root">Root</option>
                 </select>
               </div>
             </div>
@@ -137,36 +134,6 @@ export default function FormUsers() {
                 })}
               />
             </div>
-            <div className="basis-full"></div>{" "}
-            <div className="basis-full md:basis-3/12 px-3 mb-6">
-              <Input
-                mask={maskPhone}
-                type="tel"
-                label="Telefone"
-                className={`input-form ${errors.phone && "invalid"}`}
-                error={errors.phone}
-                register={register("phone", {
-                  required: {
-                    value: false,
-                    message: "Campo é obrigatório",
-                  },
-                })}
-              />
-            </div>
-            <div className="basis-full md:basis-3/12 px-3 mb-6">
-              <Input
-                type="text"
-                label="CRECI"
-                className={`input-form ${errors.creci && "invalid"}`}
-                error={errors.creci}
-                register={register("creci", {
-                  required: {
-                    value: false,
-                    message: "Campo é obrigatório",
-                  },
-                })}
-              />
-            </div>
             <div className="basis-full"></div>
             <div className="basis-full md:basis-3/12 px-3 mb-6">
               <Input
@@ -181,6 +148,22 @@ export default function FormUsers() {
                 //     message: "Campo é obrigatório",
                 //   },
                 // })}
+              />
+            </div>
+            <div className="basis-full"></div>
+            <div className="basis-full md:basis-3/12 px-3 mb-6">
+              <Input
+                mask={maskPhone}
+                type="tel"
+                label="Telefone"
+                className={`input-form ${errors.phone && "invalid"}`}
+                error={errors.phone}
+                register={register("phone", {
+                  required: {
+                    value: false,
+                    message: "Campo é obrigatório",
+                  },
+                })}
               />
             </div>
           </div>

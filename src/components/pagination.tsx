@@ -1,6 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
 import { parse, stringify } from "query-string";
-import { TPagination } from "./types";
+
+export type TPagination = React.InputHTMLAttributes<HTMLUListElement> & {
+  total: number;
+  currentPage: number;
+  perPage: number;
+};
 
 export function Pagination({
   total,

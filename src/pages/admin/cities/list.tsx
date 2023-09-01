@@ -5,7 +5,7 @@ import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { Loading } from "../../../components/loading";
-import { SEO } from "../../../components/seo/seo";
+import { SEO } from "../../../components/seo";
 import { City } from "../cities/form";
 import { api } from "../../../services/api";
 

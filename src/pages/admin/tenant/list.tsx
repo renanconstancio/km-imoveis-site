@@ -14,7 +14,7 @@ import { z } from "zod";
 
 import { Loading } from "../../../components/loading";
 import { Pagination } from "../../../components/pagination";
-import { SEO } from "../../../components/seo/seo";
+import { SEO } from "../../../components/seo";
 import { api } from "../../../services/api";
 
 const schema = z.object({

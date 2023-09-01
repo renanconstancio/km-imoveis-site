@@ -1,6 +1,9 @@
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { TAddress } from "./types";
+
+export type TAddress = React.HTMLAttributes<HTMLHeadElement> & {
+  address: string[];
+};
 
 export function Address({ address }: TAddress) {
   return (

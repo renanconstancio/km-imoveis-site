@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { Input } from "../../../components/inputs";
-import { SEO } from "../../../components/seo/seo";
+import { SEO } from "../../../components/seo";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { api } from "../../../services/api";
