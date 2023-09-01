@@ -1,7 +1,7 @@
 import ReactOwlCarousel, { Options } from "react-owl-carousel";
-import { tags } from "../../services/api";
-import { Card } from "../card";
-import { Immobile } from "../../pages/admin/immobiles/schema";
+import { tags } from "../services/api";
+import { Card } from "./card";
+import { Immobile } from "../pages/admin/immobiles/schema";
 
 const options: Options = {
   nav: true,
@@ -39,10 +39,10 @@ export function CardCarousel({ mapping, id }: TCardCarousel) {
           reference={item.reference}
           situation={item.situation}
           description={item.description}
-          buildingArea={item.building_area}
-          terrainArea={item.terrain_area}
-          rentPrice={item.rent_price}
-          salePrice={item.sale_price}
+          buildingArea={`${item.building_area}`}
+          terrainArea={`${item.terrain_area}`}
+          rentPrice={`${item.rent_price}`}
+          salePrice={`${item.sale_price}`}
           address={[
             item.district?.district ?? "",
             item.city?.city ?? "",
@@ -51,7 +51,7 @@ export function CardCarousel({ mapping, id }: TCardCarousel) {
           tag={item.tags || ""}
           tags={tags}
           images={item?.photos?.map((f) => f.image_xs) || []}
-          location={item.tenant_id && true}
+          location={(item.tenant_id && true) as boolean}
         />
       ))}
     </ReactOwlCarousel>

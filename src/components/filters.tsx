@@ -5,15 +5,35 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
 
-import { useGeolocation } from "../../hooks/use-geolocation";
-import { maskCurrency, maskCurrencyUs } from "../../utils/mask";
-import { Input } from "../inputs";
-import { slugiFy } from "../../utils/functions";
+import { useGeolocation } from "../hooks/use-geolocation";
+import { maskCurrency, maskCurrencyUs } from "../utils/mask";
+import { Input } from "./inputs";
+import { slugiFy } from "../utils/functions";
 import { useQuery } from "@tanstack/react-query";
-import { TFilters, TFiltersComp } from "./types";
 
-import { api } from "../../services/api";
-import { Category } from "../../pages/admin/categories/form";
+import { Category } from "../pages/admin/categories/form";
+import { api } from "../services/api";
+
+export type TFiltersComp = {
+  variant?: "row" | "col";
+};
+
+export type TFilters = {
+  price_lte: string;
+  price_gte: string;
+  category: string;
+  district: string;
+  city: string;
+  reference: string;
+  situation:
+    | "location"
+    | "purchase"
+    | "sale"
+    | "exchange"
+    | "sale_barter"
+    | "sale_lease"
+    | "";
+};
 
 export function Filters({ variant = "col" }: TFiltersComp) {
   const dataSituation = Object.assign({

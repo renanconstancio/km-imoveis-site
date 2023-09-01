@@ -1,6 +1,13 @@
-import { TInput } from "./types";
+import { ErrorOption, ValidationRule } from "react-hook-form";
 
-export default function Input({
+export type TInput = React.InputHTMLAttributes<HTMLInputElement> & {
+  label?: string;
+  mask?: (value: string) => string;
+  register?: string | ValidationRule<boolean> | undefined;
+  error?: ErrorOption;
+};
+
+export function Input({
   label,
   mask = (value: string) => value,
   error,
@@ -15,8 +22,8 @@ export default function Input({
         </label>
       )}
       <input
-        {...register}
         // onChange={(e) => (e.target.value = `${mask(e.target.value)}`)}
+        {...register}
         onKeyUp={(e) =>
           (e.currentTarget.value = `${mask(e.currentTarget.value)}`)
         }

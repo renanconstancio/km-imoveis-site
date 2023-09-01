@@ -11,13 +11,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { situationText, situationTextClassName } from "../../utils/functions";
 import { ButtonWhatsapp } from "../../components/button-whatsapp";
 import { CardTags } from "../../components/card-tags";
-import { TImmobles } from "../admin-immobiles/types";
-import { CardCarousel } from "../../components/card-carousel/card-carousel";
+import { CardCarousel } from "../../components/card-carousel";
 import { CarouselIcons } from "../../components/carousel";
 
 import { SEO } from "../../components/seo";
 import { LightBoxeContext } from "../../context/lightbox";
 import { LightboxReact } from "../../components/lightbox";
+import { Immobile } from "../admin/immobiles/schema";
 import { api, tags } from "../../services/api";
 
 export default function SiteImmoble() {
@@ -28,12 +28,10 @@ export default function SiteImmoble() {
 
   const { isOpen, openLightBox } = useContext(LightBoxeContext);
 
-  const { data: immoble, isLoading: loading } = useQuery({
+  const { data: immoble, isLoading: loading } = useQuery<Immobile>({
     queryKey: ["immoble", reference],
     queryFn: () =>
-      api
-        .get<TImmobles>(`/immobiles/${reference}/reference`)
-        .then((res) => res.data),
+      api.get(`/immobiles/${reference}/reference`).then((res) => res.data),
   });
 
   let uri = "&order[created_at]=desc&order[tenant_id]=asc";
@@ -55,7 +53,7 @@ export default function SiteImmoble() {
     queryFn: () =>
       api
         .get<{
-          data: TImmobles[];
+          data: Immobile[];
         }>(`/immobiles/website/list?limit=20${uri}`)
         .then((res) => res.data),
   });
@@ -181,11 +179,17 @@ export default function SiteImmoble() {
 
           <li className="pt-5 w-full mt-5 sm:mt-0 sm:w-4/12 sm:pl-10">
             {Number(immoble?.sale_price) * 1 > 0 && (
-              <Price price={immoble?.sale_price} style={{ fontSize: "32px" }} />
+              <Price
+                price={`${immoble.sale_price}`}
+                style={{ fontSize: "32px" }}
+              />
             )}
 
             {Number(immoble?.rent_price) * 1 > 0 && (
-              <Price price={immoble?.rent_price} style={{ fontSize: "32px" }} />
+              <Price
+                price={`${immoble?.rent_price}`}
+                style={{ fontSize: "32px" }}
+              />
             )}
 
             <section className="font-[10] capitalize whitespace[-5] flex flex-col flex-wrap gap-3">

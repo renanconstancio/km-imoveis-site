@@ -23,7 +23,14 @@ import {
   faBolt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { TCardTags } from "./types";
+
+export type TCardTags = {
+  cardTags: {
+    tag: string;
+    icon: string;
+  }[];
+  cardTag: string;
+};
 
 export function CardTags({ cardTags, cardTag }: TCardTags) {
   const arrayString = cardTag?.split(",");

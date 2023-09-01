@@ -2,8 +2,8 @@ import imgCaixa from "../../assets/caixa.png";
 import faPhone from "../../assets/phone-solid.svg";
 import faWhatsapp from "../../assets/whatsapp-white.svg";
 
-import { ButtonWhatsappFloat } from "../button-whatsapp";
-import { Title } from "../title";
+import { ButtonWhatsappFloat } from "./button-whatsapp";
+import { Title } from "./title";
 
 export function Footer() {
   return (
