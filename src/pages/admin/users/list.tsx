@@ -1,23 +1,31 @@
-import { api } from "../../../services/api";
-import { parse } from "query-string";
-import { KeyboardEvent, useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Loading } from "../../../components/loading";
-import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { KeyboardEvent, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { TUsers } from "./types";
+import { faEdit, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
 import { SEO } from "../../../components/seo/seo";
+import { Loading } from "../../../components/loading";
+import { Link } from "react-router-dom";
+import { api } from "../../../services/api";
+
+export type User = {
+  id: string;
+  type: string;
+  email: string;
+  first_name: string;
+  last_name: string | null;
+  creci: string;
+  phone: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+};
 
 export default function Users() {
   const [clear, setClear] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [users, setUsers] = useState<TUsers[]>([]);
+  const [textInput, setTextInput] = useState<string>("");
 
-  const location = useLocation();
-
-  const query = parse(location.search);
-
-  const q = (query.q || "") as unknown as string;
+  const queryClient = useQueryClient();
 
   function handleSearch(event: KeyboardEvent<EventTarget & HTMLInputElement>) {
     if (
@@ -25,39 +33,20 @@ export default function Users() {
       (event.code === "Enter" || event.keyCode === 13)
     ) {
       setClear(!clear);
-      setUsers(
-        users?.filter(
-          (f: { first_name: string }) =>
-            f.first_name
-              .toLowerCase()
-              .includes(event.currentTarget.value.toLowerCase()), //f.street === event.currentTarget.value,
-        ),
-      );
     }
   }
 
-  async function handleDelete(data: TUsers) {
-    if (!confirm(`Você deseja excluir ${data.first_name}?`)) return;
+  const { mutate } = useMutation({
+    mutationFn: async (id: string) => api.delete(`/users/${id}`),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
+  });
 
-    await api
-      .delete(`/users/${data.id}`)
-      .then(() => loadUsers())
-      .finally(() => setLoading(false));
-  }
+  const { data, isLoading } = useQuery<User[] | []>({
+    queryKey: ["users"],
+    queryFn: () => api.get(`/users`).then(async (res) => res.data),
+  });
 
-  async function loadUsers() {
-    setLoading(true);
-    await api
-      .get(`/users`)
-      .then(async (resp) => setUsers(await resp.data))
-      .finally(() => setLoading(false));
-  }
-
-  useEffect(() => {
-    loadUsers();
-  }, []);
-
-  if (loading) return <Loading />;
+  if (isLoading) return <Loading />;
 
   return (
     <>
@@ -70,15 +59,17 @@ export default function Users() {
               <input
                 type="text"
                 className="input-form"
-                defaultValue={`${query.q || ""}`}
+                value={textInput}
+                onChange={(e) => setTextInput(e.currentTarget.value)}
                 onKeyDown={handleSearch}
               />
-              {(q || clear) && (
+              {(textInput || clear) && (
                 <button
-                  className="btn-default text-black"
+                  className="btn text-black w-8"
                   type="button"
                   onClick={() => {
-                    loadUsers();
+                    queryClient.invalidateQueries({ queryKey: ["users"] });
+                    setTextInput("");
                     setClear(!clear);
                   }}
                 >
@@ -99,27 +90,34 @@ export default function Users() {
           <span className="basis-11/12">Nome.</span>
         </li>
 
-        {users?.map((rws) => (
-          <li key={rws.id} className="list-orders">
-            <span className="flex gap-1 basis-1/12">
-              <Link
-                className="btn-primary btn-xs"
-                to={`/adm/users/${rws.id}/edit`}
-              >
-                <FontAwesomeIcon icon={faEdit} />
-              </Link>
-              <span
-                className="btn-danger btn-xs"
-                onClick={() => handleDelete(rws)}
-              >
-                <FontAwesomeIcon icon={faTrash} />
-              </span>
-            </span>
-            <span className="basis-11/12">{rws.first_name}</span>
-          </li>
-        ))}
+        {data
+          ?.filter((item) => item.first_name.toLowerCase().includes(textInput))
+          ?.map((rws) => (
+            <li key={rws.id} className="list-orders">
+              <span className="flex gap-1 basis-1/12">
+                <Link
+                  className="btn-primary btn-xs"
+                  to={`/adm/users/${rws.id}/edit`}
+                >
+                  <FontAwesomeIcon icon={faEdit} />
+                </Link>
+                <span
+                  className="btn-danger btn-xs"
+                  onClick={() => {
+                    if (!confirm(`Você deseja excluir ${rws.first_name}?`))
+                      return;
 
-        {!users.length && (
+                    mutate(`${rws.id}`);
+                  }}
+                >
+                  <FontAwesomeIcon icon={faTrash} />
+                </span>
+              </span>
+              <span className="basis-11/12">{rws.first_name}</span>
+            </li>
+          ))}
+
+        {!data?.length && (
           <li className="py-3 px-6 text-center">Nenhum imovel encontado</li>
         )}
       </ul>

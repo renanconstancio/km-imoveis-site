@@ -29,116 +29,59 @@ const schema = z.object({
 export type ImmobilePaginated = z.output<typeof schema>;
 
 export default function Immobiles() {
-  // const [loading, setLoading] = useState<boolean>(true);
-  // const [immobiles, setImmobiles] = useState<TPagination<Immobile[]>>(
-  //   {} as TPagination<Immobile[]>,
-  // );
-
-  // const navigate = useNavigate();
-  // const location = useLocation();
-  // const locationDecodURI = decodeURI(location.search);
-  // const query = parse(location.search);
-
-  // const qs = (query.q || "") as unknown as string;
-  // const limit = (query.limit || "25") as string;
-  // const page = (query.page || "1") as string;
-
-  // function handleSearch(event: KeyboardEvent<EventTarget & HTMLInputElement>) {
-  //   if (event.currentTarget.value) {
-  //     if (event.code === "Enter" || event.keyCode === 13) {
-  //       navigate({
-  //         search: `?q=${event.currentTarget.value}`,
-  //       });
-  //     }
-  //   }
-  // }
-
-  // function handleOrder(orderString: string) {
-  //   const qsParse = parse(orderString);
-
-  //   navigate({
-  //     search: decodeURI(stringify({ ...query, ...qsParse })),
-  //   });
-  // }
-
-  // async function handleDelete(data: Immobile) {
-  //   if (!confirm(`Você deseja excluir ${data.description}?`)) return;
-
-  //   await api
-  //     .delete(`/immobiles/${data.id}`)
-  //     .then(() => loadImmobiles())
-  //     .finally(() => setLoading(false));
-  // }
-
-  // async function loadImmobiles() {
-  //   setLoading(true);
-
-  //   const urlParse = parse(
-  //     `page=${page}&limit=${limit}&search[reference]=${qs}&search[description]=${qs}&search[city]=${qs}&search[street]=${qs}&search[district]=${qs}`,
-  //   );
-
-  //   await api
-  //     .get(`/immobiles?${decodeURI(stringify({ ...query, ...urlParse }))}`)
-  //     .then(async (resp) => setImmobiles(await resp.data))
-  //     .finally(() => setLoading(false));
-  // }
-
-  // useEffect(() => {
-  //   loadImmobiles();
-  // }, [locationDecodURI]);
-
-  // if (loading) return <Loading />;
-
   const [textInput, setTextInput] = useState<string>("");
+
+  const navigate = useNavigate();
 
   const queryClient = useQueryClient();
 
-  const navigate = useNavigate();
   const location = useLocation();
-  const locationDecodURI = decodeURI(location.search);
-  const query = parse(location.search);
 
-  const qs = (query.q || "") as unknown as string;
+  const uriDecode = decodeURI(location.search);
+  const query = parse(uriDecode);
+
+  const qs = (query.q || "") as string;
   const limit = (query.limit || "25") as string;
   const page = (query.page || "1") as string;
 
+  const urlParse = parse(
+    `page=${page}&limit=${limit}&search[reference]=${qs}&search[description]=${qs}&search[city]=${qs}&search[street]=${qs}&search[district]=${qs}`,
+  );
+
   function handleClearSearch() {
-    navigate({ search: `?q=` });
     setTextInput("");
+    navigate({ search: `?q=` });
   }
 
   function handleSearch(event: KeyboardEvent<EventTarget & HTMLInputElement>) {
-    if (textInput) {
-      if (event.code === "Enter" || event.keyCode === 13) {
+    if (textInput)
+      if (event.code === "Enter" || event.keyCode === 13)
         navigate({
           search: `?q=${textInput}`,
         });
-      }
-    }
   }
 
   function handleOrder(orderString: string) {
     const qsParse = parse(orderString);
+
     navigate({
       search: decodeURI(stringify({ ...query, ...qsParse })),
     });
   }
 
   const { mutate } = useMutation({
-    mutationFn: async (id: string) => api.delete(`/customers/${id}`),
+    mutationFn: async (id: string) => api.delete(`/immobiles/${id}`),
     onSuccess: () =>
       queryClient.invalidateQueries({
-        queryKey: ["immobiles", page, limit, qs],
+        queryKey: [
+          `immobiles${decodeURI(stringify({ ...query, ...urlParse }))}`,
+        ],
       }),
   });
 
   const { data: immobiles, isLoading } = useQuery<ImmobilePaginated>({
-    queryKey: ["immobiles", page, limit, qs],
+    queryKey: [`immobiles${decodeURI(stringify({ ...query, ...urlParse }))}`],
     queryFn: async () => {
-      const urlParse = parse(
-        `page=${page}&limit=${limit}&search[reference]=${qs}&search[description]=${qs}&search[city]=${qs}&search[street]=${qs}&search[district]=${qs}`,
-      );
-
       return api
         .get(`/immobiles?${decodeURI(stringify({ ...query, ...urlParse }))}`)
         .then(async (resp) => resp.data);
@@ -192,7 +135,7 @@ export default function Immobiles() {
           <span
             className="basis-1/12 cursor-pointer"
             onClick={() => {
-              const testReference = locationDecodURI.indexOf("[reference]=asc");
+              const testReference = uriDecode.indexOf("[reference]=asc");
               if (testReference !== -1) {
                 handleOrder("order[reference]=desc");
               } else {
@@ -205,8 +148,7 @@ export default function Immobiles() {
           <span
             className="basis-3/12 cursor-pointer"
             onClick={() => {
-              const testReference =
-                locationDecodURI.indexOf("[description]=asc");
+              const testReference = uriDecode.indexOf("[description]=asc");
               if (testReference !== -1) {
                 handleOrder("order[description]=desc");
               } else {
@@ -218,9 +160,9 @@ export default function Immobiles() {
           </span>
           <span className="basis-4/12">Rua, Avenida, Apto.</span>
           <span
-            className="text-center basis-1/12 cursor-pointer"
+            className="basis-1/12 cursor-pointer"
             onClick={() => {
-              const testReference = locationDecodURI.indexOf("[published]=asc");
+              const testReference = uriDecode.indexOf("[published]=asc");
               if (testReference !== -1) {
                 handleOrder("order[published]=desc");
               } else {
@@ -235,9 +177,6 @@ export default function Immobiles() {
 
         {immobiles?.data?.map((rws) => (
           <li key={rws.id} className="list-orders">
-            <span className="flex gap-1 basis-1/12">
-              <img src={rws.photos?.[0]?.image_xs} alt="." className="w-full" />
-            </span>
             <span className="flex gap-1 basis-1/12">
               <Link
                 className="btn-primary btn-xs"
@@ -255,15 +194,20 @@ export default function Immobiles() {
                 <FontAwesomeIcon icon={faTrash} />
               </span>
             </span>
+            <span className="flex gap-1 basis-1/12">
+              <img src={rws.photos?.[0]?.image_xs} alt="." className="w-full" />
+            </span>
             <span className="basis-1/12">{rws.reference}</span>
             <span className="basis-3/12">{rws.description}</span>
             <span className="basis-4/12">{rws.street?.street}</span>
-            <span
-              className={`text-center basis-1/12 ${
-                rws.published ? "bg-green-300" : "bg-red-300"
-              }`}
-            >
-              {rws.published ? "ON" : "OFF"}
+            <span className={`text-center basis-1/12`}>
+              <span
+                className={`rounded-full w-10 h-10 leading-9 block ${
+                  rws.published ? "bg-green-300" : "bg-red-300"
+                }`}
+              >
+                {rws.published ? "ON" : "OFF"}
+              </span>
             </span>
             <span className="basis-1/12 text-center">
               {situationText(rws.situation)}

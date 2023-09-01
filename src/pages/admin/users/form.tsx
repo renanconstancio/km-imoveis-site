@@ -7,8 +7,10 @@ import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { Input } from "../../../components/inputs";
 import { maskPhone } from "../../../utils/mask";
 import { useAuth } from "../../../hooks/use-auth";
-import { TUsers } from "./types";
 import { SEO } from "../../../components/seo/seo";
+import { User } from "./list";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 export default function FormUsers() {
   const navigate = useNavigate();
@@ -23,34 +25,71 @@ export default function FormUsers() {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<TUsers & { password: string }>();
+  } = useForm<User & { password: string }>();
 
-  async function onSubmit(data: TUsers & { password: string }) {
-    const newData = {
-      ...data,
-    };
+  const { mutate } = useMutation({
+    mutationFn: async (data: User & { password: string }) => {
+      const newData = {
+        ...data,
+      };
 
-    if (data.password) {
-      newData.password = data.password;
-    }
+      if (data.password) {
+        newData.password = data.password;
+      }
 
-    await api.patch(`/users`, newData).then(async (resp) => {
-      navigate({ pathname: `/adm/users/${(await resp.data).id}/edit` });
-    });
-  }
-
-  async function loadStreets() {
-    await api.get(`/users/${userId}`).then(async (res) => {
-      const resp: TUsers = await res.data;
-      reset({
-        ...resp,
+      return await api.patch(`/users`, { ...newData });
+    },
+    onError: (error) => {
+      toast.error("Não foi possivel fazer o cadastro!");
+      console.log(`${error}`);
+    },
+    onSuccess: async (resp) => {
+      toast.success("Cadastro salvo com sucesso!");
+      navigate({
+        pathname: `/adm/users/${await resp.data?.id}/edit`,
       });
-    });
-  }
+    },
+  });
 
-  useEffect(() => {
-    if (userId) loadStreets();
-  }, [userId]);
+  useQuery({
+    queryKey: ["user", userId],
+    queryFn: () => {
+      if (!userId) return null;
+      return api.get<User>(`/users/${userId}`).then(async (res) => res.data);
+    },
+    onSuccess: (data) => {
+      if (data) {
+        reset(data);
+      }
+    },
+  });
+
+  // async function onSubmit(data: User & { password: string }) {
+  //   const newData = {
+  //     ...data,
+  //   };
+
+  //   if (data.password) {
+  //     newData.password = data.password;
+  //   }
+
+  //   await api.patch(`/users`, newData).then(async (resp) => {
+  //     navigate({ pathname: `/adm/users/${(await resp.data).id}/edit` });
+  //   });
+  // }
+
+  // async function loadStreets() {
+  //   await api.get(`/users/${userId}`).then(async (res) => {
+  //     const resp: User = await res.data;
+  //     reset({
+  //       ...resp,
+  //     });
+  //   });
+  // }
+
+  // useEffect(() => {
+  //   if (userId) loadStreets();
+  // }, [userId]);
 
   return (
     <>
@@ -74,7 +113,7 @@ export default function FormUsers() {
         <form
           id="form"
           className="basis-full"
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(async (data) => mutate(data))}
         >
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="basis-full md:basis-2/12 px-3 mb-6">

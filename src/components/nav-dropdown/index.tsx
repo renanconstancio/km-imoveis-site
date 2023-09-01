@@ -23,7 +23,7 @@ export function NavDropDown() {
           onClick={() => setOpen(false)}
         ></div>
       )}
-      <section className="bg-white -mx-4 h-14 px-8 mb-5 flex justify-end items-center relative z-10">
+      <section className="bg-white -mx-4 h-16 px-8 mb-5 flex justify-end items-center relative z-10">
         <span className="uppercase text-xs px-4">
           {greetingMessage(auth?.name)}
         </span>

@@ -30,7 +30,7 @@ export function Pagination({
               }}
               className={`${
                 number === currentPage && "bg-gray-300 text-gray-700 font-bold"
-              } hover:bg-gray-300 hover:font-bold px-3 py-1 rounded-sm`}
+              } hover:bg-gray-300 hover:font-bold px-3 py-1 rounded-md`}
             >
               {number}
             </Link>
