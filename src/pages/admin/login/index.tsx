@@ -25,19 +25,6 @@ export default function Login() {
     formState: { errors },
   } = useForm<TUserLogin>();
 
-  async function onHandleSubmit(data: TUserLogin) {
-    await api.post(`/users/login`, data).then(async (resp) => {
-      const { user, token } = await resp.data;
-      login({
-        id: user.id,
-        name: user.first_name,
-        type: user.type,
-        token: token,
-        roles: [],
-      });
-    });
-  }
-
   const { mutate } = useMutation({
     mutationFn: async (data: TUserLogin) => {
       return await api.post(`/users/login`, { ...data });
@@ -115,12 +102,6 @@ export default function Login() {
               >
                 Fazer Login
               </button>
-
-              {/* {alert.message && (
-                <div className="mt-7">
-                  <Alert message={alert.message} title={alert.title} />
-                </div>
-              )} */}
             </form>
           </div>
         </div>
