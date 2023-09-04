@@ -18,20 +18,21 @@ jobs:
           node-version: "16"
 
       - name: 🔨 Build Project
+        env:
+          VITE_API_HOST: ${{ secrets.VITE_API_HOST }}
+          VITE_TEL: ${{ secrets.VITE_TEL }}
+          VITE_PHONE: ${{ secrets.VITE_PHONE }}
+          VITE_ADDRESS: ${{ secrets.VITE_ADDRESS }}
+          VITE_TITLE: ${{ secrets.VITE_TITLE }}
+          VITE_NAME: ${{ secrets.VITE_NAME }}
+          VITE_URL: ${{ secrets.VITE_URL }}
+          VITE_IMAGE: ${{ secrets.VITE_IMAGE }}
+          VITE_DESCRIPTION: ${{ secrets.VITE_DESCRIPTION }}
+          VITE_KEYWORDS: ${{ secrets.VITE_KEYWORDS }}
+          VITE_GTM: ${{ secrets.VITE_GTM }}
+          VITE_GTAG: ${{ secrets.VITE_GTAG }}
         run: |
           touch .env
-          echo VITE_API_HOST=${{ secrets.VITE_API_HOST }} >> .env
-          echo VITE_TEL=${{ secrets.VITE_TEL }} >> .env
-          echo VITE_PHONE=${{ secrets.VITE_PHONE }} >> .env
-          echo VITE_ADDRESS=${{ secrets.VITE_ADDRESS }} >> .env
-          echo VITE_TITLE=${{ secrets.VITE_TITLE }} >> .env
-          echo VITE_NAME=${{ secrets.VITE_NAME }} >> .env
-          echo VITE_URL=${{ secrets.VITE_URL }} >> .env
-          echo VITE_IMAGE=${{ secrets.VITE_IMAGE }} >> .env
-          echo VITE_DESCRIPTION=${{ secrets.VITE_DESCRIPTION }} >> .env
-          echo VITE_KEYWORDS=${{ secrets.VITE_KEYWORDS }} >> .env
-          echo VITE_GTM=${{ secrets.VITE_GTM }} >> .env
-          echo VITE_GTAG=${{ secrets.VITE_GTAG }} >> .env
           cat .env
           npm install
           npm run build
