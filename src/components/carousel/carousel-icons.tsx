@@ -22,13 +22,7 @@ export default function CarouselIcons({ images, onClick }: CarouselIconsProps) {
     >
       {images.map((image) => (
         <div key={image} onClick={onClick} className="cursor-pointer">
-          {/* <img src={image} className="w-full rounded-md" /> */}
-          <LazyImage
-            src={images[0]}
-            placeholder={logoSite}
-            className="mx-auto w-full"
-            alt={image}
-          />
+          <img src={image} className="w-full rounded-md" />
         </div>
       ))}
     </Carousel>
