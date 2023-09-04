@@ -19,6 +19,20 @@ jobs:
 
       - name: 🔨 Build Project
         run: |
+          touch .env
+          echo VITE_API_HOST=${{ secrets.VITE_API_HOST }} >> .env
+          echo VITE_TEL=${{ secrets.VITE_TEL }} >> .env
+          echo VITE_PHONE=${{ secrets.VITE_PHONE }} >> .env
+          echo VITE_ADDRESS=${{ secrets.VITE_ADDRESS }} >> .env
+          echo VITE_TITLE=${{ secrets.VITE_TITLE }} >> .env
+          echo VITE_NAME=${{ secrets.VITE_NAME }} >> .env
+          echo VITE_URL=${{ secrets.VITE_URL }} >> .env
+          echo VITE_IMAGE=${{ secrets.VITE_IMAGE }} >> .env
+          echo VITE_DESCRIPTION=${{ secrets.VITE_DESCRIPTION }} >> .env
+          echo VITE_KEYWORDS=${{ secrets.VITE_KEYWORDS }} >> .env
+          echo VITE_GTM=${{ secrets.VITE_GTM }} >> .env
+          echo VITE_GTAG=${{ secrets.VITE_GTAG }} >> .env
+          cat .env
           npm install
           npm run build
 
