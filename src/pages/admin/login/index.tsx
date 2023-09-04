@@ -1,12 +1,15 @@
+import { useForm } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+
 import { useAuth } from "../../../hooks/use-auth";
 
-import bgLogin from "../../../assets/0cuf0u.jpg";
-import bgLogo from "../../../assets/logo.svg";
-
-import { useForm } from "react-hook-form";
 import { Input } from "../../../components/inputs";
 import { api } from "../../../services/api";
 import { SEO } from "../../../components/seo";
+
+import bgLogo from "../../../assets/logo.svg";
+import bgLogin from "../../../assets/0cuf0u.jpg";
 
 export type TUserLogin = {
   email: string;
@@ -35,16 +38,40 @@ export default function Login() {
     });
   }
 
+  const { mutate } = useMutation({
+    mutationFn: async (data: TUserLogin) => {
+      return await api.post(`/users/login`, { ...data });
+    },
+    onError: (error) => {
+      toast.error("Usuário ou senha inválido!");
+      console.log(`${error}`);
+    },
+    onSuccess: async (resp) => {
+      const { user, token } = await resp.data;
+      toast.success("Login realizado com sucesso!");
+      login({
+        id: user.id,
+        name: user.first_name,
+        type: user.type,
+        token: token,
+        roles: [],
+      });
+    },
+  });
+
   return (
     <section
       className="h-screen"
-      style={{ backgroundImage: `url(${bgLogin})` }}
+      style={{ backgroundImage: `url(${bgLogin})`, backgroundSize: "cover" }}
     >
       <SEO title={`Login`} siteTitle={import.meta.env.VITE_TITLE} />
       <div className="container px-6 py-12 h-full">
         <div className="flex justify-center items-center flex-wrap h-full text-gray-800 ">
-          <div className="md:basis-8/12 lg:basis-5/12 lg:ml-20 bg-white">
-            <form onSubmit={handleSubmit(onHandleSubmit)} className="p-10">
+          <div className="md:basis-8/12 lg:basis-5/12 lg:ml-20 bg-white rounded-lg">
+            <form
+              onSubmit={handleSubmit(async (data) => mutate(data))}
+              className="p-10"
+            >
               <div className="pb-5">
                 <img
                   src={bgLogo}

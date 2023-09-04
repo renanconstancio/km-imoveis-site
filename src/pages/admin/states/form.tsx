@@ -2,13 +2,13 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faUndo } from "@fortawesome/free-solid-svg-icons";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-toastify";
 import { z } from "zod";
 
 import { Input } from "../../../components/inputs";
 import { SEO } from "../../../components/seo";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import { api } from "../../../services/api";
 
 export const schemaState = z.object({
