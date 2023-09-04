@@ -44,7 +44,6 @@ import {
 } from "../../../components/modal";
 
 import { maskCurrency, maskCurrencyUs } from "../../../utils/mask";
-import { TUsers } from "../users/types";
 import { SEO } from "../../../components/seo";
 import { api, tags } from "../../../services/api";
 
@@ -64,6 +63,7 @@ import {
   schemaImmobleValidation,
 } from "./schema";
 import { toast } from "react-toastify";
+import { User } from "../users/list";
 
 export default function FormImmobles() {
   const [descriptionText, setDescriptionText] = useState<string>("");
@@ -137,7 +137,7 @@ export default function FormImmobles() {
         .then(async (res) => res.data?.data),
   });
 
-  const { data: users } = useQuery<TUsers[]>({
+  const { data: users } = useQuery<User[]>({
     queryKey: ["users"],
     queryFn: () => api.get(`/users`).then(async (res) => res.data),
   });

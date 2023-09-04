@@ -7,7 +7,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 
-import logoSite from "../../assets/logo.svg";
+import logoSite from "../assets/logo.svg";
 // import logoFaceBook from "../../assets/facebook.svg";
 // import logoInstagram from "../../assets/instagram.svg";
 import { toNumber } from "../utils/functions";

@@ -11,7 +11,7 @@ import { Address } from "./address";
 import { Price } from "./price";
 import { Title } from "./title";
 import { LazyImage } from "./lazy-image";
-import logoSite from "../../assets/logo.png";
+import logoSite from "../assets/loading.jpg";
 
 export type TCard = React.HTMLAttributes<HTMLLIElement> & {
   location: boolean;
@@ -85,8 +85,8 @@ export function Card({
         </li>
       </ul>
       <LazyImage
-        placeholder={logoSite}
         src={images[0]}
+        placeholder={logoSite}
         className="mx-auto w-full"
         alt={description}
       />

@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { format } from "date-fns";
-import { TLogs } from "./types";
+
 import { Loading } from "../../../components/loading";
 import { ModalLog } from "../../../components/modal";
 import { Pagination } from "../../../components/pagination";
@@ -13,6 +13,19 @@ import { TPagination } from "../../../global/types";
 import { useModal } from "../../../hooks/use-modal";
 import { api } from "../../../services/api";
 import { addClassName } from "../../../utils/functions";
+
+export type TLogs = {
+  created_at: string;
+  users_id?: string | null;
+  type: "access" | "create" | "update" | "delete";
+  route: string;
+  text: any;
+  user?: {
+    type: string;
+    email: string;
+    first_name?: string;
+  };
+};
 
 export default function Logs() {
   const [loading, setLoading] = useState<boolean>(true);

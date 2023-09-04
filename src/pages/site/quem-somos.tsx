@@ -42,21 +42,21 @@ export default function QuemSomos() {
             imóveis, tornando o processo de compra mais acessível e conveniente
             para você.
           </li>
-          <li>
+          {/* <li>
             3. <strong>Variedade de Opções:</strong> Nossa carteira de imóveis
             inclui uma ampla variedade de opções, desde casas charmosas a
             apartamentos modernos. Temos algo para todos os gostos e
             necessidades.
-          </li>
+          </li> */}
           <li>
-            4. <strong>Atendimento Personalizado:</strong> Entendemos que
+            3. <strong>Atendimento Personalizado:</strong> Entendemos que
             comprar ou vender um imóvel é uma decisão importante. Nossa equipe
             calorosa e profissional está pronta para ouvir você, responder a
             todas as suas perguntas e fornecer assistência personal
           </li>
           izada.
           <li>
-            5. <strong>Processo Descomplicado:</strong> Simplificamos todo o
+            4. <strong>Processo Descomplicado:</strong> Simplificamos todo o
             processo de transação imobiliária, desde a pesquisa até o fechamento
             do negócio. Cuidamos de todos os detalhes para que você possa se
             concentrar no que é realmente importante.
@@ -83,12 +83,14 @@ export default function QuemSomos() {
         </p>
         <h3>Informações de Contato</h3>
         <address>
-          - Endereço: {import.meta.env.VITE_ADDRESS} - Telefone:{" "}
-          {import.meta.env.VITE_TEL} - Horário de Funcionamento: 8:00 as 18:00 -
-          Website: www.kmenegociosimobiliarios.com.br
+          {import.meta.env.VITE_NAME} - Endereço: {import.meta.env.VITE_ADDRESS}{" "}
+          - Telefone: {import.meta.env.VITE_TEL} - Horário de Funcionamento:
+          8:00 as 18:00 - Website: www.kmenegociosimobiliarios.com.br
         </address>
         <strong>
-          <i>Transformando Casas em Lares desde {new Date().getFullYear()}</i>
+          <i>
+            Transformando Casas em Lares {/*desde {new Date().getFullYear()}*/}
+          </i>
         </strong>
       </div>
     </div>

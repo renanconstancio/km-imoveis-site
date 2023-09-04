@@ -5,11 +5,11 @@ import { parse, stringify } from "query-string";
 import { Card } from "../../components/card";
 import { Pagination } from "../../components/pagination";
 import { TPagination } from "../../global/types";
-import { TImmobles } from "../admin-immobiles/types";
 import { maskCurrencyUs } from "../../utils/mask";
 import { CardSkeleton } from "../../components/card-skeleton";
 import { SEO } from "../../components/seo";
 import { api, tags } from "../../services/api";
+import { Immobile } from "../admin/immobiles/schema";
 
 export default function SiteSearch() {
   const location = useLocation();
@@ -50,7 +50,7 @@ export default function SiteSearch() {
     queryKey: ["search", { ...parse(uri) }],
     queryFn: () =>
       api
-        .get<TPagination<TImmobles[]>>(
+        .get<TPagination<Immobile[]>>(
           `/immobiles/website/list?${decodeURI(stringify({ ...parse(uri) }))}`,
         )
         .then((res) => res.data),
@@ -95,10 +95,10 @@ export default function SiteSearch() {
               reference={item.reference}
               situation={item.situation}
               description={item.description}
-              buildingArea={item.building_area}
-              terrainArea={item.terrain_area}
-              rentPrice={item.rent_price}
-              salePrice={item.sale_price}
+              buildingArea={`${item.building_area}`}
+              terrainArea={`${item.terrain_area}`}
+              rentPrice={`${item.rent_price}`}
+              salePrice={`${item.sale_price}`}
               address={[
                 item.district?.district ?? "",
                 item.city?.city ?? "",
@@ -107,7 +107,7 @@ export default function SiteSearch() {
               tag={item.tags || ""}
               tags={tags}
               images={item?.photos?.map((f) => f.image_xs) || []}
-              location={item.tenant_id && true}
+              location={(item.tenant_id && true) as boolean}
             />
           ))}
       </section>

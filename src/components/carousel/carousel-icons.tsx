@@ -1,4 +1,6 @@
 import { Carousel } from "react-responsive-carousel";
+import { LazyImage } from "../lazy-image";
+import logoSite from "../../assets/loading.jpg";
 
 type CarouselIconsProps = {
   images: string[];
@@ -20,7 +22,13 @@ export default function CarouselIcons({ images, onClick }: CarouselIconsProps) {
     >
       {images.map((image) => (
         <div key={image} onClick={onClick} className="cursor-pointer">
-          <img src={image} className="w-full rounded-md" />
+          {/* <img src={image} className="w-full rounded-md" /> */}
+          <LazyImage
+            src={images[0]}
+            placeholder={logoSite}
+            className="mx-auto w-full"
+            alt={image}
+          />
         </div>
       ))}
     </Carousel>

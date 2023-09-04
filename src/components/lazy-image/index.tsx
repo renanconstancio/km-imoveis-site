@@ -1,6 +1,10 @@
 import "./styles.css";
-import { useEffect, useState } from "react";
-import type { TLazyImage } from "./types";
+import { ImgHTMLAttributes, useEffect, useState } from "react";
+
+type TLazyImage = ImgHTMLAttributes<HTMLImageElement> & {
+  placeholder: string;
+  src: string;
+};
 
 export function LazyImage({ placeholder, src, ...rest }: TLazyImage) {
   const [imgSrc, setImgSrc] = useState(placeholder || src);

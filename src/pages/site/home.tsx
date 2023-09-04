@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import { parse } from "query-string";
 
 import { SEO } from "../../components/seo";
-import { TImmobles } from "../admin-immobiles/types";
 import { Card } from "../../components/card";
 import { Title } from "../../components/title";
 import { TBanner } from "../../components/carousel/types";
@@ -24,6 +23,7 @@ import banner03 from "../../assets/banners/banner-c.jpg";
 import banner01Xs from "../../assets/banners/banner-a-xs.jpg";
 import banner02Xs from "../../assets/banners/banner-b-xs.jpg";
 import banner03Xs from "../../assets/banners/banner-c-xs.jpg";
+import { Immobile } from "../admin/immobiles/schema";
 
 const bannerFix: TBanner[] = [
   {
@@ -67,7 +67,7 @@ export default function SiteHome() {
     queryKey: ["site-location"],
     queryFn: () =>
       api
-        .get<{ data: TImmobles[] }>(
+        .get<{ data: Immobile[] }>(
           `/immobiles/website/list?limit=10&search[city]=${city}&order[created_at]=desc&order[tenant_id]=asc&search[situation]=location`,
         )
         .then(async (res) => res.data),
@@ -77,7 +77,7 @@ export default function SiteHome() {
     queryKey: ["site-sale"],
     queryFn: () =>
       api
-        .get<{ data: TImmobles[] }>(
+        .get<{ data: Immobile[] }>(
           `/immobiles/website/list?limit=10&search[city]=${city}&order[created_at]=desc&order[tenant_id]=asc&search[situation]=sale`,
         )
         .then((res) => res.data),
@@ -87,7 +87,7 @@ export default function SiteHome() {
     queryKey: ["site-exchange"],
     queryFn: () =>
       api
-        .get<{ data: TImmobles[] }>(
+        .get<{ data: Immobile[] }>(
           `/immobiles/website/list?limit=10&search[city]=${city}&order[created_at]=desc&order[tenant_id]=asc&search[situation]=exchange`,
         )
         .then((res) => res.data),
@@ -97,7 +97,7 @@ export default function SiteHome() {
     queryKey: ["site-sale-lease"],
     queryFn: () =>
       api
-        .get<{ data: TImmobles[] }>(
+        .get<{ data: Immobile[] }>(
           `/immobiles/website/list?limit=10&search[city]=${city}&order[created_at]=desc&order[tenant_id]=asc&search[situation]=sale_lease`,
         )
         .then((res) => res.data),
@@ -107,7 +107,7 @@ export default function SiteHome() {
     queryKey: ["site-sale-barter"],
     queryFn: () =>
       api
-        .get<{ data: TImmobles[] }>(
+        .get<{ data: Immobile[] }>(
           `/immobiles/website/list?limit=10&search[city]=${city}&order[created_at]=desc&order[tenant_id]=asc&search[situation]=sale_barter`,
         )
         .then((res) => res.data),
@@ -153,10 +153,10 @@ export default function SiteHome() {
                 reference={item.reference}
                 situation={item.situation}
                 description={item.description}
-                buildingArea={item.building_area}
-                terrainArea={item.terrain_area}
-                rentPrice={item.rent_price}
-                salePrice={item.sale_price}
+                buildingArea={`${item.building_area}`}
+                terrainArea={`${item.terrain_area}`}
+                rentPrice={`${item.rent_price}`}
+                salePrice={`${item.sale_price}`}
                 address={[
                   item.district?.district ?? "",
                   item.city?.city ?? "",
@@ -165,7 +165,7 @@ export default function SiteHome() {
                 tag={item.tags || ""}
                 tags={tags}
                 images={item?.photos?.map((f) => f.image_xs) || []}
-                location={item.tenant_id && true}
+                location={(item.tenant_id && true) as boolean}
               />
             ))}
       </section>
@@ -193,10 +193,10 @@ export default function SiteHome() {
                 reference={item.reference}
                 situation={item.situation}
                 description={item.description}
-                buildingArea={item.building_area}
-                terrainArea={item.terrain_area}
-                rentPrice={item.rent_price}
-                salePrice={item.sale_price}
+                buildingArea={`${item.building_area}`}
+                terrainArea={`${item.terrain_area}`}
+                rentPrice={`${item.rent_price}`}
+                salePrice={`${item.sale_price}`}
                 address={[
                   item.district?.district ?? "",
                   item.city?.city ?? "",
@@ -205,7 +205,7 @@ export default function SiteHome() {
                 tag={item.tags || ""}
                 tags={tags}
                 images={item?.photos?.map((f) => f.image_xs) || []}
-                location={item.tenant_id && true}
+                location={(item.tenant_id && true) as boolean}
               />
             ))}
       </section>
@@ -235,10 +235,10 @@ export default function SiteHome() {
                 reference={item.reference}
                 situation={item.situation}
                 description={item.description}
-                buildingArea={item.building_area}
-                terrainArea={item.terrain_area}
-                rentPrice={item.rent_price}
-                salePrice={item.sale_price}
+                buildingArea={`${item.building_area}`}
+                terrainArea={`${item.terrain_area}`}
+                rentPrice={`${item.rent_price}`}
+                salePrice={`${item.sale_price}`}
                 address={[
                   item.district?.district ?? "",
                   item.city?.city ?? "",
@@ -247,7 +247,7 @@ export default function SiteHome() {
                 tag={item.tags || ""}
                 tags={tags}
                 images={item?.photos?.map((f) => f.image_xs) || []}
-                location={item.tenant_id && true}
+                location={(item.tenant_id && true) as boolean}
               />
             ))}
       </section>
@@ -277,10 +277,10 @@ export default function SiteHome() {
                 reference={item.reference}
                 situation={item.situation}
                 description={item.description}
-                buildingArea={item.building_area}
-                terrainArea={item.terrain_area}
-                rentPrice={item.rent_price}
-                salePrice={item.sale_price}
+                buildingArea={`${item.building_area}`}
+                terrainArea={`${item.terrain_area}`}
+                rentPrice={`${item.rent_price}`}
+                salePrice={`${item.sale_price}`}
                 address={[
                   item.district?.district ?? "",
                   item.city?.city ?? "",
@@ -289,7 +289,7 @@ export default function SiteHome() {
                 tag={item.tags || ""}
                 tags={tags}
                 images={item?.photos?.map((f) => f.image_xs) || []}
-                location={item.tenant_id && true}
+                location={(item.tenant_id && true) as boolean}
               />
             ))}
       </section>
@@ -318,10 +318,10 @@ export default function SiteHome() {
                 reference={item.reference}
                 situation={item.situation}
                 description={item.description}
-                buildingArea={item.building_area}
-                terrainArea={item.terrain_area}
-                rentPrice={item.rent_price}
-                salePrice={item.sale_price}
+                buildingArea={`${item.building_area}`}
+                terrainArea={`${item.terrain_area}`}
+                rentPrice={`${item.rent_price}`}
+                salePrice={`${item.sale_price}`}
                 address={[
                   item.district?.district ?? "",
                   item.city?.city ?? "",
@@ -330,7 +330,7 @@ export default function SiteHome() {
                 tag={item.tags || ""}
                 tags={tags}
                 images={item?.photos?.map((f) => f.image_xs) || []}
-                location={item.tenant_id && true}
+                location={(item.tenant_id && true) as boolean}
               />
             ))}
       </section>
