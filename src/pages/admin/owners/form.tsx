@@ -125,13 +125,13 @@ export default function FormOwners() {
     onSuccess: async (resp) => {
       toast.success("Cadastro salvo com sucesso!");
       navigate({
-        pathname: `/adm/tenant/${await resp.data?.id}/edit`,
+        pathname: `/adm/owners/${await resp.data?.id}/edit`,
       });
     },
   });
 
   useQuery({
-    queryKey: ["tenant", ownerId],
+    queryKey: ["owners", ownerId],
     queryFn: () => {
       if (!ownerId) return null;
       return api
