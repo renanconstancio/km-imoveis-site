@@ -157,7 +157,7 @@ export default function FormImmobles() {
 
   const { mutate } = useMutation({
     mutationFn: async (data: ImmobileValidation) => {
-      const tags = tagsSite.length && tagsSite.join(",");
+      const tags = tagsSite.length ? tagsSite.join(",") : null;
 
       const newData = {
         ...data,
