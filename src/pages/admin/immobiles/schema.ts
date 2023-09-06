@@ -65,7 +65,7 @@ export const schemaImmobile = {
   number: z.string().optional(),
   description: z.string().min(1, { message: "Campo é obrigatório" }),
   description_text: z.string().optional().default(""),
-  tags: z.string().optional(),
+  tags: z.string().optional().nullable(),
   reference: z.string().min(1, { message: "Campo é obrigatório" }),
   sale_price: z.string().optional(),
   rent_price: z.string().optional(),
