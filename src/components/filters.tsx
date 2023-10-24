@@ -148,6 +148,10 @@ export function Filters({ variant = "col" }: TFiltersComp) {
     });
   }, []);
 
+  useEffect(() => {
+    if (openClose) window.scroll({ top: 0, left: 0, behavior: "smooth" });
+  }, [openClose]);
+
   return (
     <>
       <span
@@ -209,8 +213,16 @@ export function Filters({ variant = "col" }: TFiltersComp) {
               !openClose ? "hidden md:m-0 md:flex" : "flex md:m-0"
             } ${
               variant === "col" ? "flex-col" : "flex-col md:flex-row"
-            } aling-end flex-wrap bg-neutral-100 rounded-md shadow-md gap-5 p-10 relative`}
+            } aling-end flex-wrap bg-neutral-100 rounded-md shadow-md gap-5 px-6 py-10 relative`}
           >
+            <li>
+              <Input
+                type="text"
+                label="Código do Imóvel"
+                className="input-form"
+                register={register("reference")}
+              />
+            </li>
             <li>
               <Input
                 list="category"
@@ -262,15 +274,6 @@ export function Filters({ variant = "col" }: TFiltersComp) {
                   <option value={district} key={id} />
                 ))}
               </datalist>
-            </li>
-
-            <li>
-              <Input
-                type="text"
-                label="Código do Imóvel"
-                className="input-form"
-                register={register("reference")}
-              />
             </li>
 
             <li className="flex gap-5">

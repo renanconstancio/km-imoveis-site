@@ -40,12 +40,12 @@ export default function CarouselIndex({ banners }: { banners: TBanner[] }) {
             }}
             className="carousel-index item"
           >
-            <h3>{title}</h3>
+            {/* <h3>{title}</h3>
             <div
               dangerouslySetInnerHTML={{
                 __html: `${description}`,
               }}
-            />
+            /> */}
           </div>
         </div>
       ))}
