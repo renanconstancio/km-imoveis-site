@@ -17,7 +17,7 @@ export function Footer() {
 
       <section className="container px-4 my-10 flex flex-row flex-wrap">
         <aside className="basis-full md:flex-1 flex flex-col gap-5">
-          <div className="flex flex-row gap-5">
+          {/* <div className="flex flex-row gap-5">
             <img
               src={imgCaixa}
               alt="Correspondente - Caixa"
@@ -27,7 +27,7 @@ export function Footer() {
               <Title title="Correspondente" mb="mb-0.5" mt="mt-0.5" />
               <i>Faça seu financiamento com a gente!</i>
             </span>
-          </div>
+          </div> */}
 
           <div>
             <Title title="Endereço" mb="mb-0.5" mt="mt-0.5" />

@@ -36,12 +36,12 @@ export default function QuemSomos() {
             do mercado imobiliário de Itápolis, estamos em posição privilegiada
             para oferecer orientação precisa e recomendações bem informadas.
           </li>
-          <li>
+          {/* <li>
             2. <strong>Financiamento Facilitado:</strong> Somos credenciados
             pela Caixa Econômica Federal para oferecer financiamentos de
             imóveis, tornando o processo de compra mais acessível e conveniente
             para você.
-          </li>
+          </li> */}
           {/* <li>
             3. <strong>Variedade de Opções:</strong> Nossa carteira de imóveis
             inclui uma ampla variedade de opções, desde casas charmosas a
@@ -49,14 +49,14 @@ export default function QuemSomos() {
             necessidades.
           </li> */}
           <li>
-            3. <strong>Atendimento Personalizado:</strong> Entendemos que
+            2. <strong>Atendimento Personalizado:</strong> Entendemos que
             comprar ou vender um imóvel é uma decisão importante. Nossa equipe
             calorosa e profissional está pronta para ouvir você, responder a
             todas as suas perguntas e fornecer assistência personal
           </li>
           izada.
           <li>
-            4. <strong>Processo Descomplicado:</strong> Simplificamos todo o
+            3. <strong>Processo Descomplicado:</strong> Simplificamos todo o
             processo de transação imobiliária, desde a pesquisa até o fechamento
             do negócio. Cuidamos de todos os detalhes para que você possa se
             concentrar no que é realmente importante.
