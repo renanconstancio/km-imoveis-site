@@ -27,7 +27,7 @@ export default function CarouselIndex({ banners }: { banners: TBanner[] }) {
   };
 
   return (
-    <OwlCarousel className="owl-theme min-h-[4rem]" {...options}>
+    <OwlCarousel className="owl-theme mb-0" {...options}>
       {banners.map(({ photo, title, description, link }, id) => (
         <div key={id}>
           <picture>
