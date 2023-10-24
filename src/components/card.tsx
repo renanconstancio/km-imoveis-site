@@ -79,7 +79,7 @@ export function Card({
         location && "opacity-70"
       }`}
     >
-      <ul className="absolute left-0 top-3 h-[auto] w-auto z-50 font-play text-white text-sm flex gap-2">
+      <ul className="absolute left-0 top-3 h-[auto] w-auto z-10 font-play text-white text-sm flex gap-2">
         <li className={`p-1 ${situationTextClassName(situation)}`}>
           {location ? textCondition : situationText(situation)}
         </li>

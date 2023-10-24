@@ -133,7 +133,7 @@ export default function SiteHome() {
           title={`Casas para Locação`}
           style={{
             textAlign: "center",
-            margin: "2em 0 1em 0",
+            margin: "0.5em 0 1em 0",
             textTransform: "uppercase",
             fontSize: "1.5em",
           }}

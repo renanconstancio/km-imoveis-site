@@ -162,7 +162,7 @@ export default function SiteImmoble() {
           </li>
 
           <li className="pt-0 w-full sm:pt-5 sm:w-8/12 relative -order-1 sm:order-none">
-            <ul className="absolute left-0 top-8 h-[auto] w-auto z-[100] font-play text-white text-lg flex gap-2">
+            <ul className="absolute -left-3 top-2 sm:top-8 sm:left-2 h-[auto] w-auto z-40 font-play text-white text-lg flex gap-2">
               <li
                 className={`p-1 ${situationTextClassName(immoble?.situation)}`}
               >
