@@ -121,15 +121,15 @@ export default function FormImmobles() {
     queryFn: () => api.get(`/categories`).then(async (res) => res.data),
   });
 
-  const { data: tenants } = useQuery<{ data: Tenant[] }>({
+  const { data: tenants } = useQuery<Tenant[]>({
     queryKey: ["tenants"],
     queryFn: () =>
       api
         .get(`/customers?limit=10000&search[type]=tenant`)
-        .then(async (res) => res.data?.data),
+        .then(async (res) => await res.data?.data),
   });
 
-  const { data: owners } = useQuery<{ data: Owner[] }>({
+  const { data: owners } = useQuery<Owner[]>({
     queryKey: ["owners"],
     queryFn: () =>
       api
@@ -177,15 +177,11 @@ export default function FormImmobles() {
         categories_id: categories?.find(
           (item) => item.category === data.categories_id,
         )?.id,
-        tenant_id: tenants?.data?.find(
-          (item) => item.first_name === data.tenant_id,
-        )?.id,
-        owner_id: owners?.data?.find(
-          (item) => item.first_name === data.owner_id,
-        )?.id,
+        tenant_id: tenants?.find((item) => item.first_name === data.tenant_id)
+          ?.id,
+        owner_id: owners?.find((item) => item.first_name === data.owner_id)?.id,
         users_id: users?.find((item) => item.first_name === data.users_id)?.id,
       };
-      console.log(newData);
       return await api.patch(`/immobiles`, { ...newData });
     },
     onError: (error) => {
@@ -572,7 +568,7 @@ export default function FormImmobles() {
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
               <datalist id="tenant_id">
-                {tenants?.data?.map(({ id, first_name, last_name }) => (
+                {tenants?.map(({ id, first_name, last_name }) => (
                   <option key={id} value={[first_name, last_name].join(" ")} />
                 ))}
               </datalist>
@@ -602,7 +598,7 @@ export default function FormImmobles() {
                 <small className="input-text-invalid">Campo obrigatório</small>
               )}
               <datalist id="owner_id">
-                {owners?.data?.map(({ id, first_name, last_name }) => (
+                {owners?.map(({ id, first_name, last_name }) => (
                   <option key={id} value={[first_name, last_name].join(" ")} />
                 ))}
               </datalist>
