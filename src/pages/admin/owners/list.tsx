@@ -154,7 +154,7 @@ export default function Owners() {
           >
             <FontAwesomeIcon icon={faSort} /> Sobrenome
           </span>
-          <span className="basis-3/12">Telefone.</span>
+          <span className="basis-3/12">Telefone</span>
         </li>
 
         {owners?.total &&
