@@ -81,7 +81,7 @@ export default function Neighborhoods() {
 
         <li className="list-orders uppercase font-play font-bold bg-gray-200">
           <span className="basis-1/12">ações</span>
-          <span className="basis-11/12">bairros.</span>
+          <span className="basis-11/12">bairros</span>
         </li>
 
         {data?.length &&
